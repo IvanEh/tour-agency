@@ -1,0 +1,60 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<html>
+<head>
+    <title>Tour Agency</title>
+    <link rel="stylesheet" href="resources/bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="resources/css/master.css"/>
+    <link rel="stylesheet" href="resources/css/purchase.css"/>
+</head>
+<body>
+
+<c:import url="resources/components/navbar.html"/>
+
+<div class="container">
+    <div class="col-md-3">
+        <c:import url="resources/components/sidebar-user.html"/>
+    </div>
+
+
+    <div class="col-md-6 content">
+        Дані покупки:
+
+        <div class="row">
+            <div class="col-md-3 form-control-sized">Назва:</div>
+
+            <div class="col-offset-md-1 col-md-9">
+                <div class="form-control">Name</div>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="row">
+            <div class="col-md-3 form-control-sized">Опис:</div>
+
+            <div class="col-offset-md-1 col-md-9">
+                <div class="form-control">Name</div>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="row">
+            <div class="col-md-3 form-control-sized">Ціна(-15%):</div>
+
+            <div class="col-offset-md-1 col-md-9 has-success">
+                <div class="form-control">$111</div>
+            </div>
+        </div>
+
+        <br/>
+
+        <a href="" class="btn btn-success pull-right">Придбати</a>
+
+    </div>
+</div>
+
+</body>
+</html>
