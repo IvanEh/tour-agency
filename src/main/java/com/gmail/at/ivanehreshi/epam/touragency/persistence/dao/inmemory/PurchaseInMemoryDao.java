@@ -1,8 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.inmemory;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Purchase;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
 
-public class PurchaseInMemoryDao extends AbstractInMemoryDao<Purchase> {
+public class PurchaseInMemoryDao extends AbstractInMemoryDao<Purchase> implements PurchaseDao{
     public PurchaseInMemoryDao() {
         super(Purchase.class);
     }

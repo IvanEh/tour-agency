@@ -1,9 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.inmemory;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Purchase;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 
-public class UserInMemoryDao extends AbstractInMemoryDao<User> {
+public class UserInMemoryDao extends AbstractInMemoryDao<User> implements UserDao{
     public UserInMemoryDao() {
         super(User.class);
     }
