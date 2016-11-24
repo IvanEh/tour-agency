@@ -1,0 +1,28 @@
+.tour {
+    height: 12vw;
+    border: solid 1px #eee;
+    padding: 0;
+    margin: 10px 5px;
+}
+
+.tour > div {
+    margin: 0px;
+}
+
+.tour > .heading {
+    height: 25%;
+    border-bottom: solid 1px #eee;
+}
+
+.tour > .body {
+    height: 60%;
+}
+
+.tour > .footer {
+    height: 15%;
+    border-top: solid 1px #eee;
+}
+
+.tour > .footer > div {
+    height: 100%;
+}

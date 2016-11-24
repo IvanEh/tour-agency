@@ -5,3 +5,7 @@
 .content {
     border-left: solid 1px #eee;
 }
+
+.bordered {
+    border: solid 1px #eee !important;
+}
