@@ -1,0 +1,19 @@
+{
+  "name": "tour-agency",
+  "authors": [
+    "ivaneh <ivanehreshi@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "resources/bower_components",
+    "test",
+    "tests"
+  ]
+}

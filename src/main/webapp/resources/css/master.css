@@ -1,0 +1,7 @@
+* {
+    border-radius: 0 !important;
+}
+
+.content {
+    border-left: solid 1px #eee;
+}
