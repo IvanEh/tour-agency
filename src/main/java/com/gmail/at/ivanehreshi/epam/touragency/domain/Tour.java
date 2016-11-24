@@ -17,11 +17,11 @@ public class Tour {
         this.id = id;
     }
 
-    public BigDecimal getBigDecimal() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setBigDecimal(BigDecimal price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
