@@ -1,4 +1,6 @@
 .tour {
+    position: relative;
+
     height: 12vw;
     border: solid 1px #eee;
     padding: 0;
@@ -18,11 +20,21 @@
     height: 60%;
 }
 
-.tour > .footer {
+.tour > .footer     {
     height: 15%;
     border-top: solid 1px #eee;
 }
 
 .tour > .footer > div {
     height: 100%;
+}
+
+.hot {
+    position: absolute;
+    right: 15px;
+
+    width: 10px;
+    height: 30px;
+
+    background: red;
 }
