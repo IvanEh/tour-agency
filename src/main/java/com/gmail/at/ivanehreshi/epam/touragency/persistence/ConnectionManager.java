@@ -1,14 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 
+import com.gmail.at.ivanehreshi.epam.touragency.util.ResourcesUtil;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.sql.DataSource;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -44,7 +42,9 @@ public class ConnectionManager {
     private Properties loadProperties() {
         Properties properties = new Properties();
 
-        try(InputStream inputStream = new FileInputStream("database.properties")) {
+        File file = ResourcesUtil.getResourceFile("database.properties");
+
+        try(InputStream inputStream = new FileInputStream(file)) {
             properties.load(inputStream);
         } catch (IOException e) {
             LOGGER.warn("Cannot load database.properties", e);

@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +48,19 @@ public class JdbcTemplate {
         } finally {
             close(conn);
         }
+    }
+
+    public <R> List<R> queryObjects(ResultSetFunction<R> producer, String query, Object... params) {
+        List<R> entities = new ArrayList<>();
+
+        query((rs) -> {
+            while (rs.next()) {
+                entities.add(producer.apply(rs));
+            }
+            return null;
+        }, query, params);
+
+        return entities;
     }
 
     public int update(String updQuery, Object... params) {
