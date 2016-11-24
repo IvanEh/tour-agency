@@ -1,9 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.domain;
 
+import java.util.Date;
+
 public class Purchase {
     private Long id;
     private User user;
     private Tour tour;
+    private Date date;
 
     public Purchase(Long id) {
         this.id = id;
@@ -31,5 +34,13 @@ public class Purchase {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

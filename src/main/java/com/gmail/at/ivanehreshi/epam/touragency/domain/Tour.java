@@ -8,8 +8,7 @@ public class Tour {
     private String description;
     private TourType type;
     boolean hot;
-    private BigDecimal bigDecimal;
-    private int count;
+    private BigDecimal price;
 
     public Tour() {
     }
@@ -18,20 +17,12 @@ public class Tour {
         this.id = id;
     }
 
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
     public BigDecimal getBigDecimal() {
-        return bigDecimal;
+        return price;
     }
 
-    public void setBigDecimal(BigDecimal bigDecimal) {
-        this.bigDecimal = bigDecimal;
+    public void setBigDecimal(BigDecimal price) {
+        this.price = price;
     }
 
     public String getDescription() {
