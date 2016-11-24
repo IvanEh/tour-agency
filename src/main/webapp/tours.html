@@ -26,68 +26,31 @@
         </ul>
 
 
-        <div class="col-md-4">
-            <div class="tour">
-                <div class="hot"></div>
 
-                <div class="heading">
-                    Tour de France
-                </div>
-                <div class="body">
-                    lorem ipsum dolor set ames
-                </div>
-                <div class="footer">
-                    <div class="pull-left badge" style="line-height: 20px">$333</div>
-                    <div class="pull-right btn btn-default">Придбати</div>
+        <c:forEach var="tour" items="${webApplication.tourDao.findAll()}">
+
+            <div class="col-md-4">
+                <div class="tour">
+                    <c:if test="${tour.isHot()}">
+                        <div class="hot"></div>
+                    </c:if>
+
+                    <div class="heading">
+                        <c:out value="${tour.title}"/>
+                    </div>
+                    <div class="body">
+                        <c:out value="${tour.description}"/>
+                    </div>
+                    <div class="footer">
+                        <div class="pull-left badge" style="line-height: 20px">
+                            <c:out value="${tour.price}"/>
+                        </div>
+                        <div class="pull-right btn btn-default">Придбати</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="tour">
-                <div class="heading">
-                    Tour de France
-                </div>
-                <div class="body">
-                    lorem ipsum dolor set ames
-                </div>
-                <div class="footer">
-                    <div class="pull-left badge" style="line-height: 20px">$333</div>
-                    <div class="pull-right btn btn-default">Придбати</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="tour">
-                <div class="heading">
-                    Tour de France
-                </div>
-                <div class="body">
-                    lorem ipsum dolor set ames
-                </div>
-                <div class="footer">
-                    <div class="pull-left badge" style="line-height: 20px">$333</div>
-                    <div class="pull-right btn btn-default">Придбати</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="tour">
-                <div class="heading">
-                    Tour de France
-                </div>
-                <div class="body">
-                    lorem ipsum dolor set ames
-                </div>
-                <div class="footer">
-                    <div class="pull-left badge" style="line-height: 20px">$333</div>
-                    <div class="pull-right btn btn-default">Придбати</div>
-                </div>
-            </div>
-        </div>
-
+        </c:forEach>
 
     </div>
 </div>
