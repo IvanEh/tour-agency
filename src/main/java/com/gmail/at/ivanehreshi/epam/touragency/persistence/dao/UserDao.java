@@ -15,4 +15,6 @@ public interface UserDao extends Dao<User, Long> {
     void updateRoles(Long userId, List<Role> roles);
 
     List<Role> readRoles(Long userId);
+
+    User read(String username);
 }

@@ -8,6 +8,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.PurchaseJdbcDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.TourJdbcDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.UserJdbcDao;
+import com.gmail.at.ivanehreshi.epam.touragency.security.SecurityContext;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.CommandDispatcherServletBuilder;
 
 import javax.servlet.ServletContext;
@@ -34,12 +35,16 @@ public enum WebApplication {
         userDao = new UserJdbcDao(connectionManager);
         purchaseDao = new PurchaseJdbcDao(connectionManager, userDao, tourDao);
 
+        SecurityContext.INSTANCE.setUserDao(userDao);
+
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder.addMapping("/tour", new CreateTourCommand())
                       .addMapping("/tour/edit", new EditTourCommand())
                       .addMapping("/register", new RegisterCommand())
                       .addMapping("/user/discount", new UpdateDiscountCommand())
                       .addMapping("/purchase", new PurchaseCommand())
+                      .addMapping("/login", new LoginCommand())
+                      .addMapping("/logout", new LogoutCommand())
                       .buildAndRegister("Command Dispatcher Servlet", "/actions/*");
     }
 

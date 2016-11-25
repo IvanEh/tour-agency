@@ -15,6 +15,7 @@ public class UserJdbcDao implements UserDao {
             "`lastName`, `password`, `discount`) VALUES (?, ?, ?, ?, ?)";
     private static final String FIND_ALL_SQL = "SELECT * FROM `user`";
     private static final String READ_SQL = "SELECT * FROM `user` WHERE id=?";
+    private static final String READ_BY_USERNAME_SQL = "SELECT * FROM `user` WHERE username=?";
     private static final String UPDATE_SQL = "UPDATE `user` SET `username`=?, `firstName`=?," +
             " `lastName`=?, `password`=?, `discount`=? WHERE `id`=?";
     private static final String DELETE_SQL = "DELETE FROM `user` WHERE id=?";
@@ -41,6 +42,13 @@ public class UserJdbcDao implements UserDao {
     @Override
     public User read(Long id) {
         User user = jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, READ_SQL, id).get(0);
+        user.setRoles(readRoles(user.getId()));
+        return user;
+    }
+
+    @Override
+    public User read(String username) {
+        User user = jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, READ_BY_USERNAME_SQL, username).get(0);
         user.setRoles(readRoles(user.getId()));
         return user;
     }
