@@ -3,6 +3,7 @@ package com.gmail.at.ivanehreshi.epam.touragency.web;
 import com.gmail.at.ivanehreshi.epam.touragency.command.CreateTourCommand;
 import com.gmail.at.ivanehreshi.epam.touragency.command.EditTourCommand;
 import com.gmail.at.ivanehreshi.epam.touragency.command.RegisterCommand;
+import com.gmail.at.ivanehreshi.epam.touragency.command.UpdateDiscountCommand;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
@@ -35,6 +36,7 @@ public enum WebApplication {
         servletBuilder.addMapping("/tour", new CreateTourCommand())
                       .addMapping("/tour/edit", new EditTourCommand())
                       .addMapping("/register", new RegisterCommand())
+                      .addMapping("/user/discount", new UpdateDiscountCommand())
                       .buildAndRegister("Command Dispatcher Servlet", "/actions/*");
     }
 

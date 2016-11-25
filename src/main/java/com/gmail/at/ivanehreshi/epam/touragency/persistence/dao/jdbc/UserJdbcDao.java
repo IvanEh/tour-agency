@@ -18,7 +18,7 @@ public class UserJdbcDao implements UserDao {
     private static final String UPDATE_SQL = "UPDATE `user` SET `username`=?, `firstName`=?," +
             " `lastName`=?, `password`=?, `discount`=? WHERE `id`=?";
     private static final String DELETE_SQL = "DELETE FROM `user` WHERE id=?";
-    private static final String GET_ROLES_SQL = "SELECT role_id FROM `user_roles` WHERE `user_id`=?";
+    private static final String GET_ROLES_SQL = "SELECT role_id FROM `user_role` WHERE `user_id`=?";
     private static final String ADD_ROLE_SQL = "INSERT INTO `user_role` (`user_id`, `role_id`) VALUES (?, ?)";
     private static final String CLEAR_ROLES_SQL = "DELETE FROM `user_role` WHERE user_id=?";
 
