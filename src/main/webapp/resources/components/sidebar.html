@@ -1,0 +1,15 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<ul class="nav nav-pills nav-stacked">
+    <li><a href="/">Головна</a></li>
+</ul>
+
+<hr/>
+<c:if test="${loggedIn}">
+    <c:import url="/resources/components/sidebar-agent.html"/>
+
+    <hr/>
+
+    <c:import url="/resources/components/sidebar-user.html"/>
+</c:if>
