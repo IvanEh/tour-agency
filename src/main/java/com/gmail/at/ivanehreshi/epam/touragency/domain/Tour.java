@@ -64,4 +64,16 @@ public class Tour {
     public void setType(TourType type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Tour{" +
+                "description='" + description + '\'' +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", type=" + type +
+                ", hot=" + hot +
+                ", price=" + price +
+                '}';
+    }
 }
