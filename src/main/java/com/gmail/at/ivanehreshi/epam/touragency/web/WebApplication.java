@@ -1,6 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
 import com.gmail.at.ivanehreshi.epam.touragency.command.*;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
@@ -36,6 +37,7 @@ public enum WebApplication {
         purchaseDao = new PurchaseJdbcDao(connectionManager, userDao, tourDao);
 
         SecurityContext.INSTANCE.setUserDao(userDao);
+        SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.CUSTOMER);
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder.addMapping("/tour", new CreateTourCommand())

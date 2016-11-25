@@ -31,7 +31,16 @@ public class SecuredHttpServletRequest extends HttpServletRequestWrapper {
 
     @Override
     public boolean isUserInRole(String role) {
-        return super.isUserInRole(role);
+        User user = getCurrentUser();
+        if(user == null) {
+            return false;
+        }
+
+        if (user.getRoles().stream().map(Enum::name).anyMatch(s -> s.equals(role))) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -39,15 +48,18 @@ public class SecuredHttpServletRequest extends HttpServletRequestWrapper {
         User user = securityContext.getUserDao().read(username);
         if(user.getPassword().equals(PasswordEncoder.encodePassword(password))) {
             getHttpRequest().getSession(true).setAttribute("user", user);
-            LOGGER.error("Login succeeded");
+            getHttpRequest().getSession(false).setAttribute("loggedIn", true);
         } else {
             getHttpRequest().getSession().invalidate();
-            LOGGER.error("Login failed");
         }
     }
 
     @Override
     public void logout() throws ServletException {
         getSession().invalidate();
+    }
+
+    private User getCurrentUser() {
+        return (User) getSession(true).getAttribute("user");
     }
 }
