@@ -1,12 +1,11 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
-import com.gmail.at.ivanehreshi.epam.touragency.command.CreateTourCommand;
-import com.gmail.at.ivanehreshi.epam.touragency.command.EditTourCommand;
-import com.gmail.at.ivanehreshi.epam.touragency.command.RegisterCommand;
-import com.gmail.at.ivanehreshi.epam.touragency.command.UpdateDiscountCommand;
+import com.gmail.at.ivanehreshi.epam.touragency.command.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.PurchaseJdbcDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.TourJdbcDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.UserJdbcDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.CommandDispatcherServletBuilder;
@@ -24,6 +23,8 @@ public enum WebApplication {
 
     private UserDao userDao;
 
+    private PurchaseDao purchaseDao;
+
     WebApplication() {
         connectionManager = new ConnectionManager();
     }
@@ -31,12 +32,14 @@ public enum WebApplication {
     protected void init() {
         tourDao = new TourJdbcDao(connectionManager);
         userDao = new UserJdbcDao(connectionManager);
+        purchaseDao = new PurchaseJdbcDao(connectionManager);
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder.addMapping("/tour", new CreateTourCommand())
                       .addMapping("/tour/edit", new EditTourCommand())
                       .addMapping("/register", new RegisterCommand())
                       .addMapping("/user/discount", new UpdateDiscountCommand())
+                      .addMapping("/purchase", new PurchaseCommand())
                       .buildAndRegister("Command Dispatcher Servlet", "/actions/*");
     }
 
@@ -70,5 +73,13 @@ public enum WebApplication {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    public PurchaseDao getPurchaseDao() {
+        return purchaseDao;
+    }
+
+    public void setPurchaseDao(PurchaseDao purchaseDao) {
+        this.purchaseDao = purchaseDao;
     }
 }

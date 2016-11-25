@@ -6,6 +6,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,6 +17,8 @@ public class TourJdbcDao implements TourDao {
     private static final String READ_SQL = "SELECT * FROM tour WHERE id=?";
     private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, `description`=?, `type`=?, `hot`=?, `price`=? WHERE `id`=?";
     private static final String DELETE_SQL = "DELETE FROM tour WHERE id=?";
+    private static final String COMPUTE_PRICE_SQL = "SELECT tour.price * cast((100 - discount)/100 as DECIMAL(10,2))" +
+            "FROM  `user`, tour WHERE `user`.id =? AND tour.id=?";
 
     private ConnectionManager connectionManager;
     private JdbcTemplate jdbcTemplate;
@@ -50,6 +53,10 @@ public class TourJdbcDao implements TourDao {
     @Override
     public List<Tour> findAll() {
         return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, FIND_ALL_SQL);
+    }
+
+    public BigDecimal computePrice(Long tourId, Long userId) {
+        return jdbcTemplate.queryObjects((rs) -> rs.getBigDecimal(1), COMPUTE_PRICE_SQL, userId, tourId).get(0);
     }
 
     private static Tour fromResultSet(ResultSet rs) throws SQLException {
