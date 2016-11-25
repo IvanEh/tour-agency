@@ -15,6 +15,9 @@ public class AppContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         sce.getServletContext().setAttribute("webApplication", WebApplication.INSTANCE);
+        WebApplication.INSTANCE.setServletContext(sce.getServletContext());
+        WebApplication.INSTANCE.init();
+
         LOGGER.info("WebApplication initialized");
     }
 

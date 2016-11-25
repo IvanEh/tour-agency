@@ -1,15 +1,17 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
+import com.gmail.at.ivanehreshi.epam.touragency.command.CreateTourCommand;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.inmemory.PurchaseInMemoryDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.inmemory.TourInMemoryDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.TourJdbcDao;
+import com.gmail.at.ivanehreshi.epam.touragency.servlet.CommandDispatcherServletBuilder;
 
 import javax.servlet.ServletContext;
 
 public enum WebApplication {
     INSTANCE;
+
+    private ServletContext servletContext;
 
     private ConnectionManager connectionManager;
 
@@ -17,11 +19,14 @@ public enum WebApplication {
 
     WebApplication() {
         connectionManager = new ConnectionManager();
-        init();
     }
 
-    private void init() {
+    protected void init() {
         tourDao = new TourJdbcDao(connectionManager);
+
+        CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
+        servletBuilder.addMapping("/tour", new CreateTourCommand())
+                      .buildAndRegister("Command Dispatcher Servlet", "/actions/*");
     }
 
     public TourDao getTourDao() {
@@ -30,5 +35,21 @@ public enum WebApplication {
 
     public void setTourDao(TourDao tourDao) {
         this.tourDao = tourDao;
+    }
+
+    public ConnectionManager getConnectionManager() {
+        return connectionManager;
+    }
+
+    public void setConnectionManager(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }

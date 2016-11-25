@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TourJdbcDao implements TourDao {
+    private static final String CREATE_SQL = "INSERT INTO `tour` (`title`, `description`, `type`, `hot`, `price`) VALUES (?, ?, ?, ?, ?)";
     private static final String FIND_ALL_SQL = "SELECT * FROM tour";
 
     private ConnectionManager connectionManager;
@@ -22,8 +23,9 @@ public class TourJdbcDao implements TourDao {
     }
 
     @Override
-    public Long create(Tour tour) {
-        return null;
+    public Long create(Tour t) {
+        return jdbcTemplate.insert(CREATE_SQL, t.getTitle(), t.getDescription(), t.getType().ordinal(),
+                t.isHot(), t.getPrice());
     }
 
     @Override
