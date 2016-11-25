@@ -1,6 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
 import com.gmail.at.ivanehreshi.epam.touragency.command.CreateTourCommand;
+import com.gmail.at.ivanehreshi.epam.touragency.command.EditTourCommand;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.TourJdbcDao;
@@ -26,6 +27,7 @@ public enum WebApplication {
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder.addMapping("/tour", new CreateTourCommand())
+                      .addMapping("/tour/edit", new EditTourCommand())
                       .buildAndRegister("Command Dispatcher Servlet", "/actions/*");
     }
 

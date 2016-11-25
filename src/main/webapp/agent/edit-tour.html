@@ -1,0 +1,87 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<html>
+<head>
+    <title>Tour Agency</title>
+    <link rel="stylesheet" href="/resources/bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/resources/css/master.css"/>
+    <link rel="stylesheet" href="/resources/css/tour.css"/>
+</head>
+<body>
+
+<c:set var="tour" value="${webApplication.tourDao.read(param.id)}"/>
+
+<c:import url="/resources/components/navbar.html"/>
+
+<div class="container">
+    <div class="col-md-3">
+        <c:import url="/resources/components/sidebar-user.html"/>
+    </div>
+
+    <div class="col-md-9 content">
+        <form class="col-md-12 form-horizontal" method="post" action="/actions/tour/edit">
+            <fieldset>
+
+                <legend>Редагування туру</legend>
+
+                <input type="hidden" name="id" value="${tour.id}"/>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="">Назва туру</label>
+                    <div class="col-md-4">
+                        <input  name="title" value="${tour.title}" placeholder="Тур" class="form-control input-md" required="" type="text">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="description">Детальний опис туру</label>
+                    <div class="col-md-4">
+                        <textarea class="form-control" id="description" name="description"><c:out value="${tour.description}"/></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="price">Ціна</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input value="${tour.price}" id="price" name="price" class="form-control" placeholder="100" required="" type="text">
+                            <span class="input-group-addon">$</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="type">Тип туру</label>
+                    <div class="col-md-4">
+                        <select id="type" name="type" class="form-control">
+                            <option value="0" ${tour.type.ordinal() == 0 ? 'selected=selected' : ''}>Відпочинок</option>
+                            <option value="1" ${tour.type.ordinal() == 1 ? 'selected=selected' : ''}>Екскурсія</option>
+                            <option value="2" ${tour.type.ordinal() == 2 ? 'selected=selected' : ''}>Шопінг</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="opts">Позначити як гарячий</label>
+                    <div class="col-md-4">
+                        <div class="checkbox">
+                            <label for="opts-0">
+                                <input name="hot" id="opts-0" value="1" ${tour.hot eq true ? 'checked=2checked' : 'not'} type="checkbox">
+                                Hot!
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <input type="submit" class="btn btn-success pull-right" value="Створити"/>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
