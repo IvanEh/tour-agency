@@ -32,7 +32,7 @@ public enum WebApplication {
     protected void init() {
         tourDao = new TourJdbcDao(connectionManager);
         userDao = new UserJdbcDao(connectionManager);
-        purchaseDao = new PurchaseJdbcDao(connectionManager);
+        purchaseDao = new PurchaseJdbcDao(connectionManager, userDao, tourDao);
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder.addMapping("/tour", new CreateTourCommand())

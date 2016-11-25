@@ -18,15 +18,22 @@
         </div>
 
         <div class="col-md-6 content">
-            <div class="purchase bordered">
-                Name
-                <span class="badge pull-right">$333</span>
-            </div>
+            <c:forEach var="purchase" items="${webApplication.purchaseDao.findByUser(1)}">
+                <c:set var="purchase" value="${webApplication.purchaseDao.deepen(purchase)}"/>
 
-            <div class="purchase bordered">
-                Name
-                <span class="badge pull-right">$333</span>
-            </div>
+                <div class="purchase bordered">
+                    <p>
+                        <c:out value="${purchase.user.id}"/> (<i><c:out value="${purchase.date}"/></i>)
+                    </p>
+                    <p>
+                        Код: <b>${purchase.id}</b>
+                    </p>
+
+                    <span class="badge pull-right">
+                        <c:out value="${purchase.price}"/>
+                    </span>
+                </div>
+            </c:forEach>
         </div>
     </div>
 

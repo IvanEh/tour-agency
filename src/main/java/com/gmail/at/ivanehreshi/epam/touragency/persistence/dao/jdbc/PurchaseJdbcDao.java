@@ -6,6 +6,8 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +17,7 @@ public class PurchaseJdbcDao implements PurchaseDao {
     private static final String CREATE_SQL = "INSERT INTO `purchase` (`user_id`, `tour_id`, `date`, `price`) " +
             "VALUES (?, ?, ?, ?)";
     private static final String FIND_ALL_SQL = "SELECT * FROM `purchase`";
+    private static final String FIND_BY_USER_SQL = "SELECT * FROM `purchase` WHERE user_id=?";
     private static final String READ_SQL = "SELECT * FROM `purchase` WHERE id=?";
     private static final String UPDATE_SQL = "UPDATE `purchase` SET `user_id`=?, `tour_id`=?," +
             " `date`=?, `price`=? WHERE `id`=?";
@@ -22,10 +25,14 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
     private ConnectionManager connectionManager;
     private JdbcTemplate jdbcTemplate;
+    private UserDao userDao;
+    private TourDao tourDao;
 
-    public PurchaseJdbcDao(ConnectionManager connectionManager) {
+    public PurchaseJdbcDao(ConnectionManager connectionManager, UserDao userDao, TourDao tourDao) {
         this.connectionManager = connectionManager;
         this.jdbcTemplate = new JdbcTemplate(connectionManager);
+        this.userDao = userDao;
+        this.tourDao = tourDao;
     }
 
     @Override
@@ -39,6 +46,17 @@ public class PurchaseJdbcDao implements PurchaseDao {
     public Purchase read(Long id) {
         Purchase purchase = jdbcTemplate.queryObjects(PurchaseJdbcDao::fromResultSet, READ_SQL, id).get(0);
         return purchase;
+    }
+
+    @Override
+    public Purchase deepen(Purchase purchase) {
+        purchase.setUser(userDao.read(purchase.getUser().getId()));
+        purchase.setTour(tourDao.read(purchase.getTour().getId()));
+        return purchase;
+    }
+
+    public List<Purchase> findByUser(Long userId) {
+        return jdbcTemplate.queryObjects(PurchaseJdbcDao::fromResultSet, FIND_BY_USER_SQL, userId);
     }
 
     @Override
