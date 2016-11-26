@@ -7,6 +7,7 @@
 }
 
 .sidebar {
+    padding-top: 15px;
     background: #f9f9f9;
 }
 
@@ -67,12 +68,14 @@
     background: #17c4bf;
 }
 
-.nav > li, .nav > li > a.btn {
-	background-color: #04b3ae;
+.nav > li, .nav >  a, .btn {
+	background-color: #04b3ae !important;
+	color: white !important;
 }
 
-.nav > li > a:hover, .nav > li > a.btn:hover {
-    background-color: #21cec9;
+.nav > li > a:hover, .nav > li > a:hover, .navbar > li > a:hover, .btn:hover {
+    background-color: #21cec9 !important;
+    color: white !important;
 }
 
 .nav {
