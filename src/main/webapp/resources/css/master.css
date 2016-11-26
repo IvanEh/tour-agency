@@ -2,6 +2,10 @@
     border-radius: 0 !important;
 }
 
+.navbar {
+    background: #e9ebee;
+}
+
 .content {
     border-left: solid 1px #eee;
 }
@@ -19,5 +23,28 @@
 
 .entry-box {
     min-height: 25px;
-    margin: 15px 5px;
+    margin: 12px 5px;
+}
+
+#footer-image {
+    position: fixed;
+    bottom: -10px;
+    width: 76%;
+    margin-left: 12%;
+}
+
+.nav > li, .nav > li > a.btn {
+	background-color: #04b3ae;
+}
+
+.nav > li > a:hover, .nav > li > a.btn:hover {
+    background-color: #21cec9;
+}
+
+.nav {
+	background-color: #e2e8e9;
+}
+
+.nav > li > a, .nav > li > a.btn, .navbar .navbar-nav > li > a {
+    color: white;
 }
