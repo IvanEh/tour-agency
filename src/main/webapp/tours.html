@@ -12,12 +12,12 @@
 
 <c:import url="resources/components/navbar.html"/>
 
-<div class="container">
-    <div class="col-md-3">
+<div class="container ovf-hidden">
+    <div class="col-md-3 stretch sidebar">
         <c:import url="/resources/components/sidebar.html"/>
     </div>
 
-    <div class="col-md-9 content">
+    <div class="col-md-9 content stretch">
         <ul class="nav nav-pills">
             <li><a href="" class="btn btn-default">Ціна <span class="glyphicon glyphicon-sort-by-order"></span></a></li>
             <li><a href="">Відпочинок</a></li>
@@ -28,11 +28,13 @@
 
 
         <c:forEach var="tour" items="${webApplication.tourDao.findAll()}">
-
-            <div class="col-md-4">
-                <div class="tour">
+            <div class="col-md-12">
+                <div class="tour clearfix">
                     <c:if test="${tour.isHot()}">
-                        <div class="hot"></div>
+                        <div class="hot">
+                            <img src="/resources/images/hot.png"
+                                 title="Гаряча пропозиція!">
+                        </div>
                     </c:if>
 
                     <div class="heading">
@@ -45,7 +47,7 @@
                         <div class="pull-left badge" style="line-height: 20px">
                             <c:out value="${tour.price}"/>
                         </div>
-                        <a href="/buy.html?tourId=${tour.id}" class="pull-right btn btn-sm btn-default">Придбати</a>
+                        <a href="/buy.html?tourId=${tour.id}" class="pull-right btn-tour-info fix-footer-overlay">Детальніше</a>
                     </div>
                 </div>
             </div>

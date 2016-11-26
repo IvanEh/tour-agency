@@ -6,8 +6,24 @@
     background: #e9ebee;
 }
 
+.sidebar {
+    background: #f9f9f9;
+}
+
+.container {
+    padding-bottom: 40px;
+}
+
+.fix-footer-overlay {
+    z-index: 2;
+}
+
 .content {
     border-left: solid 1px #eee;
+    border-right: solid 1px #eee;
+    background: #fefefe;
+
+    margin-bottom: 10px;
 }
 
 .bordered {
@@ -26,11 +42,29 @@
     margin: 12px 5px;
 }
 
+.stretch {
+    padding-bottom: 9999px;
+    margin-bottom: -9999px;
+}
+
+.ovf-hidden {
+    overflow: hidden;
+}
+
+
 #footer-image {
     position: fixed;
     bottom: -10px;
     width: 76%;
     margin-left: 12%;
+
+    opacity: 0.45;
+
+    z-index: 1;
+}
+
+.badge {
+    background: #17c4bf;
 }
 
 .nav > li, .nav > li > a.btn {
@@ -48,3 +82,4 @@
 .nav > li > a, .nav > li > a.btn, .navbar .navbar-nav > li > a {
     color: white;
 }
+
