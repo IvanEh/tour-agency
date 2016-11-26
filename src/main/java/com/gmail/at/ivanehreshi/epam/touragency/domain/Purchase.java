@@ -56,4 +56,15 @@ public class Purchase {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "date=" + date +
+                ", id=" + id +
+                ", user=" + user +
+                ", tour=" + tour +
+                ", price=" + price +
+                '}';
+    }
 }
