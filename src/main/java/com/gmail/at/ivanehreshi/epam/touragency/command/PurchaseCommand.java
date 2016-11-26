@@ -17,7 +17,7 @@ public class PurchaseCommand implements Command {
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse resp, List<String> groups) {
         Long tourId = Long.valueOf(req.getParameter("tourId"));
-        Long userId = Long.valueOf(req.getParameter("userId"));
+        Long userId = Long.valueOf(req.getUserPrincipal().getName());
 
         Purchase purchase = new Purchase();
         Tour tour = WebApplication.INSTANCE.getTourDao().read(tourId);
@@ -31,10 +31,12 @@ public class PurchaseCommand implements Command {
         purchase.setDate(new Date());
         purchase.setPrice(price);
 
+        System.out.println(purchase);
         WebApplication.INSTANCE.getPurchaseDao().create(purchase);
+        System.out.println(purchase);
 
         try {
-            resp.sendRedirect("/index.html");
+            resp.sendRedirect("/purchases.html");
         } catch (IOException e) {}
     }
 }

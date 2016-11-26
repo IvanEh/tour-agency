@@ -23,7 +23,7 @@ public class RegisterCommand implements Command {
 
         WebApplication.INSTANCE.getUserDao().create(user);
         try {
-            resp.sendRedirect("/index.html");
+            resp.sendRedirect("/login.html");
         } catch (IOException e) {
 
         }

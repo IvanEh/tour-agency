@@ -28,7 +28,7 @@ public class EditTourCommand implements Command {
         WebApplication.INSTANCE.getTourDao().update(tour);
 
         try {
-            resp.sendRedirect("/index.html");
+            resp.sendRedirect("/agent/tours.html");
         } catch (IOException e) {
             LOGGER.error("Error redirecting response", e);
         }

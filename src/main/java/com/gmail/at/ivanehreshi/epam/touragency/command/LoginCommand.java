@@ -19,7 +19,7 @@ public class LoginCommand implements Command {
 
         try {
             req.login(username, password);
-            resp.sendRedirect("/");
+            resp.sendRedirect("/tours.html");
         } catch (ServletException e) {
             LOGGER.error("Login failed", e);
         } catch (IOException e) {

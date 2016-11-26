@@ -19,7 +19,7 @@ public class UpdateDiscountCommand implements Command {
         WebApplication.INSTANCE.getUserDao().update(user);
 
         try {
-            resp.sendRedirect("/index.html");
+            resp.sendRedirect("/agent/users.html");
         } catch (IOException e) {
             e.printStackTrace();
         }

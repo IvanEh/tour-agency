@@ -11,7 +11,7 @@ public class LogoutCommand implements Command {
     public void execute(HttpServletRequest req, HttpServletResponse resp, List<String> groups) {
         try {
             req.logout();
-            resp.sendRedirect("/");
+            resp.sendRedirect("/login.html");
         } catch (ServletException e) {
             e.printStackTrace();
         } catch (IOException e) {

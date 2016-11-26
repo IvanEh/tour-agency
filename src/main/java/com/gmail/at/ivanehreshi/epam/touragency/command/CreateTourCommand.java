@@ -25,7 +25,7 @@ public class CreateTourCommand implements Command {
         WebApplication.INSTANCE.getTourDao().create(tour);
 
         try {
-            resp.sendRedirect("/index.html");
+            resp.sendRedirect("/agent/tours.html");
         } catch (IOException e) {
             LOGGER.error("Error redirecting response", e);
         }
