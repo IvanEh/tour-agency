@@ -37,7 +37,9 @@ public enum WebApplication {
         purchaseDao = new PurchaseJdbcDao(connectionManager, userDao, tourDao);
 
         SecurityContext.INSTANCE.setUserDao(userDao);
-        SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.CUSTOMER);
+        SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)
+                                .addSecurityConstraint("/buy.html")
+                                .addSecurityConstraint("/purchases.html");
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder.addMapping("/tour", new CreateTourCommand())

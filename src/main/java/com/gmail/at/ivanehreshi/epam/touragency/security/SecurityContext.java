@@ -22,8 +22,9 @@ public enum  SecurityContext {
 
     private List<SecurityConstraint> securityConstraints = new ArrayList<>();
 
-    public void addSecurityConstraint(String s, Role... roles) {
+    public SecurityContext addSecurityConstraint(String s, Role... roles) {
         securityConstraints.add(new SecurityConstraint(s, roles));
+        return this;
     }
 
     public boolean allowed(String path, List<Role> roles) {
@@ -34,7 +35,9 @@ public enum  SecurityContext {
         boolean matched = false;
 
         for(SecurityConstraint sc: securityConstraints) {
+
             if(sc.matches(path)) {
+                System.out.println(path + " matched");
                 return sc.allowed(roles);
             }
         }
@@ -76,7 +79,7 @@ public enum  SecurityContext {
 
         public boolean allowed(List<Role> roles) {
             if(rolesAllowed.isEmpty()) {
-                return true;
+                return !roles.isEmpty();
             }
 
             for(Role role: roles) {

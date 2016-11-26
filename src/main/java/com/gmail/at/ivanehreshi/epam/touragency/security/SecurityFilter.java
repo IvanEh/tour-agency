@@ -40,6 +40,7 @@ public class SecurityFilter implements Filter {
 
         if(!SecurityContext.INSTANCE.allowed(extraPath, roles)) {
             httpResponse.sendRedirect(SecurityContext.INSTANCE.getLoginPage());
+            return;
         }
 
         chain.doFilter(httpRequest, response);
