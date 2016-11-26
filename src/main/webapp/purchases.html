@@ -18,12 +18,12 @@
         </div>
 
         <div class="col-md-6 content">
-            <c:forEach var="purchase" items="${webApplication.purchaseDao.findByUser(1)}">
+            <c:forEach var="purchase" items="${webApplication.purchaseDao.findByUser(user.id)}">
                 <c:set var="purchase" value="${webApplication.purchaseDao.deepen(purchase)}"/>
 
                 <div class="purchase bordered">
                     <p>
-                        <c:out value="${purchase.user.id}"/> (<i><c:out value="${purchase.date}"/></i>)
+                        <c:out value="${purchase.tour.title}"/> (<i><c:out value="${purchase.date}"/></i>)
                     </p>
                     <p>
                         Код: <b>${purchase.id}</b>

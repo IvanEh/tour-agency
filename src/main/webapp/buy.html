@@ -11,11 +11,9 @@
 </head>
 <body>
 
-<c:set var="tourId" value="${param.id + 0}"/>
-<c:set var="userId" value="${param.u + 0}"/>
+<c:set var="tourId" value="${param.tourId + 0}"/>
 
 <c:set var="tour" value="${webApplication.tourDao.read(tourId)}"/>
-<c:set var="user" value="${webApplication.userDao.read(userId)}"/>
 
 <c:import url="resources/components/navbar.html"/>
 
@@ -52,11 +50,11 @@
         <br/>
 
         <div class="row">
-            <div class="col-md-3 form-control-sized">Ціна(-${u.discount}):</div>
+            <div class="col-md-3 form-control-sized">Ціна(-${user.discount}%):</div>
 
             <div class="col-offset-md-1 col-md-9 has-success">
                 <div class="form-control">
-                    <c:out value="${webApplication.tourDao.computePrice(tourId, userId)}"/>
+                    <c:out value="${webApplication.tourDao.computePrice(tourId, user.id)}"/>
                 </div>
             </div>
         </div>
