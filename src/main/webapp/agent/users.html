@@ -16,10 +16,13 @@
         <div class="col-md-3 sidebar stretch">
             <c:import url="/resources/components/sidebar.html"/>
         </div>
-
+                
             <div class="col-md-9 stretch content">
+                <h1>Всі користувачі</h1>
+                <hr/>
+                
                 <div class="btn btn-success pull-right" id="save">Зберегти</div>
-
+                
                 <c:forEach var="user" items="${webApplication.userDao.findAll()}">
                 <div class="col-md-12">
                     <div class="entry-box bordered">

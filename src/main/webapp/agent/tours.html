@@ -17,6 +17,9 @@
         </div>
 
         <div class="col-md-9 stretch content">
+            <h1>Адміністрування турів</h1>
+            <hr/>
+            
             <c:forEach var="tour" items="${webApplication.tourDao.findAll()}">
                 <div class="entry-box bordered clearfix">
                     <c:out value="${tour.title}"/>

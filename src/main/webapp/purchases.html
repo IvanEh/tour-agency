@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="resources/bower_components/bootstrap/dist/css/bootstrap.css"/>
     <link rel="stylesheet" href="resources/css/master.css"/>
     <link rel="stylesheet" href="resources/css/purchase.css"/>
+    <link rel="stylesheet" href="resources/css/tour.css"/>
 </head>
 <body>
 
@@ -18,22 +19,37 @@
         </div>
 
         <div class="col-md-9 stretch content">
+            <h1>Мої замовлення</h1>
+            <hr/>
+            
             <c:forEach var="purchase" items="${webApplication.purchaseDao.findByUser(user.id)}">
-                <c:set var="purchase" value="${webApplication.purchaseDao.deepen(purchase)}"/>
-
-                <div class="purchase bordered">
-                    <p>
-                        <c:out value="${purchase.tour.title}"/> (<i><c:out value="${purchase.date}"/></i>)
-                    </p>
-                    <p>
-                        Код: <b>${purchase.id}</b>
-                    </p>
-
-                    <span class="badge pull-right">
-                        <c:out value="${purchase.price}"/>
-                    </span>
-                </div>
-            </c:forEach>
+                <c:set var="purchase" value="${webApplication.purchaseDao.deepen(purchase)}"/>   
+                <c:set var="tour" value="${purchase.tour}" />
+                     
+	            <div class="col-md-12">
+	                <div class="tour clearfix">
+	                    <div class="heading">
+	                        <c:out value="${tour.title}"/>
+	                    </div>
+	                    
+	                    <div class="body">
+	                        <c:out value="${tour.description}"/>
+	                    </div>
+	                    
+	                    <div class="footer">
+	                        <div class="pull-left badge badge-success" style="line-height: 20px">
+	                            <c:out value="${purchase.price}"/>
+	                        </div>
+	                       	                     
+	                        <div class="pull-right btn-tour-info fix-footer-overlay">
+	                           <i><c:out value="${purchase.date}"/></i>
+	                        </a>
+	                    </div>
+	                    
+	                </div>
+	            </div>  
+		    </c:forEach>   
+		           
         </div>
     </div>
 
