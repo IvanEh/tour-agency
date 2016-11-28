@@ -24,7 +24,10 @@
                 <div class="col-md-12">
                     <div class="entry-box bordered">
                         <c:out value="${user.firstName} ${user.lastName}"/>
-                        <span class="badge">10 | $1300</span>
+                        <span class="badge">
+                           ${webApplication.userDao.countPurchases(user.id)} |
+                           $ ${webApplication.userDao.computePurchasesTotalPrice(user.id).doubleValue()}
+                        </span>
 
                         <form method="post" action="/actions/user/discount" class="pull-right" data-dirty="false">
                             <input type="hidden" name="id" value="${user.id}"/>
@@ -37,7 +40,10 @@
             </div>
 
     </div>
+    
     <script src="/resources/js/users.js"></script>
+    
+    <div id="message" class="well well-sm" style="display: none">msg</div>
 
 </body>
 </html>

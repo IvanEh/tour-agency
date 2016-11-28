@@ -13,8 +13,21 @@ $(function() {
         $('form').each(function(ind, form) {
             $form = $(form);
             if($form.data('dirty')) {
-                $.post($form.attr('action'), $form.serialize());
+            	$form.data('dirty', false);
+                $.post($form.attr('action'), $form.serialize())
+                	.done(function() {
+                        var $message = $('#message');
+                        $message.html('Успішно збережено');
+                        $message.hide();
+                        $message.fadeIn();
+                        setTimeout(function() {
+                        	$message.fadeOut();
+                        }, 3000);
+					});
+					
             }
+            
+
         });
     });
 });

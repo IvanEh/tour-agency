@@ -6,6 +6,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,6 +23,10 @@ public class UserJdbcDao implements UserDao {
     private static final String GET_ROLES_SQL = "SELECT role_id FROM `user_role` WHERE `user_id`=?";
     private static final String ADD_ROLE_SQL = "INSERT INTO `user_role` (`user_id`, `role_id`) VALUES (?, ?)";
     private static final String CLEAR_ROLES_SQL = "DELETE FROM `user_role` WHERE user_id=?";
+    private static final String COUNT_ORDERS_SQL = "SELECT COUNT(*) FROM `purchase` JOIN `user` ON `user`.id = `purchase`.user_id " 
+    		+ "WHERE `user`.id=?";
+    private static final String TOTAL_ORDERS_PRICE_SQL = "SELECT SUM(`price`) FROM `purchase` JOIN `user` ON `user`.id = `purchase`.user_id "
+    		+ "WHERE `user`.id=?";
 
     private ConnectionManager connectionManager;
     private JdbcTemplate jdbcTemplate;
@@ -107,4 +112,20 @@ public class UserJdbcDao implements UserDao {
         user.setDiscount(rs.getInt("discount"));
         return user;
     }
+
+	@Override
+	public int countPurchases(Long userId) {
+		return jdbcTemplate.queryObjects((rs) -> rs.getInt(1), COUNT_ORDERS_SQL, userId).get(0);
+	}
+
+	@Override
+	public BigDecimal computePurchasesTotalPrice(Long userId) {
+		BigDecimal ans = jdbcTemplate.queryObjects((rs) -> rs.getBigDecimal(1), TOTAL_ORDERS_PRICE_SQL, userId).get(0);
+		
+		if(ans == null) {
+			return new BigDecimal(0);
+		}
+		
+		return ans;
+	}
 }

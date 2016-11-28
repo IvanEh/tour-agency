@@ -3,6 +3,7 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface UserDao extends Dao<User, Long> {
@@ -17,4 +18,8 @@ public interface UserDao extends Dao<User, Long> {
     List<Role> readRoles(Long userId);
 
     User read(String username);
+
+    int countPurchases(Long userId);
+    
+    BigDecimal computePurchasesTotalPrice(Long userId);
 }

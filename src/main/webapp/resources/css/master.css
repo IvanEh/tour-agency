@@ -86,3 +86,12 @@
     color: white;
 }
 
+#message {
+	position: fixed;
+    width: 33%;
+    bottom: 10px;
+    left: 33%;
+    z-index: 2;
+    text-align: center;
+}
+
