@@ -55,6 +55,7 @@ public class PurchaseJdbcDao implements PurchaseDao {
         return purchase;
     }
 
+    @Override
     public List<Purchase> findByUser(Long userId) {
         return jdbcTemplate.queryObjects(PurchaseJdbcDao::fromResultSet, FIND_BY_USER_SQL, userId);
     }
