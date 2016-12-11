@@ -1,5 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.command;
 
+import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
+
 public class JspController extends Controller {
     private String prefix = ".jsp";
     private String location = "/pages/";
@@ -13,9 +15,9 @@ public class JspController extends Controller {
     }
     
     @Override
-    public void get(RequestService service) {
-        String page = service.getPathParameters().get(0) + prefix;
-        service.renderPage(location + page);
+    public void get(RequestService reqService) {
+        String page = reqService.getPathParameters().get(0) + prefix;
+        reqService.renderPage(location + page);
     }
 
     @Override

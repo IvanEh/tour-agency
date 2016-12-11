@@ -43,15 +43,15 @@ public enum WebApplication {
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder
-                      .mapPost("/tour", new CreateTourCommand())
-                      .mapPost("/tour/edit", new EditTourCommand())
-                      .mapPost("/register", new RegisterCommand())
-                      .mapPost("/user/discount", new UpdateDiscountCommand())
-                      .mapPost("/purchase", new PurchaseCommand())
-                      .mapPost("/login", new LoginCommand())
-                      .mapPost("/logout", new LogoutCommand())
-                      .mapGet("/purchases\\.html", new PurchaseController())
-                      .mapGet("/(.*)\\.html", new JspController("/pages/", ".jsp"))
+                      .addMapping("/tour", new CreateTourController())
+                      .addMapping("/tour/edit", new EditTourController())
+                      .addMapping("/register", new RegisterController())
+                      .addMapping("/user/discount", new UpdateDiscountController())
+                      .addMapping("/purchase", new PurchaseController() )
+                      .addMapping("/login", new LoginController())
+                      .addMapping("/logout", new LogoutController())
+                      .addMapping("/purchases\\.html", new PurchaseController())
+                      .addMapping("/(.*)\\.html", new JspController("/pages/", ".jsp"))
                       .buildAndRegister("Command Dispatcher Servlet", "/actions/*");
     }
 

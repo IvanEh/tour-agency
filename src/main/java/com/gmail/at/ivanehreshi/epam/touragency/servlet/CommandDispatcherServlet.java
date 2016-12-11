@@ -1,7 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.servlet;
 
-import com.gmail.at.ivanehreshi.epam.touragency.command.Command;
-import com.gmail.at.ivanehreshi.epam.touragency.web.HttpMethod;
+import com.gmail.at.ivanehreshi.epam.touragency.command.Controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,40 +8,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandDispatcherServlet extends HttpServlet {
-    private EnumMap<HttpMethod, List<MatcherEntry>> httpMatchers;
+    private List<MatcherEntry> httpMatchers;
+    private List<MatcherEntry> httpServiceMatchers;
 
 
     public CommandDispatcherServlet() {
-        httpMatchers = new EnumMap<>(HttpMethod.class);
-        initHttpMap();
+        httpMatchers = new ArrayList<>();
+        httpServiceMatchers = new ArrayList<>();
     }
 
 
-    public void addMapping(HttpMethod method, String regex, List<Command> commands) {
-        MatcherEntry matcherEntry = new MatcherEntry(regex, commands);
-        httpMatchers.get(method).add(matcherEntry);
+    public void addMapping(String regex, Controller controller) {
+        MatcherEntry matcherEntry = new MatcherEntry(regex, controller);
+        addMapping(matcherEntry);
     }
 
-    public void addPostMapping(String regex, List<Command> commands) {
-        addMapping(HttpMethod.POST, regex, commands);
-    }
-
-    public void addGetMapping(String regex, List<Command> commands) {
-        addMapping(HttpMethod.GET, regex, commands);
-    }
-
-    public void addDeleteMapping(String regex, List<Command> commands) {
-        addMapping(HttpMethod.DELETE, regex, commands);
-    }
-
-    void addMappings(HttpMethod method, List<MatcherEntry> entries) {
-        httpMatchers.get(method).addAll(entries);
+    public void addMapping(MatcherEntry entry) {
+        if(entry.controller.isService()) {
+            httpMatchers.add(entry);
+        } else {
+            httpServiceMatchers.add(entry);
+        }
     }
 
     @Override
@@ -65,56 +56,73 @@ public class CommandDispatcherServlet extends HttpServlet {
         if(pathInfo == null)
             pathInfo = "/";
 
-        boolean nonServiceFired = false;
-        
-        for(MatcherEntry matcherEntry: httpMatchers.get(HttpMethod.valueOf(req.getMethod()))) {
-            matcherEntry.matcher.reset(pathInfo);
-        
-            if(nonServiceFired && matcherEntry.commands.get(0).isService()) {
-                continue;
+        RequestService requestService = new RequestService(req, resp, null);
+
+        dispatchLoop(req, resp, pathInfo, requestService, httpMatchers, true);
+        dispatchLoop(req, resp, pathInfo, requestService, httpServiceMatchers, false);
+
+        if (requestService.getRedirectPath() != null) {
+            try {
+                resp.sendRedirect(requestService.getRedirectPath());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            
+        }
+
+        if (requestService.getRenderPage() != null) {
+            try {
+                req.getRequestDispatcher(requestService.getRenderPage()).forward(req, resp);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    private void dispatchLoop(HttpServletRequest req, HttpServletResponse resp, String pathInfo,
+                              RequestService requestService,
+                              List<MatcherEntry> httpMatchers, boolean matchFirst) {
+
+        for(MatcherEntry matcherEntry: httpMatchers) {
+            matcherEntry.matcher.reset(pathInfo);
+
             if(matcherEntry.matcher.matches()) {
                 resp.setStatus(HttpServletResponse.SC_OK);
 
                 List<String> groups = new ArrayList<>(matcherEntry.matcher.groupCount());
 
+                requestService.setGroups(groups);
+
                 for (int i = 0; i < matcherEntry.matcher.groupCount(); i++) {
                     groups.add(matcherEntry.matcher.group(i + 1));
                 }
-                
-                if(!matcherEntry.commands.get(0).isService()) {
-                    nonServiceFired = true;
+
+                matcherEntry.call(requestService);
+
+                if(matchFirst) {
+                    break;
                 }
-                
-                matcherEntry.call(req, resp, groups);
             }
         }
     }
 
-    private void initHttpMap() {
-        for (HttpMethod m : HttpMethod.values()) {
-            httpMatchers.put(m, new ArrayList<>());
-        }
-    }
 
     static class MatcherEntry {
-        private Matcher matcher;
+        private final Matcher matcher;
 
-        private List<Command> commands = new ArrayList<>();
+        private final Controller controller;
 
-        public MatcherEntry(String regex, List<Command> commands) {
+        public MatcherEntry(String regex, Controller controller) {
             Pattern p = Pattern.compile("^" + regex + "$");
             matcher = p.matcher("");
-            this.commands.addAll(commands);
+            this.controller = controller;
         }
 
-        public void addCommand(Command command) {
-            commands.add(command);
-        }
-
-        public void call(HttpServletRequest req, HttpServletResponse resp, List<String> groups) {
-            commands.forEach((command) -> command.execute(req, resp, groups));
+        public void call(RequestService requestService) {
+            controller.execute(requestService);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.command;
+package com.gmail.at.ivanehreshi.epam.touragency.servlet;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import org.apache.logging.log4j.LogManager;
@@ -6,8 +6,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class RequestService {
     private static Logger LOGGER = LogManager.getLogger(RequestService.class);
@@ -16,6 +16,7 @@ public class RequestService {
     private HttpServletResponse response;
     private List<String> groups;
     private String pagePath = null;
+    private String redirectPath = null;
 
     public RequestService(HttpServletRequest request, HttpServletResponse response, List<String> groups) {
         this.request = request;
@@ -32,11 +33,7 @@ public class RequestService {
     }
 
     public void redirect(String where) {
-        try {
-            response.sendRedirect(where);
-        } catch (IOException e) {
-            LOGGER.error("Cannot redirect in controller", e);
-        }
+        redirectPath = where;
     }
 
     public void renderPage(String path) {
@@ -63,16 +60,31 @@ public class RequestService {
         return i >= groups.size() ? groups.get(i) : "";
     }
 
-    String getRenderPage() {
-        return pagePath;
-    }
-
     public Long getLong(String parameter) {
         return Long.valueOf(request.getParameter(parameter));
     }
 
+    public Integer getInt(String parameter) {
+        return Integer.valueOf(request.getParameter(parameter));
+    }
+
     public String getString(String parameter) {
         return request.getParameter(parameter);
+    }
+
+    public boolean getBool(String parameter) {
+        return Objects.equals(request.getParameter(parameter), "1");
+    }
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
+    }
+
+    public String getRenderPage() {
+        return pagePath;
+    }
+
+    public String getRedirectPath() {
+        return redirectPath;
     }
 
     public User getUser() {

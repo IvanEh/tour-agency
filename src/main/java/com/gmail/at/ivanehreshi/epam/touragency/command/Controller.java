@@ -1,50 +1,36 @@
 package com.gmail.at.ivanehreshi.epam.touragency.command;
 
+import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-
-abstract public class Controller implements Command {
+abstract public class Controller {
     private static Logger LOGGER = LogManager.getLogger(Controller.class);
 
+    public void execute(RequestService reqService) {
 
-    @Override
-    public void execute(HttpServletRequest req, HttpServletResponse resp, List<String> groups) {
-        RequestService requestService = new RequestService(req, resp, groups);
-
-        switch (req.getMethod()) {
+        switch (reqService.getRequest().getMethod()) {
             case "GET":
-                get(requestService);
+                get(reqService);
                 break;
             case "POST":
-                post(requestService);
+                post(reqService);
                 break;
             case "DELETE":
-                delete(requestService);
+                delete(reqService);
                 break;
             default:
         }
 
-        any(requestService);
-
-        if(requestService.getRenderPage() != null) {
-            try {
-                req.getRequestDispatcher(requestService.getRenderPage()).forward(req, resp);
-            } catch (ServletException | IOException e) {
-                LOGGER.error("Cannot render page", e);
-            }
-        }
-
+        any(reqService);
     }
 
-    public void get(RequestService service) {}
-    public void post(RequestService service) {}
-    public void delete(RequestService service) {}
-    public void any(RequestService service) {}
+    public void get(RequestService reqService) {}
+    public void post(RequestService reqService) {}
+    public void delete(RequestService reqService) {}
+    public void any(RequestService reqService) {}
 
+    public boolean isService() {
+        return false;
+    }
 }
