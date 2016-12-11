@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface Command {
     void execute(HttpServletRequest req, HttpServletResponse resp, List<String> groups);
+    
+    default boolean isService() {
+        return false;
+    }
 }

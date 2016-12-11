@@ -42,13 +42,16 @@ public enum WebApplication {
                                 .addSecurityConstraint("/purchases.html");
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
-        servletBuilder.addMapping("/tour", new CreateTourCommand())
-                      .addMapping("/tour/edit", new EditTourCommand())
-                      .addMapping("/register", new RegisterCommand())
-                      .addMapping("/user/discount", new UpdateDiscountCommand())
-                      .addMapping("/purchase", new PurchaseCommand())
-                      .addMapping("/login", new LoginCommand())
-                      .addMapping("/logout", new LogoutCommand())
+        servletBuilder
+                      .mapPost("/tour", new CreateTourCommand())
+                      .mapPost("/tour/edit", new EditTourCommand())
+                      .mapPost("/register", new RegisterCommand())
+                      .mapPost("/user/discount", new UpdateDiscountCommand())
+                      .mapPost("/purchase", new PurchaseCommand())
+                      .mapPost("/login", new LoginCommand())
+                      .mapPost("/logout", new LogoutCommand())
+                      .mapGet("/purchases\\.html", new PurchaseController())
+                      .mapGet("/(.*)\\.html", new JspController("/pages/", ".jsp"))
                       .buildAndRegister("Command Dispatcher Servlet", "/actions/*");
     }
 

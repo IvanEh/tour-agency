@@ -4,14 +4,14 @@
 <html>
 <head>
     <title>Tour Agency</title>
-    <link rel="stylesheet" href="resources/bower_components/bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="resources/css/master.css"/>
-    <link rel="stylesheet" href="resources/css/purchase.css"/>
-    <link rel="stylesheet" href="resources/css/tour.css"/>
+    <link rel="stylesheet" href="/resources/bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/resources/css/master.css"/>
+    <link rel="stylesheet" href="/resources/css/purchase.css"/>
+    <link rel="stylesheet" href="/resources/css/tour.css"/>
 </head>
 <body>
 
-<c:import url="resources/components/navbar.html"/>
+<c:import url="/resources/components/navbar.html"/>
 
     <div class="container ovf-hidden">
         <div class="col-md-3 stretch sidebar">
@@ -22,7 +22,7 @@
             <h1>Мої замовлення</h1>
             <hr/>
             
-            <c:forEach var="purchase" items="${webApplication.purchaseDao.findByUser(user.id)}">
+            <c:forEach var="purchase" items="${purchases}">
                 <c:set var="purchase" value="${webApplication.purchaseDao.deepen(purchase)}"/>   
                 <c:set var="tour" value="${purchase.tour}" />
                      
@@ -43,7 +43,7 @@
 	                       	                     
 	                        <div class="pull-right btn-tour-info fix-footer-overlay">
 	                           <i><c:out value="${purchase.date}"/></i>
-	                        </a>
+	                        </div>
 	                    </div>
 	                    
 	                </div>
