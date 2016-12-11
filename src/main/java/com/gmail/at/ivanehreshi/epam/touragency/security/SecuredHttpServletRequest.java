@@ -59,7 +59,7 @@ public class SecuredHttpServletRequest extends HttpServletRequestWrapper {
         getSession().invalidate();
     }
 
-    private User getCurrentUser() {
+    public User getCurrentUser() {
         return (User) getSession(true).getAttribute("user");
     }
 }
