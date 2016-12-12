@@ -20,7 +20,7 @@
             <h1>Адміністрування турів</h1>
             <hr/>
             
-            <c:forEach var="tour" items="${webApplication.tourDao.findAll()}">
+            <c:forEach var="tour" items="${tourDao.findAll()}">
                 <div class="entry-box bordered clearfix">
                     <c:out value="${tour.title}"/>
 

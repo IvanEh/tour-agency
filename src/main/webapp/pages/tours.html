@@ -27,7 +27,7 @@
 
 
 
-        <c:forEach var="tour" items="${webApplication.tourDao.findAll()}">
+        <c:forEach var="tour" items="${tourDao.findAll()}">
             <div class="col-md-12">
                 <div class="tour clearfix">
                     <c:if test="${tour.isHot()}">

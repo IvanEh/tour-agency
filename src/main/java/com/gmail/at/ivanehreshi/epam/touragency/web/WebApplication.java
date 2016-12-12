@@ -21,20 +21,22 @@ public enum WebApplication {
 
     private ConnectionManager connectionManager;
 
-    private TourDao tourDao;
-
-    private UserDao userDao;
-
-    private PurchaseDao purchaseDao;
+    private ObjectFactory objectFactory;
 
     WebApplication() {
         connectionManager = new ConnectionManager();
     }
 
     protected void init() {
-        tourDao = new TourJdbcDao(connectionManager);
-        userDao = new UserJdbcDao(connectionManager);
-        purchaseDao = new PurchaseJdbcDao(connectionManager, userDao, tourDao);
+        ObjectFactory.INSTANCE.setServletContext(servletContext);
+        objectFactory = ObjectFactory.INSTANCE;
+
+        TourDao tourDao = new TourJdbcDao(connectionManager);
+        UserDao userDao = new UserJdbcDao(connectionManager);
+
+        objectFactory.publish(TourDao.class, tourDao);
+        objectFactory.publish(UserDao.class, userDao);
+        objectFactory.publish(PurchaseDao.class, new PurchaseJdbcDao(connectionManager, userDao, tourDao));
 
         SecurityContext.INSTANCE.setUserDao(userDao);
         SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)
@@ -56,14 +58,6 @@ public enum WebApplication {
                       .buildAndRegister("Command Dispatcher Servlet", "/app/*");
     }
 
-    public TourDao getTourDao() {
-        return tourDao;
-    }
-
-    public void setTourDao(TourDao tourDao) {
-        this.tourDao = tourDao;
-    }
-
     public ConnectionManager getConnectionManager() {
         return connectionManager;
     }
@@ -80,19 +74,4 @@ public enum WebApplication {
         this.servletContext = servletContext;
     }
 
-    public UserDao getUserDao() {
-        return userDao;
-    }
-
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    public PurchaseDao getPurchaseDao() {
-        return purchaseDao;
-    }
-
-    public void setPurchaseDao(PurchaseDao purchaseDao) {
-        this.purchaseDao = purchaseDao;
-    }
 }

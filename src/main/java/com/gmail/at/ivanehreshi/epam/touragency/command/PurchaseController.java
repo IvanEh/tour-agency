@@ -4,18 +4,23 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.Purchase;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.web.WebApplication;
+import com.gmail.at.ivanehreshi.epam.touragency.web.ObjectFactory;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 public class PurchaseController extends Controller {
+    private PurchaseDao purchaseDao = ObjectFactory.INSTANCE.get(PurchaseDao.class);
+    private TourDao tourDao = ObjectFactory.INSTANCE.get(TourDao.class);
+    private UserDao userDao = ObjectFactory.INSTANCE.get(UserDao.class);
+
     @Override
     public void get(RequestService reqService) {
         User user = reqService.getUser();
-        PurchaseDao purchaseDao = WebApplication.INSTANCE.getPurchaseDao();
         List<Purchase> purchases = purchaseDao.findByUser(user.getId());
         purchases.forEach(purchaseDao::deepen);
         reqService.putParameter("purchases", purchases);
@@ -27,8 +32,8 @@ public class PurchaseController extends Controller {
         Long userId = reqService.getUser().getId();
 
         Purchase purchase = new Purchase();
-        Tour tour = WebApplication.INSTANCE.getTourDao().read(tourId);
-        User user = WebApplication.INSTANCE.getUserDao().read(userId);
+        Tour tour = tourDao.read(tourId);
+        User user = userDao.read(userId);
 
         BigDecimal discount = new BigDecimal((100 - user.getDiscount()) / 100.0);
         BigDecimal price = tour.getPrice().multiply(discount);
@@ -38,7 +43,7 @@ public class PurchaseController extends Controller {
         purchase.setDate(new Date());
         purchase.setPrice(price);
 
-        WebApplication.INSTANCE.getPurchaseDao().create(purchase);
+        purchaseDao.create(purchase);
 
         reqService.redirect("/user/purchases.html");
     }

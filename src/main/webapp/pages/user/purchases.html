@@ -23,7 +23,6 @@
             <hr/>
             
             <c:forEach var="purchase" items="${purchases}">
-                <c:set var="purchase" value="${webApplication.purchaseDao.deepen(purchase)}"/>   
                 <c:set var="tour" value="${purchase.tour}" />
                      
 	            <div class="col-md-12">
