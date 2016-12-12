@@ -8,8 +8,9 @@ abstract public class Controller {
     private static Logger LOGGER = LogManager.getLogger(Controller.class);
 
     public void execute(RequestService reqService) {
+        String method = reqService.getMethod();
 
-        switch (reqService.getRequest().getMethod()) {
+        switch (method) {
             case "GET":
                 get(reqService);
                 break;
@@ -18,6 +19,9 @@ abstract public class Controller {
                 break;
             case "DELETE":
                 delete(reqService);
+                break;
+            case "PUT":
+                put(reqService);
                 break;
             default:
         }
@@ -28,6 +32,7 @@ abstract public class Controller {
     public void get(RequestService reqService) {}
     public void post(RequestService reqService) {}
     public void delete(RequestService reqService) {}
+    public void put(RequestService reqService) {}
     public void any(RequestService reqService) {}
 
     public boolean isService() {

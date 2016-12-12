@@ -43,8 +43,9 @@ public enum WebApplication {
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder
                       .addMapping("/", new RedirectController("/index.html"))
-                      .addMapping("/tour", new CreateTourController())
-                      .addMapping("/tour/edit", new EditTourController())
+//                      .addMapping("/tour", new CreateTourController())
+//                      .addMapping("/tour/edit", new EditTourController())
+                      .addMapping("/tours", new ToursController())
                       .addMapping("/register", new RegisterController())
                       .addMapping("/user/discount", new UpdateDiscountController())
                       .addMapping("/purchase", new PurchaseController() )

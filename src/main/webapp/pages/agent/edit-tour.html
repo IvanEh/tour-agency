@@ -21,7 +21,9 @@
     </div>
 
     <div class="col-md-9 stretch content">
-        <form class="col-md-12 form-horizontal" method="post" action="/actions/tour/edit">
+        <form class="col-md-12 form-horizontal" method="post" action="/tours">
+            <input type="hidden" name="__method" value="PUT"/>
+
             <fieldset>
 
                 <legend>Редагування туру</legend>

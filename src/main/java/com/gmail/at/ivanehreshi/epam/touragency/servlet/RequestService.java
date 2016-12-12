@@ -90,4 +90,13 @@ public class RequestService {
     public User getUser() {
         return (User) request.getSession(false).getAttribute("user");
     }
+
+    // TODO: what if  __method=rubbish ???
+    public String getMethod() {
+        String formMethod = getString("__method");
+
+        if(formMethod != null)
+            return formMethod.toUpperCase();
+        return request.getMethod();
+    }
 }
