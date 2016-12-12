@@ -40,6 +40,6 @@ public class PurchaseController extends Controller {
 
         WebApplication.INSTANCE.getPurchaseDao().create(purchase);
 
-        reqService.redirect("/purchases.html");
+        reqService.redirect("/user/purchases.html");
     }
 }

@@ -38,8 +38,7 @@ public enum WebApplication {
 
         SecurityContext.INSTANCE.setUserDao(userDao);
         SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)
-                                .addSecurityConstraint("/buy.html")
-                                .addSecurityConstraint("/purchases.html");
+                                .addSecurityConstraint("/user/.*");
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder
@@ -51,7 +50,7 @@ public enum WebApplication {
                       .addMapping("/purchase", new PurchaseController() )
                       .addMapping("/login", new LoginController())
                       .addMapping("/logout", new LogoutController())
-                      .addMapping("/purchases\\.html", new PurchaseController())
+                      .addMapping("/user/purchases\\.html", new PurchaseController())
                       .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"))
                       .buildAndRegister("Command Dispatcher Servlet", "/app/*");
     }
