@@ -43,6 +43,7 @@ public enum WebApplication {
 
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder
+                      .addMapping("/", new RedirectController("/index.html"))
                       .addMapping("/tour", new CreateTourController())
                       .addMapping("/tour/edit", new EditTourController())
                       .addMapping("/register", new RegisterController())
@@ -51,8 +52,8 @@ public enum WebApplication {
                       .addMapping("/login", new LoginController())
                       .addMapping("/logout", new LogoutController())
                       .addMapping("/purchases\\.html", new PurchaseController())
-                      .addMapping("/(.*)\\.html", new JspController("/pages/", ".jsp"))
-                      .buildAndRegister("Command Dispatcher Servlet", "/actions/*");
+                      .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"))
+                      .buildAndRegister("Command Dispatcher Servlet", "/app/*");
     }
 
     public TourDao getTourDao() {

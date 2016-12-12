@@ -3,7 +3,11 @@
 
 <script>
     function logout() {
-        $.post('/actions/logout');
+        $.post('/logout')
+         .done(function(data, textStatus, jqXHR) {
+            console.log(textStatus);
+            location.href = jqXHR.getResponseHeader('Location');
+         });
     }
 </script>
 

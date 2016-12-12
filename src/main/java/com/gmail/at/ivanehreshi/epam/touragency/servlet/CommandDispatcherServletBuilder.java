@@ -1,10 +1,14 @@
 package com.gmail.at.ivanehreshi.epam.touragency.servlet;
 
 import com.gmail.at.ivanehreshi.epam.touragency.command.Controller;
+import com.gmail.at.ivanehreshi.epam.touragency.filter.StaticResourceFilter;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class CommandDispatcherServletBuilder {
@@ -42,8 +46,14 @@ public class CommandDispatcherServletBuilder {
 
     public CommandDispatcherServlet buildAndRegister(String name, String mapping) {
         CommandDispatcherServlet servlet = build();
+
         ServletRegistration.Dynamic dynamic = servletContext.addServlet(name, servlet);
         dynamic.addMapping(mapping);
+
+        FilterRegistration.Dynamic filterDynamic =
+                servletContext.addFilter("Static Resource Filter", new StaticResourceFilter(mapping.replace("/*", "")));
+        filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD), true, "/*");
+
         return servlet;
     }
 

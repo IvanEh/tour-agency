@@ -82,15 +82,18 @@ public class CommandDispatcherServlet extends HttpServlet {
 
     }
 
-    private void dispatchLoop(HttpServletRequest req, HttpServletResponse resp, String pathInfo,
+    private boolean dispatchLoop(HttpServletRequest req, HttpServletResponse resp, String pathInfo,
                               RequestService requestService,
                               List<MatcherEntry> httpMatchers, boolean matchFirst) {
+        boolean any = false;
 
         for(MatcherEntry matcherEntry: httpMatchers) {
             matcherEntry.matcher.reset(pathInfo);
 
             if(matcherEntry.matcher.matches()) {
                 resp.setStatus(HttpServletResponse.SC_OK);
+
+                any = true;
 
                 List<String> groups = new ArrayList<>(matcherEntry.matcher.groupCount());
 
@@ -107,6 +110,8 @@ public class CommandDispatcherServlet extends HttpServlet {
                 }
             }
         }
+
+        return any;
     }
 
 
