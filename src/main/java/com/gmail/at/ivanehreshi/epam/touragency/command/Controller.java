@@ -1,5 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.command;
 
+import com.gmail.at.ivanehreshi.epam.touragency.servlet.HttpMethod;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,22 +9,23 @@ abstract public class Controller {
     private static Logger LOGGER = LogManager.getLogger(Controller.class);
 
     public void execute(RequestService reqService) {
-        String method = reqService.getMethod();
+        HttpMethod method = reqService.getMethod();
 
         switch (method) {
-            case "GET":
+            case GET:
                 get(reqService);
                 break;
-            case "POST":
+            case POST:
                 post(reqService);
                 break;
-            case "DELETE":
+            case PUT:
                 delete(reqService);
                 break;
-            case "PUT":
+            case DELETE:
                 put(reqService);
                 break;
             default:
+                LOGGER.error("Switch doesn't cover all the enum variants");
         }
 
         any(reqService);

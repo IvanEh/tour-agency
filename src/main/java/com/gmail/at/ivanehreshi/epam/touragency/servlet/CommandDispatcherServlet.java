@@ -23,8 +23,8 @@ public class CommandDispatcherServlet extends HttpServlet {
     }
 
 
-    public void addMapping(String regex, Controller controller) {
-        MatcherEntry matcherEntry = new MatcherEntry(regex, controller);
+    public void addMapping(String regex, int mask, Controller controller) {
+        MatcherEntry matcherEntry = new MatcherEntry(regex, mask, controller);
         addMapping(matcherEntry);
     }
 
@@ -86,9 +86,14 @@ public class CommandDispatcherServlet extends HttpServlet {
                               RequestService requestService,
                               List<MatcherEntry> httpMatchers, boolean matchFirst) {
         boolean any = false;
+        HttpMethod method = requestService.getMethod();
 
         for(MatcherEntry matcherEntry: httpMatchers) {
             matcherEntry.matcher.reset(pathInfo);
+
+            if((matcherEntry.mask & method.mask) == 0) {
+                continue;
+            }
 
             if(matcherEntry.matcher.matches()) {
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -118,12 +123,15 @@ public class CommandDispatcherServlet extends HttpServlet {
     static class MatcherEntry {
         private final Matcher matcher;
 
+        private int mask;
+
         private final Controller controller;
 
-        public MatcherEntry(String regex, Controller controller) {
+        public MatcherEntry(String regex, int mask, Controller controller) {
             Pattern p = Pattern.compile("^" + regex + "$");
             matcher = p.matcher("");
             this.controller = controller;
+            this.mask = mask;
         }
 
         public void call(RequestService requestService) {

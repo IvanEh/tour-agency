@@ -21,12 +21,16 @@ public class CommandDispatcherServletBuilder {
         this.servletContext = sc;
     }
 
-    public CommandDispatcherServletBuilder addMapping(String regex, Controller controller) {
+    public CommandDispatcherServletBuilder addMapping(String regex, int mask, Controller controller) {
         CommandDispatcherServlet.MatcherEntry matcherEntry =
-                new CommandDispatcherServlet.MatcherEntry(regex, controller);
+                new CommandDispatcherServlet.MatcherEntry(regex, mask, controller);
         matchers.add(matcherEntry);
 
         return this;
+    }
+
+    public CommandDispatcherServletBuilder addMapping(String regex, Controller controller) {
+        return addMapping(regex, HttpMethod.ANY_METHOD_MASK, controller);
     }
 
     public CommandDispatcherServletBuilder reset() {

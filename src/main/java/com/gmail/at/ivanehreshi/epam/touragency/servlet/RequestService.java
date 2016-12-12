@@ -92,11 +92,12 @@ public class RequestService {
     }
 
     // TODO: what if  __method=rubbish ???
-    public String getMethod() {
+    public HttpMethod getMethod() {
         String formMethod = getString("__method");
 
         if(formMethod != null)
-            return formMethod.toUpperCase();
-        return request.getMethod();
+            return HttpMethod.valueOf(formMethod.toUpperCase());
+
+        return HttpMethod.valueOf(request.getMethod());
     }
 }
