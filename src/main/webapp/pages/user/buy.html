@@ -11,10 +11,6 @@
 </head>
 <body>
 
-<c:set var="tourId" value="${param.tourId + 0}"/>
-
-<c:set var="tour" value="${webApplication.tourDao.read(tourId)}"/>
-
 <c:import url="/resources/components/navbar.html"/>
 
 <div class="container">
@@ -54,7 +50,7 @@
 
             <div class="col-offset-md-1 col-md-9 has-success">
                 <div class="form-control">
-                    <c:out value="${webApplication.tourDao.computePrice(tourId, user.id)}"/>
+                    <c:out value="${price}"/>
                 </div>
             </div>
         </div>
@@ -62,8 +58,8 @@
         <br/>
 
         <form method="post" action="/purchase">
-            <input type="hidden" name="tourId" value="${tourId}"/>
-            <input type="hidden" name="userId" value="${userId}"/>
+            <input type="hidden" name="tourId" value="${tour.id}"/>
+            <input type="hidden" name="userId" value="${user.id}"/>
             <input type="submit" class="btn btn-success pull-right" value="Придбати"/>
         </form>
 

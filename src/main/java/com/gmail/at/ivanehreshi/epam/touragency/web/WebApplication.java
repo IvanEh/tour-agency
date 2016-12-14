@@ -48,6 +48,7 @@ public enum WebApplication {
                       .addMapping("/", new RedirectController("/index.html"))
                       .addMapping("/tours", new ToursController())
                       .addMapping("/tours\\.html", HttpMethod.GET.mask, new ToursController())
+                      .addMapping("/user/buy\\.html", new BuyController())
                       .addMapping("/register", new RegisterController())
                       .addMapping("/user/discount", new UpdateDiscountController())
                       .addMapping("/purchase", new PurchaseController() )
