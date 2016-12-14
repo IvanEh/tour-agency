@@ -16,7 +16,7 @@ import java.util.List;
 public class PurchaseJdbcDao implements PurchaseDao {
     private static final String CREATE_SQL = "INSERT INTO `purchase` (`user_id`, `tour_id`, `date`, `price`) " +
             "VALUES (?, ?, ?, ?)";
-    private static final String FIND_ALL_SQL = "SELECT * FROM `purchase`";
+    private static final String FIND_ALL_SQL = "SELECT * FROM `purchase` ORDER BY id DESC";
     private static final String FIND_BY_USER_SQL = "SELECT * FROM `purchase` WHERE user_id=?";
     private static final String READ_SQL = "SELECT * FROM `purchase` WHERE id=?";
     private static final String UPDATE_SQL = "UPDATE `purchase` SET `user_id`=?, `tour_id`=?," +
