@@ -11,6 +11,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.TourJdbcDao
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.UserJdbcDao;
 import com.gmail.at.ivanehreshi.epam.touragency.security.SecurityContext;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.CommandDispatcherServletBuilder;
+import com.gmail.at.ivanehreshi.epam.touragency.servlet.HttpMethod;
 
 import javax.servlet.ServletContext;
 
@@ -45,9 +46,8 @@ public enum WebApplication {
         CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
         servletBuilder
                       .addMapping("/", new RedirectController("/index.html"))
-//                      .addMapping("/tour", new CreateTourController())
-//                      .addMapping("/tour/edit", new EditTourController())
                       .addMapping("/tours", new ToursController())
+                      .addMapping("/tours\\.html", HttpMethod.GET.mask, new ToursController())
                       .addMapping("/register", new RegisterController())
                       .addMapping("/user/discount", new UpdateDiscountController())
                       .addMapping("/purchase", new PurchaseController() )

@@ -7,9 +7,16 @@ import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
 import com.gmail.at.ivanehreshi.epam.touragency.web.ObjectFactory;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ToursController extends Controller {
     private TourDao tourDao = ObjectFactory.INSTANCE.get(TourDao.class);
+
+    @Override
+    public void get(RequestService reqService) {
+        List<Tour> tours = tourDao.findAll();
+        reqService.putParameter("tours", tours);
+    }
 
     @Override
     public void post(RequestService reqService) {
