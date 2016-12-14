@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TourJdbcDao implements TourDao {
     private static final String CREATE_SQL = "INSERT INTO `tour` (`title`, `description`, `type`, `hot`, `price`) VALUES (?, ?, ?, ?, ?)";
-    private static final String FIND_ALL_SQL = "SELECT * FROM tour";
+    private static final String FIND_ALL_SQL = "SELECT * FROM tour ORDER BY hot DESC, id DESC";
     private static final String READ_SQL = "SELECT * FROM tour WHERE id=?";
     private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, `description`=?, `type`=?, `hot`=?, `price`=? WHERE `id`=?";
     private static final String DELETE_SQL = "DELETE FROM tour WHERE id=?";
