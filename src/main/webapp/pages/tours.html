@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="resources/bower_components/bootstrap/dist/css/bootstrap.css"/>
     <link rel="stylesheet" href="resources/css/master.css"/>
     <link rel="stylesheet" href="resources/css/tour.css"/>
+    <script src="/resources/js/params.js"></script>
+    <script src="/resources/js/tours.js"></script>
 </head>
 <body>
 
@@ -19,13 +21,11 @@
 
     <div class="col-md-9 content stretch">
         <ul class="nav nav-pills">
-            <li><a href="" class="btn btn-default">Ціна <span class="glyphicon glyphicon-sort-by-order"></span></a></li>
-            <li><a href="">Відпочинок</a></li>
-            <li><a href="">Екскурсія</a></li>
-            <li><a href="">Шопінг</a></li>
+            <li><a class="btn btn-default" onclick="sort()">Ціна <span class="glyphicon glyphicon-sort-by-order"></span></a></li>
+            <li><a class="btn btn-default" onclick="setTourType('RECREATION')">Відпочинок</a></li>
+            <li><a class="btn btn-default" onclick="setTourType('EXCURSION')"> Екскурсія</a></li>
+            <li><a class="btn btn-default" onclick="setTourType('SHOPPING')">  Шопінг</a></li>
         </ul>
-
-
 
         <c:forEach var="tour" items="${tours}">
             <div class="col-md-12">

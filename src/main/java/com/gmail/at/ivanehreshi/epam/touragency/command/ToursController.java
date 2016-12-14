@@ -4,9 +4,11 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.TourType;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
+import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
 import com.gmail.at.ivanehreshi.epam.touragency.web.ObjectFactory;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ToursController extends Controller {
@@ -14,7 +16,27 @@ public class ToursController extends Controller {
 
     @Override
     public void get(RequestService reqService) {
-        List<Tour> tours = tourDao.findAll();
+        String priceOrdStr = reqService.getString("price");
+        String tourTypesStr = reqService.getString("type");
+
+        tourTypesStr = tourTypesStr == null ? "" : tourTypesStr;
+        List<TourType> tourTypes = new ArrayList<>();
+        for(String t: tourTypesStr.split(",")) {
+            try {
+                tourTypes.add(TourType.valueOf(t.toUpperCase()));
+            } catch (IllegalArgumentException e){}
+        }
+
+        Ordering priceOrd = Ordering.NO;
+        if(priceOrdStr != null) {
+            try {
+                priceOrd = Ordering.valueOf(priceOrdStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                priceOrd = Ordering.NO;
+            }
+        }
+
+        List<Tour> tours = tourDao.findByCriteria(priceOrd, (TourType[]) tourTypes.toArray(new TourType[]{}));
         reqService.putParameter("tours", tours);
     }
 

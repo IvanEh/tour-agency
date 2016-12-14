@@ -5,20 +5,26 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.TourType;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
+import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TourJdbcDao implements TourDao {
     private static final String CREATE_SQL = "INSERT INTO `tour` (`title`, `description`, `type`, `hot`, `price`) VALUES (?, ?, ?, ?, ?)";
-    private static final String FIND_ALL_SQL = "SELECT * FROM tour ORDER BY hot DESC, id DESC";
+    private static final String FIND_ALL_SQL = "SELECT * FROM tour";
+    private static final String FIND_ALL_ORDERED_SQL = FIND_ALL_SQL + " ORDER BY hot DESC, id DESC";
     private static final String READ_SQL = "SELECT * FROM tour WHERE id=?";
     private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, `description`=?, `type`=?, `hot`=?, `price`=? WHERE `id`=?";
     private static final String DELETE_SQL = "DELETE FROM tour WHERE id=?";
     private static final String COMPUTE_PRICE_SQL = "SELECT tour.price * cast((100 - discount)/100 as DECIMAL(10,2))" +
             "FROM  `user`, tour WHERE `user`.id =? AND tour.id=?";
+    private static final String TYPE_COL = "type";
+    private static final String PRICE_COL = "price";
 
     private ConnectionManager connectionManager;
     private JdbcTemplate jdbcTemplate;
@@ -52,11 +58,39 @@ public class TourJdbcDao implements TourDao {
 
     @Override
     public List<Tour> findAll() {
-        return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, FIND_ALL_SQL);
+        return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, FIND_ALL_ORDERED_SQL);
     }
 
     public BigDecimal computePrice(Long tourId, Long userId) {
         return jdbcTemplate.queryObjects((rs) -> rs.getBigDecimal(1), COMPUTE_PRICE_SQL, userId, tourId).get(0);
+    }
+
+    @Override
+    public List<Tour> findByCriteria(Ordering priceOrdering, TourType... types) {
+        List<String> typesList = Arrays.stream(types)
+                                       .map(TourType::ordinal)
+                                       .map(String::valueOf)
+                                       .collect(Collectors.toList());
+        String query = FIND_ALL_SQL;
+
+        String inElems = "";
+        String order = "ORDER BY ";
+
+        inElems = String.join(",", typesList);
+
+        if(!inElems.isEmpty()) {
+            inElems = " WHERE " + TYPE_COL + " IN (" + inElems + ")";
+        }
+
+        if(priceOrdering != Ordering.NO) {
+            order += PRICE_COL + " " + priceOrdering.getName() +", hot DESC, id DESC";
+        } else {
+            order += " hot DESC, id DESC";
+        }
+
+        query +=" " + inElems + " " + order;
+
+        return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, query);
     }
 
     private static Tour fromResultSet(ResultSet rs) throws SQLException {
