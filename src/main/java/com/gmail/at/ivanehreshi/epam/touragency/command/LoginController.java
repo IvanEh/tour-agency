@@ -10,7 +10,7 @@ public class LoginController extends Controller {
     private static final Logger LOGGER = LogManager.getLogger(LoginController.class);
 
     @Override
-    public void execute(RequestService reqService) {
+    public void post(RequestService reqService) {
         String username = reqService.getString("username");
         String password = reqService.getString("password");
 
@@ -20,6 +20,5 @@ public class LoginController extends Controller {
         } catch (ServletException e) {
             LOGGER.error("Login failed", e);
         }
-
     }
 }
