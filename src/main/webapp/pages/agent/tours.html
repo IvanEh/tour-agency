@@ -19,9 +19,20 @@
             <h1>Адміністрування турів</h1>
             <hr/>
             
-            <c:forEach var="tour" items="${tourDao.findAll()}">
+            <c:forEach var="tour" items="${tours}">
                 <div class="entry-box bordered clearfix">
-                    <c:out value="${tour.title}"/>
+                    <div class="inline title">
+                        <c:choose>
+                            <c:when test="${tour.enabled}">
+                                <c:out value="${tour.title}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <strike>
+                                    <c:out value="${tour.title}"/>
+                                </strike>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
 
                     <span class="badge">$
                         <c:out value="${tour.price}"/>
@@ -29,10 +40,33 @@
 
                     <c:set var="editLink" value="/agent/edit-tour.html?id=${tour.id}"/>
                     <a class="btn btn-sm btn-default pull-right" href="${editLink}">Змінити</a>
+
+                    <div class="btn btn-sm btn-default pull-right" data-enabled="${tour.enabled}" onclick="toggleEnabled(this, ${tour.id})">
+                        ${tour.enabled ? 'Деактивувати' : 'Активувати'}
+                    </div>
+
                 </div>
             </c:forEach>
         </div>
     </div>
+
+<script>
+        function toggleEnabled(el, id) {
+            $.post('/agent/tours.html', {command: 'toggle', id: id});
+            var $el = $(el);
+            var enabled = $el.data('enabled');
+            if(enabled === true || enabled === 'true') {
+                $el.parents('.entry-box').find('.title').wrapInner('<strike></strike');
+                $el.data('enabled', false);
+                $el.html('Активувати');
+            } else {
+                $el.parents('.entry-box').find('.title strike').contents().unwrap();
+                $el.data('enabled', true);
+                $el.html('Деактивувати');
+            }
+
+        }
+    </script>
 
 </body>
 </html>

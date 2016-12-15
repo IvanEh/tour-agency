@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TourJdbcDao implements TourDao {
-    private static final String CREATE_SQL = "INSERT INTO `tour` (`title`, `description`, `type`, `hot`, `price`) VALUES (?, ?, ?, ?, ?)";
+    private static final String CREATE_SQL = "INSERT INTO `tour` (`title`, `description`, `type`, `hot`, `price`, `enabled`) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String FIND_ALL_SQL = "SELECT * FROM tour";
     private static final String FIND_ALL_ORDERED_SQL = FIND_ALL_SQL + " ORDER BY hot DESC, id DESC";
     private static final String READ_SQL = "SELECT * FROM tour WHERE id=?";
-    private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, `description`=?, `type`=?, `hot`=?, `price`=? WHERE `id`=?";
+    private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, `description`=?, `type`=?, `hot`=?, `price`=?, `enabled`=? WHERE `id`=?";
     private static final String DELETE_SQL = "DELETE FROM tour WHERE id=?";
     private static final String COMPUTE_PRICE_SQL = "SELECT tour.price * cast((100 - discount)/100 as DECIMAL(10,2))" +
             "FROM  `user`, tour WHERE `user`.id =? AND tour.id=?";
@@ -42,7 +42,7 @@ public class TourJdbcDao implements TourDao {
     @Override
     public Long create(Tour t) {
         return jdbcTemplate.insert(CREATE_SQL, t.getTitle(), t.getDescription(), t.getType().ordinal(),
-                t.isHot(), t.getPrice());
+                t.isHot(), t.getPrice(), t.isEnabled());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TourJdbcDao implements TourDao {
     @Override
     public void update(Tour t) {
         jdbcTemplate.update(UPDATE_SQL, t.getTitle(), t.getDescription(),
-                t.getType().ordinal(), t.isHot(), t.getPrice(), t.getId());
+                t.getType().ordinal(), t.isHot(), t.getPrice(), t.isEnabled(), t.getId());
     }
 
     @Override
@@ -84,7 +84,8 @@ public class TourJdbcDao implements TourDao {
             anchor.setPrice(priceAnchor);
         }
 
-        WhereBuilder whereBuilder = QueryBuilder.select("tour").where("type", WhereBuilder.inCond(typesList));
+        WhereBuilder whereBuilder = QueryBuilder.select("tour").where("type", WhereBuilder.inCond(typesList))
+                .and("enabled", "=TRUE");
 
         if (dir == ScrollDirection.DOWN) {
             whereBuilder = whereBuilder.and("id", ScrollDirection.DOWN.getRel() + anchor.getId());
@@ -133,6 +134,7 @@ public class TourJdbcDao implements TourDao {
         tour.setPrice(rs.getBigDecimal("price"));
         tour.setType(TourType.values()[rs.getInt("type")]);
         tour.setHot(rs.getBoolean("hot"));
+        tour.setEnabled(rs.getBoolean("enabled"));
         return tour;
     }
 

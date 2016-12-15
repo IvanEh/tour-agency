@@ -28,6 +28,10 @@
     margin-bottom: 10px;
 }
 
+.inline {
+    display: inline-block;
+}
+
 .bordered {
     border: solid 1px #eee !important;
 }

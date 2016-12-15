@@ -82,6 +82,18 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="opts">Активований</label>
+                    <div class="col-md-4">
+                        <div class="checkbox">
+                            <label for="opts-1">
+                                <input name="enabled" id="opts-1" value="1" ${tour.enabled eq true ? 'checked=checked' : 'not'} type="checkbox">
+                                Так
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
             </fieldset>
 
             <input type="submit" class="btn btn-success pull-right" value="Зберегти"/>

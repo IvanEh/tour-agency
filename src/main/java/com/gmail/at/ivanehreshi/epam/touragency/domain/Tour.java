@@ -9,6 +9,7 @@ public class Tour {
     private TourType type;
     boolean hot;
     private BigDecimal price;
+    private boolean enabled;
 
     public Tour() {
     }
@@ -63,6 +64,14 @@ public class Tour {
 
     public void setType(TourType type) {
         this.type = type;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

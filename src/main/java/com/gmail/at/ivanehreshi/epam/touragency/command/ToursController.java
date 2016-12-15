@@ -75,7 +75,9 @@ public class ToursController extends Controller {
             tour.setDescription(reqService.getString("description"));
             tour.setPrice(new BigDecimal(reqService.getString("price")));
             tour.setType(TourType.values()[reqService.getInt("type")]);
-            tour.setHot(reqService.getBool(""));
+            tour.setHot(reqService.getBool("hot"));
+            tour.setEnabled(reqService.getBool("enabled"));
+
             tourDao.create(tour);
 
             reqService.redirect("/agent/tours.html");
@@ -96,6 +98,7 @@ public class ToursController extends Controller {
             tour.setPrice(new BigDecimal(reqService.getString("price")));
             tour.setType(TourType.values()[reqService.getInt("type")]);
             tour.setHot(reqService.getBool("hot"));
+            tour.setEnabled(reqService.getBool("enabled"));
 
             tourDao.update(tour);
             reqService.redirect("/agent/tours.html");
