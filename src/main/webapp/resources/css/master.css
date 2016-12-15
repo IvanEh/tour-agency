@@ -16,6 +16,7 @@
 }
 
 .fix-footer-overlay {
+    position: relative;
     z-index: 2;
 }
 
