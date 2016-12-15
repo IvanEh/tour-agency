@@ -16,6 +16,10 @@
     </div>
 
     <div class="col-md-9 content">
+        <c:if test="${not empty param.failed}">
+            <p class="bg-danger">Логін або пароль введено неправильно</p>
+        </c:if>
+
         <form class="col-md-12 form-horizontal" method="post" action="/login">
             <fieldset>
 

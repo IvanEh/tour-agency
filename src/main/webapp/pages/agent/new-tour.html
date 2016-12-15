@@ -17,6 +17,10 @@
     </div>
 
     <div class="col-md-9 stretch content">
+        <c:if test="${not empty param.failed}">
+            <p class="bg-danger">Форма заповнена неправильно!</p>
+        </c:if>
+
         <form class="col-md-12 form-horizontal" method="post" action="/tours">
             <fieldset>
 

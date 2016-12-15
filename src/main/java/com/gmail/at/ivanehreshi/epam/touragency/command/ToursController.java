@@ -69,29 +69,39 @@ public class ToursController extends Controller {
 
     @Override
     public void post(RequestService reqService) {
-        Tour tour = new Tour();
-        tour.setTitle(reqService.getString("title"));
-        tour.setDescription(reqService.getString("description"));
-        tour.setPrice(new BigDecimal(reqService.getString("price")));
-        tour.setType(TourType.values()[reqService.getInt("type")]);
-        tour.setHot(reqService.getBool(""));
-        tourDao.create(tour);
+        try {
+            Tour tour = new Tour();
+            tour.setTitle(reqService.getString("title"));
+            tour.setDescription(reqService.getString("description"));
+            tour.setPrice(new BigDecimal(reqService.getString("price")));
+            tour.setType(TourType.values()[reqService.getInt("type")]);
+            tour.setHot(reqService.getBool(""));
+            tourDao.create(tour);
 
-        reqService.redirect("/agent/tours.html");
+            reqService.redirect("/agent/tours.html");
+        } catch (NumberFormatException e) {
+            reqService.redirect("/agent/new-tour.html?failed=true");
+        }
     }
 
     @Override
     public void put(RequestService reqService) {
-        Tour tour = new Tour();
-        tour.setId(reqService.getLong("id"));
-        tour.setTitle(reqService.getString("title"));
-        tour.setDescription(reqService.getString("description"));
-        tour.setPrice(new BigDecimal(reqService.getString("price")));
-        tour.setType(TourType.values()[reqService.getInt("type")]);
-        tour.setHot(reqService.getBool("hot"));
+        System.out.println("PUT");
+        Long id = reqService.getLong("id");
+        try {
+            Tour tour = new Tour();
+            tour.setId(id);
+            tour.setTitle(reqService.getString("title"));
+            tour.setDescription(reqService.getString("description"));
+            tour.setPrice(new BigDecimal(reqService.getString("price")));
+            tour.setType(TourType.values()[reqService.getInt("type")]);
+            tour.setHot(reqService.getBool("hot"));
 
-        tourDao.update(tour);
-
-        reqService.redirect("/agent/tours.html");
+            tourDao.update(tour);
+            reqService.redirect("/agent/tours.html");
+        } catch (NumberFormatException e) {
+            System.out.println(e);
+            reqService.redirect("/agent/edit-tour.html?failed=true&id=" + id);
+        }
     }
 }

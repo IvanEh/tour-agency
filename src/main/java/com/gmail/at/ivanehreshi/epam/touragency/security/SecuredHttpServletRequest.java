@@ -45,12 +45,16 @@ public class SecuredHttpServletRequest extends HttpServletRequestWrapper {
 
     @Override
     public void login(String username, String password) throws ServletException {
-        User user = securityContext.getUserDao().read(username);
-        if(user.getPassword().equals(PasswordEncoder.encodePassword(password))) {
+        User user;
+
+        user = securityContext.getUserDao().read(username);
+
+        if (user != null && user.getPassword().equals(PasswordEncoder.encodePassword(password))) {
             getHttpRequest().getSession(true).setAttribute("user", user);
             getHttpRequest().getSession(false).setAttribute("loggedIn", true);
         } else {
             getHttpRequest().getSession().invalidate();
+            throw new ServletException("Bad login credentials");
         }
     }
 

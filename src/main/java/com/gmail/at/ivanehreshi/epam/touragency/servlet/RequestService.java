@@ -61,10 +61,18 @@ public class RequestService {
     }
 
     public Long getLong(String parameter) {
-        return Long.valueOf(request.getParameter(parameter));
+        String s = request.getParameter(parameter);
+        if(s == null || s.isEmpty()) {
+            return null;
+        }
+        return Long.valueOf(s);
     }
 
     public Integer getInt(String parameter) {
+        String s = request.getParameter(parameter);
+        if(s == null || s.isEmpty()) {
+            return null;
+        }
         return Integer.valueOf(request.getParameter(parameter));
     }
 

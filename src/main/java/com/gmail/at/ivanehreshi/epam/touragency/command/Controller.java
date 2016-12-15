@@ -19,10 +19,10 @@ abstract public class Controller {
                 post(reqService);
                 break;
             case PUT:
-                delete(reqService);
+                put(reqService);
                 break;
             case DELETE:
-                put(reqService);
+                delete(reqService);
                 break;
             default:
                 LOGGER.error("Switch doesn't cover all the enum variants");
