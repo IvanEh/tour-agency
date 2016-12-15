@@ -58,8 +58,9 @@ public class CommandDispatcherServlet extends HttpServlet {
 
         RequestService requestService = new RequestService(req, resp, null);
 
-        dispatchLoop(req, resp, pathInfo, requestService, httpMatchers, true);
-        dispatchLoop(req, resp, pathInfo, requestService, httpServiceMatchers, false);
+        boolean any = false;
+        any |= dispatchLoop(req, resp, pathInfo, requestService, httpMatchers, true);
+        any |= dispatchLoop(req, resp, pathInfo, requestService, httpServiceMatchers, false);
 
         if (requestService.getRedirectPath() != null) {
             try {
@@ -72,6 +73,14 @@ public class CommandDispatcherServlet extends HttpServlet {
         if (requestService.getRenderPage() != null) {
             try {
                 req.getRequestDispatcher(requestService.getRenderPage()).forward(req, resp);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (!any) {
+            try {
+                req.getRequestDispatcher("/pages/__error").forward(req, resp);
             } catch (ServletException e) {
                 e.printStackTrace();
             } catch (IOException e) {
