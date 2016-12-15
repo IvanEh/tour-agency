@@ -4,7 +4,11 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.TourType;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.ScrollDirection;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.Slice;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder.QueryBuilder;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder.WhereBuilder;
 import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
 
 import java.math.BigDecimal;
@@ -25,6 +29,7 @@ public class TourJdbcDao implements TourDao {
             "FROM  `user`, tour WHERE `user`.id =? AND tour.id=?";
     private static final String TYPE_COL = "type";
     private static final String PRICE_COL = "price";
+    private static final BigDecimal LARGE_DECIMAL = new BigDecimal(Long.MAX_VALUE);
 
     private ConnectionManager connectionManager;
     private JdbcTemplate jdbcTemplate;
@@ -66,31 +71,58 @@ public class TourJdbcDao implements TourDao {
     }
 
     @Override
-    public List<Tour> findByCriteria(Ordering priceOrdering, TourType... types) {
+    public Slice<Tour> getToursSliceByCriteria(int count, Tour anchor, ScrollDirection dir,
+                                               Ordering priceOrdering, TourType... types) {
         List<String> typesList = Arrays.stream(types)
-                                       .map(TourType::ordinal)
-                                       .map(String::valueOf)
-                                       .collect(Collectors.toList());
-        String query = FIND_ALL_SQL;
+                .map(TourType::ordinal)
+                .map(String::valueOf)
+                .collect(Collectors.toList());
 
-        String inElems = "";
-        String order = "ORDER BY ";
-
-        inElems = String.join(",", typesList);
-
-        if(!inElems.isEmpty()) {
-            inElems = " WHERE " + TYPE_COL + " IN (" + inElems + ")";
+        if(anchor == null) {
+            BigDecimal priceAnchor = priceOrdering == Ordering.ASC ? BigDecimal.ZERO : LARGE_DECIMAL;
+            anchor = new Tour(Long.MAX_VALUE);
+            anchor.setPrice(priceAnchor);
         }
 
-        if(priceOrdering != Ordering.NO) {
-            order += PRICE_COL + " " + priceOrdering.getName() +", hot DESC, id DESC";
+        WhereBuilder whereBuilder = QueryBuilder.select("tour").where("type", WhereBuilder.inCond(typesList));
+
+        if (dir == ScrollDirection.DOWN) {
+            whereBuilder = whereBuilder.and("id", ScrollDirection.DOWN.getRel() + anchor.getId());
         } else {
-            order += " hot DESC, id DESC";
+            whereBuilder = whereBuilder.and("id", ScrollDirection.UP.getRel() + anchor.getId());
         }
 
-        query +=" " + inElems + " " + order;
+        String rel;
+        switch (priceOrdering) {
+            case ASC:
+                rel = dir == ScrollDirection.DOWN ? ">" : "<";
+                whereBuilder = whereBuilder.and("price", rel + anchor.getPrice());
+                break;
+            case DESC:
+                rel = dir == ScrollDirection.DOWN ? "<" : ">";
+                whereBuilder = whereBuilder.and("price", rel + anchor.getPrice());
+                break;
+        }
 
-        return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, query);
+        String query = whereBuilder.orderBy("price", priceOrdering)
+                        .and("id", Ordering.DESC)
+                        .limit(count)
+                        .build();
+
+        List<Tour> tours = jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, query);
+
+        Tour first = null;
+        Tour last = null;
+
+        if(!tours.isEmpty()) {
+            first = tours.get(0);
+        }
+
+        if(tours.size() == count) {
+            last = tours.get(tours.size() - 1);
+        }
+
+        return new Slice<Tour>(tours, first, last);
     }
 
     private static Tour fromResultSet(ResultSet rs) throws SQLException {
@@ -102,5 +134,15 @@ public class TourJdbcDao implements TourDao {
         tour.setType(TourType.values()[rs.getInt("type")]);
         tour.setHot(rs.getBoolean("hot"));
         return tour;
+    }
+
+    public static class IdPricePair {
+        public BigDecimal price;
+        public Long id;
+
+        public IdPricePair(Long id, BigDecimal price) {
+            this.id = id;
+            this.price = price;
+        }
     }
 }

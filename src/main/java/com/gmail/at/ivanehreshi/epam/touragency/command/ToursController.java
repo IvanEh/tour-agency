@@ -2,6 +2,8 @@ package com.gmail.at.ivanehreshi.epam.touragency.command;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.TourType;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.ScrollDirection;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.Slice;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
 import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
@@ -14,10 +16,21 @@ import java.util.List;
 public class ToursController extends Controller {
     private TourDao tourDao = ObjectFactory.INSTANCE.get(TourDao.class);
 
+    private static final int PAGE_SIZE = 10;
+
     @Override
     public void get(RequestService reqService) {
         String priceOrdStr = reqService.getString("price");
         String tourTypesStr = reqService.getString("type");
+        Integer direction = reqService.getInt("direction");
+        direction = direction == null ? 1 : direction;
+        ScrollDirection dir = ScrollDirection.valueOf(direction);
+
+        Tour anchor = null;
+        if(reqService.getString("currId") != null && !reqService.getString("currId").isEmpty()) {
+            anchor = new Tour(reqService.getLong("currId"));
+            anchor.setPrice(new BigDecimal(reqService.getString("currPrice")));
+        }
 
         tourTypesStr = tourTypesStr == null ? "" : tourTypesStr;
         List<TourType> tourTypes = new ArrayList<>();
@@ -36,8 +49,22 @@ public class ToursController extends Controller {
             }
         }
 
-        List<Tour> tours = tourDao.findByCriteria(priceOrd, (TourType[]) tourTypes.toArray(new TourType[]{}));
-        reqService.putParameter("tours", tours);
+
+        Slice<Tour> tours =
+                tourDao.getToursSliceByCriteria(PAGE_SIZE, anchor, dir, priceOrd,
+                                           (TourType[]) tourTypes.toArray(new TourType[]{}));
+
+        reqService.putParameter("tours",  tours.getPayload());
+
+        if(tours.getBottomAnchor() != null) {
+            reqService.putParameter("nextId", tours.getBottomAnchor().getId());
+            reqService.putParameter("nextPrice", tours.getBottomAnchor().getPrice());
+        }
+
+        if(tours.getTopAnchor() != null) {
+            reqService.putParameter("prevId", tours.getTopAnchor().getId());
+            reqService.putParameter("prevPrice", tours.getTopAnchor().getPrice());
+        }
     }
 
     @Override
