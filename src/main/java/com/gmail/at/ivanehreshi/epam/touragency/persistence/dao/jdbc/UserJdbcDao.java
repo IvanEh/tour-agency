@@ -53,7 +53,10 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public User read(String username) {
-        User user = jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, READ_BY_USERNAME_SQL, username).get(0);
+        User user = jdbcTemplate.queryObject(UserJdbcDao::fromResultSet, READ_BY_USERNAME_SQL, username);
+        if(user == null)
+            return null;
+
         user.setRoles(readRoles(user.getId()));
         return user;
     }

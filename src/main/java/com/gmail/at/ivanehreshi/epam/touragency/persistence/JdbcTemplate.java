@@ -59,6 +59,18 @@ public class JdbcTemplate {
         return entities;
     }
 
+    public <R> R queryObject(ResultSetFunction<R> producer, String query, Object... params) {
+        Object[] r = new Object[]{null};
+        query((rs) -> {
+            if (rs.next()) {
+                r[0] = producer.apply(rs);
+            }
+            return null;
+        }, query, params);
+
+        return (R) r[0];
+    }
+
     public int update(String updQuery, Object... params) {
         Connection conn = getConnection();
 
