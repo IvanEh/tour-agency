@@ -4,9 +4,8 @@
 <html>
 <head>
     <title>Tour Agency</title>
-    <link rel="stylesheet" href="resources/bower_components/bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="resources/css/master.css"/>
-    <link rel="stylesheet" href="resources/css/tour.css"/>
+    <c:import url="/resources/components/head.html"/>
+    <link rel="stylesheet" href="/resources/css/tour.css"/>
     <script src="/resources/js/params.js"></script>
     <script src="/resources/js/tours.js"></script>
 </head>
@@ -70,7 +69,7 @@
         </c:if>
 
         <c:if test="${not empty nextId || empty tours}">
-            <form method="post" class="fix-footer-overlay pull-right">
+            <form method="post" class="fix-footer-overlay pull-rig">
                 <input type="hidden" name="__method" value="get"/>
                 <input type="hidden" name="direction" value="+1"/>
                 <input type="hidden" name="currId" value="${nextId}"/>
