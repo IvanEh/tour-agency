@@ -5,8 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.sql.*;
 import java.util.ArrayList;
@@ -121,17 +119,7 @@ public class JdbcTemplate {
     }
 
 
-    public boolean executeResourceFile(String path) {
-        URL url = JdbcTemplate.class.getClassLoader().getResource(path);
-
-        File file = null;
-        try {
-            file = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            LOGGER.warn("Bad path", e);
-            return false;
-        }
-
+    public boolean executeSqlFile(File file) {
         try {
             if (file.exists()) {
                 String content = new String(Files.readAllBytes(file.toPath()));
@@ -158,7 +146,7 @@ public class JdbcTemplate {
             LOGGER.warn("SQL script file not found");
             return false;
         }catch (SQLException e) {
-            LOGGER.error("Errors while executing SQL script " + path, e);
+            LOGGER.error("Errors while executing SQL script " + file.getAbsolutePath(), e);
             return false;
         }
 

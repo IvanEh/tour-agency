@@ -3,6 +3,7 @@ package com.gmail.at.ivanehreshi.epam.touragency.web;
 import com.gmail.at.ivanehreshi.epam.touragency.command.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
@@ -12,8 +13,10 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.UserJdbcDao
 import com.gmail.at.ivanehreshi.epam.touragency.security.SecurityContext;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.CommandDispatcherServletBuilder;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.HttpMethod;
+import com.gmail.at.ivanehreshi.epam.touragency.util.ResourcesUtil;
 
 import javax.servlet.ServletContext;
+import java.io.File;
 
 public enum WebApplication {
     INSTANCE;
@@ -31,6 +34,8 @@ public enum WebApplication {
     protected void init() {
         ObjectFactory.INSTANCE.setServletContext(servletContext);
         objectFactory = ObjectFactory.INSTANCE;
+
+        createDb();
 
         TourDao tourDao = new TourJdbcDao(connectionManager);
         UserDao userDao = new UserJdbcDao(connectionManager);
@@ -57,6 +62,12 @@ public enum WebApplication {
                       .addMapping("/user/purchases\\.html", new PurchaseController())
                       .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"))
                       .buildAndRegister("Command Dispatcher Servlet", "/app/*");
+    }
+
+    private void createDb() {
+        File file = ResourcesUtil.getResourceFile("database.sql");
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionManager);
+        jdbcTemplate.executeSqlFile(file);
     }
 
     public ConnectionManager getConnectionManager() {
