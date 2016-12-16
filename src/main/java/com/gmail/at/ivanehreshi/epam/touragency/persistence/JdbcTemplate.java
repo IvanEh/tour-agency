@@ -83,6 +83,8 @@ public class JdbcTemplate {
             return stmt.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("Cannot execute update query", e);
+        } finally {
+            close(conn);
         }
 
         return 0;
@@ -109,6 +111,8 @@ public class JdbcTemplate {
 
         } catch (SQLException e) {
             LOGGER.error("Cannot insert values into DB", e);
+        } finally {
+            close(conn);
         }
 
         return null;
@@ -143,11 +147,15 @@ public class JdbcTemplate {
 
                 Connection conn = getConnection();
 
-                for(String query: queries) {
-                    try (Statement stmt = conn.createStatement()) {
-                        String tr = query.trim();
-                        stmt.execute(query.trim());
+                try {
+                    for (String query : queries) {
+                        try (Statement stmt = conn.createStatement()) {
+                            String tr = query.trim();
+                            stmt.execute(query.trim());
+                        }
                     }
+                } finally {
+                    close(conn);
                 }
 
                 return true;

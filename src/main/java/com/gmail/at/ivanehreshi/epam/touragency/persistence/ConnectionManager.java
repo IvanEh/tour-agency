@@ -5,8 +5,14 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -26,32 +32,8 @@ public class ConnectionManager {
 
 
     public ConnectionManager() {
-        MysqlDataSource mysqlDs = new MysqlDataSource();
-
-        Properties props = loadProperties();
-
-        mysqlDs.setUrl(props.getProperty(JDBC_URL));
-        mysqlDs.setUser(props.getProperty(JDBC_USER, "root"));
-        mysqlDs.setPassword(props.getProperty(JDBC_PASSWORD, "root"));
-        poolSize = Integer.parseInt(props.getProperty(JDBC_POOL, DEFAULT_POOL_SIZE));
-
-        dataSource = mysqlDs;
     }
 
-
-    private Properties loadProperties() {
-        Properties properties = new Properties();
-
-        File file = ResourcesUtil.getResourceFile("database.properties");
-
-        try(InputStream inputStream = new FileInputStream(file)) {
-            properties.load(inputStream);
-        } catch (IOException e) {
-            LOGGER.warn("Cannot load database.properties", e);
-        }
-
-        return properties;
-    }
 
     public Connection getConnection() {
         try {
@@ -69,5 +51,48 @@ public class ConnectionManager {
 
     public DataSource getDataSource() {
         return dataSource;
+    }
+
+    public static ConnectionManager fromProperties(String filename) {
+        ConnectionManager connManager = new ConnectionManager();
+        MysqlDataSource mysqlDs = new MysqlDataSource();
+
+        Properties props = loadProperties();
+
+        mysqlDs.setUrl(props.getProperty(JDBC_URL));
+        mysqlDs.setUser(props.getProperty(JDBC_USER, "root"));
+        mysqlDs.setPassword(props.getProperty(JDBC_PASSWORD, "root"));
+
+        connManager.poolSize = Integer.parseInt(props.getProperty(JDBC_POOL, DEFAULT_POOL_SIZE));
+        connManager.dataSource = mysqlDs;
+        return connManager;
+    }
+
+    public static ConnectionManager fromJndi(String name) {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext  = (Context)initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource)envContext.lookup(name);
+            ConnectionManager connManager = new ConnectionManager();
+            connManager.dataSource = ds;
+            return connManager;
+        } catch (NamingException e) {
+            LOGGER.error("Cannot create InitialContext", e);
+            return null;
+        }
+    }
+
+    private static Properties loadProperties() {
+        Properties properties = new Properties();
+
+        File file = ResourcesUtil.getResourceFile("database.properties");
+
+        try(InputStream inputStream = new FileInputStream(file)) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            LOGGER.warn("Cannot load database.properties", e);
+        }
+
+        return properties;
     }
 }

@@ -29,7 +29,7 @@ public enum WebApplication {
     private ServiceLocator serviceLocator;
 
     WebApplication() {
-        connectionManager = new ConnectionManager();
+        connectionManager = ConnectionManager.fromJndi("jdbc/tour_agency");
     }
 
     protected void init() {
