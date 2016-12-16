@@ -4,6 +4,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**
+ * Prevent handling static resources by {@link com.gmail.at.ivanehreshi.epam.touragency.dispatcher.ControllerDispatcherServlet }
+ */
 public class StaticResourceFilter implements Filter {
     private String resourcePath = "/resources/";
     private String pagePath = "/pages/";

@@ -3,6 +3,9 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.SelectQuery;
 import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
 
+/**
+ * QueryBuilder that represent OrderBy part of the query
+ */
 public class OrderByBuilder extends QueryBuilder {
 
     public OrderByBuilder(SelectQuery query) {

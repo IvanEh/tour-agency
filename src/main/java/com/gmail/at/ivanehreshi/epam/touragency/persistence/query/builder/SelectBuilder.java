@@ -3,6 +3,9 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.SelectQuery;
 import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
 
+/**
+ * QueryBuilder that represent select-from part of the query
+ */
 public class SelectBuilder extends QueryBuilder {
 
     public SelectBuilder(SelectQuery query) {

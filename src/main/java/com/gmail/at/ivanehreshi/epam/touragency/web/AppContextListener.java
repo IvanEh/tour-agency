@@ -7,6 +7,9 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+/**
+ * Entry point of the web application
+ */
 @WebListener
 public class AppContextListener implements ServletContextListener {
     private static final Logger LOGGER

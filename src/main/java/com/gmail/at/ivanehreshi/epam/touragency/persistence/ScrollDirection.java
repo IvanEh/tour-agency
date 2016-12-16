@@ -1,5 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 
+/**
+ * Represent scrolling direction of the database Slice
+ * @see Slice
+ */
 public enum ScrollDirection {
     UP(">"), DOWN("<");
 

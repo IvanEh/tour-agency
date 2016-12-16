@@ -10,11 +10,14 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+/**
+ * A more user friendly way of creating a registering a {@link ControllerDispatcherServlet}
+ */
 public class ControllerDispatcherServletBuilder {
     private final ServletContext servletContext;
 
     private List<ControllerDispatcherServlet.MatcherEntry> matchers
-                = new ArrayList<>();
+            = new ArrayList<>();
 
     public ControllerDispatcherServletBuilder(ServletContext sc) {
         this.servletContext = sc;
@@ -40,7 +43,7 @@ public class ControllerDispatcherServletBuilder {
     public ControllerDispatcherServlet build() {
         ControllerDispatcherServlet dispatcherServlet = new ControllerDispatcherServlet();
 
-        for (ControllerDispatcherServlet.MatcherEntry entry: matchers) {
+        for (ControllerDispatcherServlet.MatcherEntry entry : matchers) {
             dispatcherServlet.addMapping(entry);
         }
 

@@ -5,6 +5,10 @@ import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
 
 import java.util.List;
 
+/**
+ * {@link QueryBuilder} that represent the <b>where</b> part of
+ * the query. Could be used for composite where clause via #and method
+ */
 public class WhereBuilder extends QueryBuilder {
 
     public WhereBuilder(SelectQuery query) {
@@ -32,6 +36,11 @@ public class WhereBuilder extends QueryBuilder {
         return new LimitBuilder(query, count);
     }
 
+    /**
+     * Helps to build up an IN condition
+     *
+     * Usage: <code>whereBuilder.and("col", inCond(Arrays.asList("a", "b"))</code>
+     */
     public static String inCond(List<String> values) {
         if(values.isEmpty()) {
             return null;

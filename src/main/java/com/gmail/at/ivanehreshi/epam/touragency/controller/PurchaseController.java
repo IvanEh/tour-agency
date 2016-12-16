@@ -14,10 +14,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class PurchaseController extends Controller {
+public final class PurchaseController extends Controller {
     private PurchaseDao purchaseDao = ServiceLocator.INSTANCE.get(PurchaseDao.class);
     private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
     private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
+
+    private static final double HUNDR_PERCENT = 100.0;
 
     @Override
     public void get(RequestService reqService) {
@@ -36,7 +38,8 @@ public class PurchaseController extends Controller {
         Tour tour = tourDao.read(tourId);
         User user = userDao.read(userId);
 
-        BigDecimal discount = new BigDecimal((100 - user.getDiscount()) / 100.0);
+        double discountDouble = (HUNDR_PERCENT - user.getDiscount()) / HUNDR_PERCENT;
+        BigDecimal discount = new BigDecimal(discountDouble);
         BigDecimal price = tour.getPrice().multiply(discount);
 
         purchase.setTour(new Tour(tourId));

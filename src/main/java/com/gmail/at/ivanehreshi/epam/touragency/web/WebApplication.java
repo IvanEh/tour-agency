@@ -1,6 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
 import com.gmail.at.ivanehreshi.epam.touragency.controller.*;
+import com.gmail.at.ivanehreshi.epam.touragency.controller.service.JspController;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.ControllerDispatcherServletBuilder;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.HttpMethod;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
@@ -19,6 +20,11 @@ import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
 import javax.servlet.ServletContext;
 import java.io.File;
 
+/**
+ * The web application itself. It has two goals:
+ * 1. configure the application(connection manager, service locator, security, controllers)
+ * 2. bootstrap the application
+ */
 public enum WebApplication {
     INSTANCE;
 
@@ -47,24 +53,24 @@ public enum WebApplication {
 
         SecurityContext.INSTANCE.setUserDao(userDao);
         SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)
-                                .addSecurityConstraint("/user/.*");
+                .addSecurityConstraint("/user/.*");
 
         ControllerDispatcherServletBuilder servletBuilder = new ControllerDispatcherServletBuilder(servletContext);
         servletBuilder
-                      .addMapping("/", new RedirectController("/index.html"))
-                      .addMapping("/tours", new ToursController())
-                      .addMapping("/tours\\.html", HttpMethod.GET.mask, new ToursController())
-                      .addMapping("/user/buy\\.html", new BuyController())
-                      .addMapping("/agent/tours\\.html", new AgentToursPageController())
-                      .addMapping("/agent/users\\.html", new AgentUsersPageController())
-                      .addMapping("/register", new RegisterController())
-                      .addMapping("/user/discount", new UpdateDiscountController())
-                      .addMapping("/purchase", new PurchaseController() )
-                      .addMapping("/login", new LoginController())
-                      .addMapping("/logout", new LogoutController())
-                      .addMapping("/user/purchases\\.html", new PurchaseController())
-                      .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"))
-                      .buildAndRegister("Command Dispatcher Servlet", "/app/*");
+                .addMapping("/", new RedirectController("/index.html"))
+                .addMapping("/tours", new ToursController())
+                .addMapping("/tours\\.html", HttpMethod.GET.mask, new ToursController())
+                .addMapping("/user/buy\\.html", new BuyController())
+                .addMapping("/agent/tours\\.html", new AgentToursPageController())
+                .addMapping("/agent/users\\.html", new AgentUsersPageController())
+                .addMapping("/register", new RegisterController())
+                .addMapping("/user/discount", new UpdateDiscountController())
+                .addMapping("/purchase", new PurchaseController())
+                .addMapping("/login", new LoginController())
+                .addMapping("/logout", new LogoutController())
+                .addMapping("/user/purchases\\.html", new PurchaseController())
+                .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"))
+                .buildAndRegister("Command Dispatcher Servlet", "/app/*");
     }
 
     private void createDb() {

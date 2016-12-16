@@ -12,6 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This class encapsulate a lot of boilerplate codes for JDBC
+ * It also contains error handling and logging code
+ */
 public class JdbcTemplate {
     private static final Logger LOGGER = LogManager.getLogger(JdbcTemplate.class);
 

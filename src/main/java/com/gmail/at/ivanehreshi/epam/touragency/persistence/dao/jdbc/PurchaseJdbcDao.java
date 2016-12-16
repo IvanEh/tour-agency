@@ -14,18 +14,30 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class PurchaseJdbcDao implements PurchaseDao {
-    private static final String CREATE_SQL = "INSERT INTO `purchase` (`user_id`, `tour_id`, `date`, `price`) " +
+    private static final String CREATE_SQL =
+            "INSERT INTO `purchase` (`user_id`, `tour_id`, `date`, `price`) " +
             "VALUES (?, ?, ?, ?)";
-    private static final String FIND_ALL_SQL = "SELECT * FROM `purchase` ORDER BY id DESC";
-    private static final String FIND_BY_USER_SQL = "SELECT * FROM `purchase` WHERE user_id=?";
+
+    private static final String FIND_ALL_SQL =
+            "SELECT * FROM `purchase` ORDER BY id DESC";
+
+    private static final String FIND_BY_USER_SQL =
+            "SELECT * FROM `purchase` WHERE user_id=?";
+
     private static final String READ_SQL = "SELECT * FROM `purchase` WHERE id=?";
-    private static final String UPDATE_SQL = "UPDATE `purchase` SET `user_id`=?, `tour_id`=?," +
+
+    private static final String UPDATE_SQL =
+            "UPDATE `purchase` SET `user_id`=?, `tour_id`=?," +
             " `date`=?, `price`=? WHERE `id`=?";
+
     private static final String DELETE_SQL = "DELETE FROM `purchase` WHERE id=?";
 
     private ConnectionManager connectionManager;
+
     private JdbcTemplate jdbcTemplate;
+
     private UserDao userDao;
+
     private TourDao tourDao;
 
     public PurchaseJdbcDao(ConnectionManager connectionManager, UserDao userDao, TourDao tourDao) {

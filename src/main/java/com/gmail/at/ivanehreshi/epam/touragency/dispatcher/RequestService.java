@@ -9,6 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A wrapper class that contains all the necessary information for
+ * processing a request by {@link Controller} along with some
+ * helper methods
+ */
 public class RequestService {
     private static Logger LOGGER = LogManager.getLogger(RequestService.class);
 
@@ -18,7 +23,8 @@ public class RequestService {
     private String pagePath = null;
     private String redirectPath = null;
 
-    public RequestService(HttpServletRequest request, HttpServletResponse response, List<String> groups) {
+    public RequestService(HttpServletRequest request, HttpServletResponse response,
+                          List<String> groups) {
         this.request = request;
         this.response = response;
         this.groups = groups;
@@ -62,7 +68,7 @@ public class RequestService {
 
     public Long getLong(String parameter) {
         String s = request.getParameter(parameter);
-        if(s == null || s.isEmpty()) {
+        if (s == null || s.isEmpty()) {
             return null;
         }
         return Long.valueOf(s);
@@ -70,7 +76,7 @@ public class RequestService {
 
     public Integer getInt(String parameter) {
         String s = request.getParameter(parameter);
-        if(s == null || s.isEmpty()) {
+        if (s == null || s.isEmpty()) {
             return null;
         }
         return Integer.valueOf(request.getParameter(parameter));
@@ -83,6 +89,7 @@ public class RequestService {
     public boolean getBool(String parameter) {
         return Objects.equals(request.getParameter(parameter), "1");
     }
+
     public void setGroups(List<String> groups) {
         this.groups = groups;
     }
@@ -103,8 +110,10 @@ public class RequestService {
     public HttpMethod getMethod() {
         String formMethod = getString("__method");
 
-        if(formMethod != null)
-            return HttpMethod.valueOf(formMethod.toUpperCase());
+        try {
+            if (formMethod != null)
+                return HttpMethod.valueOf(formMethod.toUpperCase());
+        } catch (IllegalArgumentException e) { }
 
         return HttpMethod.valueOf(request.getMethod());
     }

@@ -10,6 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.security.Principal;
 
+/**
+ * A wrapper around HttpServletRequest that override methods related to
+ * security, authorization and authentication
+ *
+ * @see SecurityContext
+ * @see SecurityFilter
+ */
 public class SecuredHttpServletRequest extends HttpServletRequestWrapper {
     private static final Logger LOGGER = LogManager.getLogger(SecuredHttpServletRequest.class);
 

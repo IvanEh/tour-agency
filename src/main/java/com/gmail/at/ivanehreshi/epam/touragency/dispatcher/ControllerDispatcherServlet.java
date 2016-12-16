@@ -1,5 +1,8 @@
 package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -10,8 +13,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Dispatches incoming request to mapped Controllers
+ */
 public class ControllerDispatcherServlet extends HttpServlet {
+    public static final Logger LOGGER = LogManager.getLogger(ControllerDispatcherServlet.class);
+
     private final List<MatcherEntry> httpMatchers;
+
     private final List<MatcherEntry> httpServiceMatchers;
 
 
@@ -20,14 +29,20 @@ public class ControllerDispatcherServlet extends HttpServlet {
         httpServiceMatchers = new ArrayList<>();
     }
 
-
+    /**
+     * Define a URL-Controller mapping
+     *
+     * @param regex      - regular expression that is used for matching
+     * @param mask       - request method mask(e.g HttpMethod.GET.mask & HttpMethod.PUT.mask)
+     * @param controller
+     */
     public void addMapping(String regex, int mask, Controller controller) {
         MatcherEntry matcherEntry = new MatcherEntry(regex, mask, controller);
         addMapping(matcherEntry);
     }
 
-    public void addMapping(MatcherEntry entry) {
-        if(entry.controller.isService()) {
+    void addMapping(MatcherEntry entry) {
+        if (entry.controller.isService()) {
             httpMatchers.add(entry);
         } else {
             httpServiceMatchers.add(entry);
@@ -51,7 +66,7 @@ public class ControllerDispatcherServlet extends HttpServlet {
 
     private void dispatch(HttpServletRequest req, HttpServletResponse resp) {
         String pathInfo = req.getPathInfo();
-        if(pathInfo == null)
+        if (pathInfo == null)
             pathInfo = "/";
 
         RequestService requestService = new RequestService(req, resp, null);
@@ -60,6 +75,30 @@ public class ControllerDispatcherServlet extends HttpServlet {
         any |= dispatchLoop(req, resp, pathInfo, requestService, httpMatchers, true);
         any |= dispatchLoop(req, resp, pathInfo, requestService, httpServiceMatchers, false);
 
+        tryRedirect(resp, requestService);
+
+        tryRender(req, resp, requestService, any);
+
+
+    }
+
+    private void tryRender(HttpServletRequest req, HttpServletResponse resp, RequestService requestService, boolean any) {
+        if (requestService.getRenderPage() != null) {
+            try {
+                req.getRequestDispatcher(requestService.getRenderPage()).forward(req, resp);
+            } catch (ServletException | IOException e) {
+                LOGGER.warn("An exception happened at page rendering phase");
+            }
+        } else if (!any) {
+            try {
+                req.getRequestDispatcher("/pages/__error").forward(req, resp);
+            } catch (ServletException | IOException e) {
+                LOGGER.warn("An exception happened at page rendering phase");
+            }
+        }
+    }
+
+    private void tryRedirect(HttpServletResponse resp, RequestService requestService) {
         if (requestService.getRedirectPath() != null) {
             try {
                 resp.sendRedirect(requestService.getRedirectPath());
@@ -67,42 +106,22 @@ public class ControllerDispatcherServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
-
-        if (requestService.getRenderPage() != null) {
-            try {
-                req.getRequestDispatcher(requestService.getRenderPage()).forward(req, resp);
-            } catch (ServletException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (!any) {
-            try {
-                req.getRequestDispatcher("/pages/__error").forward(req, resp);
-            } catch (ServletException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
     }
 
     private boolean dispatchLoop(HttpServletRequest req, HttpServletResponse resp, String pathInfo,
-                              RequestService requestService,
-                              List<MatcherEntry> httpMatchers, boolean matchFirst) {
+                                 RequestService requestService,
+                                 List<MatcherEntry> httpMatchers, boolean matchFirst) {
         boolean any = false;
         HttpMethod method = requestService.getMethod();
 
-        for(MatcherEntry matcherEntry: httpMatchers) {
+        for (MatcherEntry matcherEntry : httpMatchers) {
             matcherEntry.matcher.reset(pathInfo);
 
-            if((matcherEntry.mask & method.mask) == 0) {
+            if ((matcherEntry.mask & method.mask) == 0) {
                 continue;
             }
 
-            if(matcherEntry.matcher.matches()) {
+            if (matcherEntry.matcher.matches()) {
                 resp.setStatus(HttpServletResponse.SC_OK);
 
                 any = true;
@@ -117,7 +136,7 @@ public class ControllerDispatcherServlet extends HttpServlet {
 
                 matcherEntry.call(requestService);
 
-                if(matchFirst) {
+                if (matchFirst) {
                     break;
                 }
             }
@@ -127,6 +146,9 @@ public class ControllerDispatcherServlet extends HttpServlet {
     }
 
 
+    /**
+     * This class represent a URL pattern - Controller pair
+     */
     static class MatcherEntry {
         private final Matcher matcher;
 

@@ -1,5 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.util;
 
+/**
+ * Represent ordering relationship between elements
+ * Used for specifying order by clause in various DAO methods
+ */
 public enum  Ordering {
     ASC("ASC", "<"), DESC("DESC", ">"), NO("", "=");
 

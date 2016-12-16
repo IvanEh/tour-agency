@@ -14,23 +14,42 @@ import java.util.List;
 public class UserJdbcDao implements UserDao {
     private static final String CREATE_SQL = "INSERT INTO `user` (`username`, `firstName`, " +
             "`lastName`, `password`, `discount`) VALUES (?, ?, ?, ?, ?)";
+
     private static final String FIND_ALL_SQL = "SELECT * FROM `user`";
+
     private static final String READ_SQL = "SELECT * FROM `user` WHERE id=?";
+
     private static final String READ_BY_USERNAME_SQL = "SELECT * FROM `user` WHERE username=?";
+
     private static final String UPDATE_SQL = "UPDATE `user` SET `username`=?, `firstName`=?," +
             " `lastName`=?, `password`=?, `discount`=? WHERE `id`=?";
+
     private static final String DELETE_SQL = "DELETE FROM `user` WHERE id=?";
+
     private static final String GET_ROLES_SQL = "SELECT role_id FROM `user_role` WHERE `user_id`=?";
+
     private static final String ADD_ROLE_SQL = "INSERT INTO `user_role` (`user_id`, `role_id`) VALUES (?, ?)";
+
     private static final String CLEAR_ROLES_SQL = "DELETE FROM `user_role` WHERE user_id=?";
-    private static final String COUNT_ORDERS_SQL = "SELECT COUNT(*) FROM `purchase` JOIN `user` ON `user`.id = `purchase`.user_id " 
-    		+ "WHERE `user`.id=?";
-    private static final String TOTAL_ORDERS_PRICE_SQL = "SELECT SUM(`price`) FROM `purchase` JOIN `user` ON `user`.id = `purchase`.user_id "
-    		+ "WHERE `user`.id=?";
-    private static final String FIND_ALL_BY_TOTAL_PRICE = "SELECT `user`.*, SUM(ifnull(price, 0)) AS total FROM `user` LEFT JOIN `purchase` ON `user`.id = `purchase`.`user_id` GROUP BY `user`.`id` ORDER BY total DESC";
-    private static final String FIND_ALL_BY_COUNT = "SELECT `user`.*, COUNT(price) AS total FROM `user` LEFT JOIN `purchase` ON `user`.id = `purchase`.`user_id` GROUP BY `user`.`id` ORDER BY total DESC";
+
+    private static final String COUNT_ORDERS_SQL =
+            "SELECT COUNT(*) FROM `purchase` JOIN `user` ON `user`.id = `purchase`.user_id "
+            + "WHERE `user`.id=?";
+
+    private static final String TOTAL_ORDERS_PRICE_SQL =
+            "SELECT SUM(`price`) FROM `purchase` JOIN `user` ON `user`.id = `purchase`.user_id "
+            + "WHERE `user`.id=?";
+
+    private static final String FIND_ALL_BY_TOTAL_PRICE =
+            "SELECT `user`.*, SUM(ifnull(price, 0)) AS total FROM `user`" +
+            " LEFT JOIN `purchase` ON `user`.id = `purchase`.`user_id` GROUP BY `user`.`id` ORDER BY total DESC";
+
+    private static final String FIND_ALL_BY_COUNT =
+            "SELECT `user`.*, COUNT(price) AS total FROM `user` LEFT JOIN `purchase`" +
+            " ON `user`.id = `purchase`.`user_id` GROUP BY `user`.`id` ORDER BY total DESC";
 
     private ConnectionManager connectionManager;
+
     private JdbcTemplate jdbcTemplate;
 
     public UserJdbcDao(ConnectionManager connectionManager) {
@@ -56,7 +75,7 @@ public class UserJdbcDao implements UserDao {
     @Override
     public User read(String username) {
         User user = jdbcTemplate.queryObject(UserJdbcDao::fromResultSet, READ_BY_USERNAME_SQL, username);
-        if(user == null)
+        if (user == null)
             return null;
 
         user.setRoles(readRoles(user.getId()));
@@ -107,6 +126,30 @@ public class UserJdbcDao implements UserDao {
         return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_SQL);
     }
 
+    @Override
+    public int countPurchases(Long userId) {
+        return jdbcTemplate.queryObjects((rs) -> rs.getInt(1), COUNT_ORDERS_SQL, userId).get(0);
+    }
+
+    @Override
+    public BigDecimal computePurchasesTotalPrice(Long userId) {
+        BigDecimal ans = jdbcTemplate.queryObjects((rs) -> rs.getBigDecimal(1), TOTAL_ORDERS_PRICE_SQL, userId).get(0);
+
+        if (ans == null) {
+            return new BigDecimal(0);
+        }
+
+        return ans;
+    }
+
+    @Override
+    public List<User> findAllOrderByRegularity(boolean byTotalPrice) {
+        if (byTotalPrice) {
+            return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_BY_TOTAL_PRICE);
+        }
+
+        return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_BY_COUNT);
+    }
     private static User fromResultSet(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getLong("id"));
@@ -118,28 +161,4 @@ public class UserJdbcDao implements UserDao {
         return user;
     }
 
-	@Override
-	public int countPurchases(Long userId) {
-		return jdbcTemplate.queryObjects((rs) -> rs.getInt(1), COUNT_ORDERS_SQL, userId).get(0);
-	}
-
-	@Override
-	public BigDecimal computePurchasesTotalPrice(Long userId) {
-		BigDecimal ans = jdbcTemplate.queryObjects((rs) -> rs.getBigDecimal(1), TOTAL_ORDERS_PRICE_SQL, userId).get(0);
-		
-		if(ans == null) {
-			return new BigDecimal(0);
-		}
-		
-		return ans;
-	}
-
-    @Override
-    public List<User> findAllOrderByRegularity(boolean byTotalPrice) {
-        if(byTotalPrice) {
-            return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_BY_TOTAL_PRICE);
-        }
-
-        return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_BY_COUNT);
-    }
 }

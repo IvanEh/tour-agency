@@ -2,7 +2,11 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.query;
 
 import java.util.Arrays;
 
-public class SelectQuery implements Query{
+/**
+ * Implementation of {@link Query} that encapsulates various parts
+ * of a SQL selection query
+ */
+public class SelectQuery implements Query {
     private String columns;
     private String table;
     private String[] whereClause;

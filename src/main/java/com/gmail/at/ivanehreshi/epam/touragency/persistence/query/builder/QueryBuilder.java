@@ -2,6 +2,10 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder;
 
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.SelectQuery;
 
+/**
+ * QueryBuilder helps to build up a dynamic query in
+ * a step by step way
+ */
 public abstract class QueryBuilder {
     protected SelectQuery query;
 

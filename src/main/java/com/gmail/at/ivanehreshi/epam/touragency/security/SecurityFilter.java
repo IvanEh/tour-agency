@@ -14,6 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The filter 'weaves' the SecurityContext constraints into the web application
+ * by replacing ServletRequest and ServletResponse with a custom secure one
+ *
+ * @see SecurityContext
+ * @see SecuredHttpServletRequest
+ */
 @WebFilter(urlPatterns = "/*")
 public class SecurityFilter implements Filter {
     private static final Logger LOGGER = LogManager.getLogger(SecurityFilter.class);
@@ -24,7 +31,9 @@ public class SecurityFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+                            throws IOException, ServletException {
+
         if (!(request instanceof HttpServletRequest)) {
             chain.doFilter(request, response);
             return;

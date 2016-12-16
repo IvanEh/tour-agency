@@ -2,13 +2,10 @@ package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.Controller;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.RequestService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 
-public class LoginController extends Controller {
-    private static final Logger LOGGER = LogManager.getLogger(LoginController.class);
+public final class LoginController extends Controller {
 
     @Override
     public void post(RequestService reqService) {

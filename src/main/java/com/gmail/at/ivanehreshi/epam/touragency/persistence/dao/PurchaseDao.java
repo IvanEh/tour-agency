@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface PurchaseDao extends Dao<Purchase,Long> {
     Purchase deepen(Purchase purchase);
+
     List<Purchase> findByUser(Long userId);
 }

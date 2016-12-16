@@ -5,7 +5,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.RequestService;
 
 import javax.servlet.ServletException;
 
-public class LogoutController extends Controller {
+public final class LogoutController extends Controller {
 
     @Override
     public void post(RequestService reqService) {

@@ -6,14 +6,16 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
 
-public class BuyController extends Controller {
+public final class BuyController extends Controller {
     private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
 
     @Override
     public void get(RequestService reqService) {
         Long tourId = reqService.getLong("tourId");
         Tour tour = tourDao.read(tourId);
+        Long userId = reqService.getUser().getId();
+
         reqService.putParameter("tour", tour);
-        reqService.putParameter("price", tourDao.computePrice(tourId, reqService.getUser().getId()));
+        reqService.putParameter("price", tourDao.computePrice(tourId, userId));
     }
 }

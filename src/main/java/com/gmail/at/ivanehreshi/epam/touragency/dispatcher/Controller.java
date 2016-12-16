@@ -3,8 +3,20 @@ package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-abstract public class Controller {
-    private static Logger LOGGER = LogManager.getLogger(Controller.class);
+/**
+ * This class used for convenient request handling
+ *
+ * <p> It resembles a HttpServlet but has the advantage of centralized
+ * dispatching and path parameter handling
+ *
+ * <p> Every method receives a RequestService instance that contains
+ * some convenient wrapper methods
+ *
+ * @see ControllerDispatcherServlet
+ * @see RequestService
+ */
+public abstract class Controller {
+    private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
     public void execute(RequestService reqService) {
         HttpMethod method = reqService.getMethod();
@@ -35,6 +47,12 @@ abstract public class Controller {
     public void put(RequestService reqService) {}
     public void any(RequestService reqService) {}
 
+    /**
+     * Service controller always try to match the URL pattern, while
+     * only one regular controller would be called per request
+     *
+     * @return true if this controller serves as a service controller
+     */
     public boolean isService() {
         return false;
     }

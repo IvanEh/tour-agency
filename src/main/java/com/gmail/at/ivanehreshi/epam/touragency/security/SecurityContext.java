@@ -13,7 +13,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum  SecurityContext {
+/**
+ * A singleton object for encapsulating user authorization and authentication
+ * Allows adding security constrains to the web application
+ */
+public enum SecurityContext {
     INSTANCE;
 
     private static Logger LOGGER = LogManager.getLogger(SecurityContext.class);
@@ -26,6 +30,14 @@ public enum  SecurityContext {
 
     private ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
+    /**
+     * Allows access to URLs denoted by the s regular expression
+     * for the given roles and denies for other users
+     * @param s     regular expression which tested against the URL
+     * @param roles roles that allowed to access the given set of pages;
+     *              if null - only authenticated user can access the pages
+     * @return  the same SecurityContext
+     */
     public SecurityContext addSecurityConstraint(String s, Role... roles) {
         rwLock.writeLock().lock();
         try {
@@ -37,6 +49,12 @@ public enum  SecurityContext {
         }
     }
 
+    /**
+     * Test if a user with the given roles can access the page
+     * @param path  URI of the resource starting with /
+     * @param roles roles of the user
+     * @return true if user allowed to access the resource, false - otherwise
+     */
     public boolean allowed(String path, List<Role> roles) {
         rwLock.readLock().lock();
         try {
@@ -76,6 +94,10 @@ public enum  SecurityContext {
         this.userDao = userDao;
     }
 
+    /**
+     * Represents a pair of regular expression and roles allowed to access the
+     * set of pages(denoted by the expression)
+     */
     private static class SecurityConstraint {
         private final Pattern pattern;
         private final Matcher matcher;
@@ -93,12 +115,12 @@ public enum  SecurityContext {
         }
 
         public boolean allowed(List<Role> roles) {
-            if(rolesAllowed.isEmpty()) {
+            if (rolesAllowed.isEmpty()) {
                 return !roles.isEmpty();
             }
 
-            for(Role role: roles) {
-                if(rolesAllowed.contains(role)) {
+            for (Role role : roles) {
+                if (rolesAllowed.contains(role)) {
                     return true;
                 }
             }

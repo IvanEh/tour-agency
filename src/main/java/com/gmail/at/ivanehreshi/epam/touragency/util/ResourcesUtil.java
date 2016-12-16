@@ -7,6 +7,10 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+/**
+ * Loads a resource file from the classpath. ResourceBundle is a better alternative
+ */
+@Deprecated
 public class ResourcesUtil {
     private static Logger LOGGER = LogManager.getLogger(ResourcesUtil.class);
 

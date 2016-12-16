@@ -10,16 +10,21 @@ import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
 
 import java.util.Arrays;
 
-public class RegisterController extends Controller {
+public final class RegisterController extends Controller {
     private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
 
     @Override
     public void post(RequestService reqService) {
         User user = new User();
+
         user.setUsername(reqService.getString("username"));
         user.setFirstName(reqService.getString("firstName"));
         user.setLastName(reqService.getString("lastName"));
-        user.setPassword(PasswordEncoder.encodePassword(reqService.getString("password")));
+
+        String pass = reqService.getString("password");
+        String encodedPass = PasswordEncoder.encodePassword(pass);
+        user.setPassword(encodedPass);
+
         user.setRoles(Arrays.asList(Role.CUSTOMER));
 
         userDao.create(user);

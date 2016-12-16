@@ -17,6 +17,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * ConnectionManager encapsulates a data source. The static factory methods
+ * allow creating a DataSource object from various sources
+ */
 public class ConnectionManager {
     public static final Logger LOGGER = LogManager.getLogger(ConnectionManager.class);
 
@@ -53,6 +57,12 @@ public class ConnectionManager {
         return dataSource;
     }
 
+    /**
+     * Creates a ConnectionManager using MySQL JDBC connector driver
+     * and loads its settings from a property file
+     * @param filename
+     * @return
+     */
     public static ConnectionManager fromProperties(String filename) {
         ConnectionManager connManager = new ConnectionManager();
         MysqlDataSource mysqlDs = new MysqlDataSource();
@@ -68,6 +78,12 @@ public class ConnectionManager {
         return connManager;
     }
 
+    /**
+     * Creates a ConnectionManager from a JNDI path of the DataSource location
+     * in the component's environment
+     * @param name - JNDI name of the DataSource component
+     * @return a new ConnectionManager
+     */
     public static ConnectionManager fromJndi(String name) {
         try {
             Context initContext = new InitialContext();

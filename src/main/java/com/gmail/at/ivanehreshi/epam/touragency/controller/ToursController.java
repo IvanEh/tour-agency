@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToursController extends Controller {
+public final class ToursController extends Controller {
     private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
 
     private static final int PAGE_SIZE = 10;
@@ -23,26 +23,29 @@ public class ToursController extends Controller {
     public void get(RequestService reqService) {
         String priceOrdStr = reqService.getString("price");
         String tourTypesStr = reqService.getString("type");
+
         Integer direction = reqService.getInt("direction");
         direction = direction == null ? 1 : direction;
+
         ScrollDirection dir = ScrollDirection.valueOf(direction);
 
         Tour anchor = null;
-        if(reqService.getString("currId") != null && !reqService.getString("currId").isEmpty()) {
+        boolean hasCurrId = reqService.getString("currId") != null;
+        if (hasCurrId && !reqService.getString("currId").isEmpty()) {
             anchor = new Tour(reqService.getLong("currId"));
             anchor.setPrice(new BigDecimal(reqService.getString("currPrice")));
         }
 
         tourTypesStr = tourTypesStr == null ? "" : tourTypesStr;
         List<TourType> tourTypes = new ArrayList<>();
-        for(String t: tourTypesStr.split(",")) {
+        for (String t: tourTypesStr.split(",")) {
             try {
                 tourTypes.add(TourType.valueOf(t.toUpperCase()));
             } catch (IllegalArgumentException e){}
         }
 
         Ordering priceOrd = Ordering.NO;
-        if(priceOrdStr != null) {
+        if (priceOrdStr != null) {
             try {
                 priceOrd = Ordering.valueOf(priceOrdStr.toUpperCase());
             } catch (IllegalArgumentException e) {
@@ -50,10 +53,9 @@ public class ToursController extends Controller {
             }
         }
 
-
-        Slice<Tour> tours =
-                tourDao.getToursSliceByCriteria(PAGE_SIZE, anchor, dir, priceOrd,
-                                           (TourType[]) tourTypes.toArray(new TourType[]{}));
+        TourType[] tourTypesArr = (TourType[]) tourTypes.toArray(new TourType[]{});
+        Slice<Tour> tours = tourDao.getToursSliceByCriteria(PAGE_SIZE, anchor,
+                        dir, priceOrd, tourTypesArr);
 
         reqService.putParameter("tours",  tours.getPayload());
 
@@ -89,7 +91,6 @@ public class ToursController extends Controller {
 
     @Override
     public void put(RequestService reqService) {
-        System.out.println("PUT");
         Long id = reqService.getLong("id");
         try {
             Tour tour = new Tour();
@@ -104,7 +105,6 @@ public class ToursController extends Controller {
             tourDao.update(tour);
             reqService.redirect("/agent/tours.html");
         } catch (NumberFormatException e) {
-            System.out.println(e);
             reqService.redirect("/agent/edit-tour.html?failed=true&id=" + id);
         }
     }

@@ -5,6 +5,9 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import java.io.IOException;
 
+/**
+ * EncodingFilter add cyrillic letters support for responses
+ */
 @WebFilter(urlPatterns = "/*", initParams = {
         @WebInitParam(name = "encoding", value = "UTF-8", description = "Encoding param")
 })
@@ -19,8 +22,11 @@ public class EncodingFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+                                throws IOException, ServletException {
+
         String codeRequest = request.getCharacterEncoding();
+
         if(code != null && !code.equals(codeRequest)) {
             request.setCharacterEncoding(code);
             response.setCharacterEncoding(code);

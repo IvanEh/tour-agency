@@ -19,19 +19,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TourJdbcDao implements TourDao {
-    private static final String CREATE_SQL = "INSERT INTO `tour` (`title`, `description`, `type`, `hot`, `price`, `enabled`) VALUES (?, ?, ?, ?, ?, ?)";
+
+    private static final String CREATE_SQL =
+            "INSERT INTO `tour` (`title`, `description`, `type`," +
+                    " `hot`, `price`, `enabled`) VALUES (?, ?, ?, ?, ?, ?)";
+
     private static final String FIND_ALL_SQL = "SELECT * FROM tour";
-    private static final String FIND_ALL_ORDERED_SQL = FIND_ALL_SQL + " ORDER BY hot DESC, id DESC";
+
+    private static final String FIND_ALL_ORDERED_SQL =
+            FIND_ALL_SQL + " ORDER BY hot DESC, id DESC";
+
     private static final String READ_SQL = "SELECT * FROM tour WHERE id=?";
-    private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, `description`=?, `type`=?, `hot`=?, `price`=?, `enabled`=? WHERE `id`=?";
+
+    private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, " +
+            "`description`=?, `type`=?, `hot`=?, `price`=?, `enabled`=? WHERE `id`=?";
+
     private static final String DELETE_SQL = "DELETE FROM tour WHERE id=?";
-    private static final String COMPUTE_PRICE_SQL = "SELECT tour.price * cast((100 - discount)/100 as DECIMAL(10,2))" +
+
+    private static final String COMPUTE_PRICE_SQL =
+            "SELECT tour.price * cast((100 - discount)/100 as DECIMAL(10,2))" +
             "FROM  `user`, tour WHERE `user`.id =? AND tour.id=?";
-    private static final String TYPE_COL = "type";
-    private static final String PRICE_COL = "price";
+
     private static final BigDecimal LARGE_DECIMAL = new BigDecimal(Long.MAX_VALUE);
 
     private ConnectionManager connectionManager;
+
     private JdbcTemplate jdbcTemplate;
 
     public TourJdbcDao(ConnectionManager connectionManager) {
@@ -136,15 +148,5 @@ public class TourJdbcDao implements TourDao {
         tour.setHot(rs.getBoolean("hot"));
         tour.setEnabled(rs.getBoolean("enabled"));
         return tour;
-    }
-
-    public static class IdPricePair {
-        public BigDecimal price;
-        public Long id;
-
-        public IdPricePair(Long id, BigDecimal price) {
-            this.id = id;
-            this.price = price;
-        }
     }
 }
