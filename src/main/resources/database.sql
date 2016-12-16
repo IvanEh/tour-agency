@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `tour` (
   `type` INT(11) NOT NULL,
   `hot` TINYINT(1) NOT NULL DEFAULT '0',
   `price` DECIMAL(10,4) NOT NULL,
+  `enabled` INT(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`))
 DEFAULT CHARACTER SET = utf8;
 
