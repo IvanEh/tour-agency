@@ -1,6 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS `tour_agency` DEFAULT CHARACTER SET utf8 ;
-USE `tour_agency` ;
-
 CREATE TABLE IF NOT EXISTS `tour` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(75) NOT NULL,
@@ -31,10 +28,10 @@ CREATE TABLE IF NOT EXISTS `purchase` (
   PRIMARY KEY (`id`),
   INDEX `fk_purchase_tour_id` (`tour_id` ASC),
   INDEX `fk_purchase_user_id` (`user_id` ASC),
-  CONSTRAINT `fk_purchase_tour_id`
+  CONSTRAINT `fk_purchase_tour_id0`
     FOREIGN KEY (`tour_id`)
     REFERENCES `tour_agency`.`tour` (`id`),
-  CONSTRAINT `fk_purchase_user_id`
+  CONSTRAINT `fk_purchase_user_id0`
     FOREIGN KEY (`user_id`)
     REFERENCES `tour_agency`.`user` (`id`))
 DEFAULT CHARACTER SET = utf8;
@@ -52,10 +49,16 @@ CREATE TABLE IF NOT EXISTS `user_role` (
   PRIMARY KEY (`id`),
   INDEX `fk_user_id` (`user_id` ASC),
   INDEX `fk_role_id` (`role_id` ASC),
-  CONSTRAINT `fk_role_id`
+  CONSTRAINT `fk_role_id0`
     FOREIGN KEY (`role_id`)
     REFERENCES `tour_agency`.`role` (`id`),
-  CONSTRAINT `fk_user_id`
+  CONSTRAINT `fk_user_id0`
     FOREIGN KEY (`user_id`)
     REFERENCES `tour_agency`.`user` (`id`))
 DEFAULT CHARACTER SET = utf8;
+
+INSERT INTO `role` (`id`, `name`) VALUES ('1', 'CUSTOMER');
+INSERT INTO `role` (`id`, `name`) VALUES ('2', 'TOUR_AGENT');
+INSERT INTO `user` (`id`, `username`, `firstName`, `lastName`, `password`)
+       VALUES('1', 'admin', 'Admin', 'Admin', 'jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=');
+INSERT INTO `user_role` (id, user_id, role_id) VALUES('1', '1', '2');
