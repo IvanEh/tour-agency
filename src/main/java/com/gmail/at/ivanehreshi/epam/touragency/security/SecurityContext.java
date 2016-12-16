@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,27 +24,40 @@ public enum  SecurityContext {
 
     private List<SecurityConstraint> securityConstraints = new ArrayList<>();
 
+    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+
     public SecurityContext addSecurityConstraint(String s, Role... roles) {
-        securityConstraints.add(new SecurityConstraint(s, roles));
-        return this;
+        rwLock.writeLock().lock();
+        try {
+            securityConstraints.add(new SecurityConstraint(s, roles));
+            return this;
+
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 
     public boolean allowed(String path, List<Role> roles) {
-        if(roles == null) {
-            roles = new ArrayList<>();
-        }
-
-        boolean matched = false;
-
-        for(SecurityConstraint sc: securityConstraints) {
-
-            if(sc.matches(path)) {
-                System.out.println(path + " matched");
-                return sc.allowed(roles);
+        rwLock.readLock().lock();
+        try {
+            if (roles == null) {
+                roles = new ArrayList<>();
             }
-        }
 
-        return true;
+            boolean matched = false;
+
+            for (SecurityConstraint sc : securityConstraints) {
+
+                if (sc.matches(path)) {
+                    return sc.allowed(roles);
+                }
+            }
+
+            return true;
+
+        } finally {
+            rwLock.readLock().unlock();
+        }
     }
 
     public String getLoginPage() {
@@ -64,7 +79,7 @@ public enum  SecurityContext {
     private static class SecurityConstraint {
         private final Pattern pattern;
         private final Matcher matcher;
-        private List<Role> rolesAllowed = new ArrayList<>();
+        private final List<Role> rolesAllowed = new ArrayList<>();
 
         public SecurityConstraint(String pathPattern, Role... rolesAllowed) {
             pattern = Pattern.compile("^" + pathPattern + "$");

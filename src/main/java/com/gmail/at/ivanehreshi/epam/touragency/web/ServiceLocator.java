@@ -1,13 +1,13 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
 import javax.servlet.ServletContext;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum ServiceLocator {
     INSTANCE;
 
-    private Map<String, Object> objects = new HashMap<>();
+    private Map<String, Object> objects = new ConcurrentHashMap<>();
     private ServletContext servletContext;
 
     public void publish(String name, Object o, boolean elScope) {

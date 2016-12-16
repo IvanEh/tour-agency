@@ -13,8 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandDispatcherServlet extends HttpServlet {
-    private List<MatcherEntry> httpMatchers;
-    private List<MatcherEntry> httpServiceMatchers;
+    private final List<MatcherEntry> httpMatchers;
+    private final List<MatcherEntry> httpServiceMatchers;
 
 
     public CommandDispatcherServlet() {
