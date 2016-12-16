@@ -21,7 +21,7 @@
                 
                 <div class="btn btn-success pull-right" id="save">Зберегти</div>
                 
-                <c:forEach var="user" items="${userDao.findAll()}">
+                <c:forEach var="user" items="${users}">
                 <div class="col-md-12">
                     <div class="entry-box bordered">
                         <c:out value="${user.firstName} ${user.lastName}"/>

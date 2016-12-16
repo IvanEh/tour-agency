@@ -23,4 +23,6 @@ public interface UserDao extends Dao<User, Long> {
     int countPurchases(Long userId);
     
     BigDecimal computePurchasesTotalPrice(Long userId);
+
+    List<User> findAllOrderByRegularity(boolean byTotalPrice);
 }

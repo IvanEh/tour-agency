@@ -27,6 +27,8 @@ public class UserJdbcDao implements UserDao {
     		+ "WHERE `user`.id=?";
     private static final String TOTAL_ORDERS_PRICE_SQL = "SELECT SUM(`price`) FROM `purchase` JOIN `user` ON `user`.id = `purchase`.user_id "
     		+ "WHERE `user`.id=?";
+    private static final String FIND_ALL_BY_TOTAL_PRICE = "SELECT `user`.*, SUM(ifnull(price, 0)) AS total FROM `user` LEFT JOIN `purchase` ON `user`.id = `purchase`.`user_id` GROUP BY `user`.`id` ORDER BY total DESC";
+    private static final String FIND_ALL_BY_COUNT = "SELECT `user`.*, COUNT(price) AS total FROM `user` LEFT JOIN `purchase` ON `user`.id = `purchase`.`user_id` GROUP BY `user`.`id` ORDER BY total DESC";
 
     private ConnectionManager connectionManager;
     private JdbcTemplate jdbcTemplate;
@@ -131,4 +133,13 @@ public class UserJdbcDao implements UserDao {
 		
 		return ans;
 	}
+
+    @Override
+    public List<User> findAllOrderByRegularity(boolean byTotalPrice) {
+        if(byTotalPrice) {
+            return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_BY_TOTAL_PRICE);
+        }
+
+        return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_BY_COUNT);
+    }
 }
