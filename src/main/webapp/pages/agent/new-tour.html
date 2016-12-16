@@ -11,12 +11,12 @@
 
 <c:import url="/resources/components/navbar.html"/>
 
-<div class="container ovf-hidden">
-    <div class="col-md-3 stretch sidebar">
+<div class="container-fluid ovf-hidden">
+    <div class="col-md-3 sidebar">
         <c:import url="/resources/components/sidebar.html"/>
     </div>
 
-    <div class="col-md-9 stretch content">
+    <div class="col-md-offset-3 col-md-8 stretch content">
         <c:if test="${not empty param.failed}">
             <p class="bg-danger">Форма заповнена неправильно!</p>
         </c:if>
@@ -89,7 +89,7 @@
 
             </fieldset>
 
-            <input type="submit" class="btn btn-success pull-right" value="Створити"/>
+            <input type="submit" class="btn pull-right" value="Створити"/>
         </form>
     </div>
 </div>

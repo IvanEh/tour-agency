@@ -13,13 +13,13 @@
 
 <c:import url="/resources/components/navbar.html"/>
 
-<div class="container ovf-hidden">
-    <div class="col-md-3 stretch sidebar">
+<div class="container-fluid ovf-hidden">
+    <div class="col-md-2 sidebar">
         <c:import url="/resources/components/sidebar.html"/>
     </div>
 
-    <div class="col-md-9 content stretch">
-        <ul class="nav nav-pills">
+    <div class="col-md-offset-3 col-md-8 content stretch">
+        <ul class="nav nav-pills toolbar">
             <li><a class="btn btn-default" onclick="sort()">Ціна <span class="glyphicon glyphicon-sort-by-order"></span></a></li>
             <li><a class="btn btn-default" onclick="setTourType('RECREATION')">Відпочинок</a></li>
             <li><a class="btn btn-default" onclick="setTourType('EXCURSION')"> Екскурсія</a></li>
@@ -30,50 +30,55 @@
             Вибачте, немає турів, що задовольняють критерії
         </c:if>
 
-        <c:forEach var="tour" items="${tours}">
-            <div class="col-md-12">
-                <div class="tour clearfix">
-                    <c:if test="${tour.isHot()}">
-                        <div class="hot">
-                            <img src="/resources/images/hot.png"
-                                 title="Гаряча пропозиція!">
-                        </div>
-                    </c:if>
+        <div class="tours">
+            <c:forEach var="tour" items="${tours}">
 
-                    <div class="heading">
-                        <c:out value="${tour.title}"/>
-                    </div>
-                    <div class="body">
-                        <c:out value="${tour.description}"/>
-                    </div>
-                    <div class="footer">
-                        <div class="pull-left badge" style="line-height: 20px">
-                            <c:out value="${tour.price}"/>
+                <div class="tour-wrapper col-md-12">
+                    <a href="/user/buy.html?tourId=${tour.id}">
+                        <div class="tour clearfix">
+                            <c:if test="${tour.isHot()}">
+                                <div class="hot">
+                                    <img src="/resources/images/hot.png"
+                                         title="Гаряча пропозиція!">
+                                </div>
+                            </c:if>
+
+                            <div class="heading">
+                                <c:out value="${tour.title}"/>
+                            </div>
+                            <div class="body">
+                                <c:out value="${tour.description}"/>
+                            </div>
+                            <div class="footer">
+                                <div class="pull-left badge" style="line-height: 20px">
+                                    <c:out value="${tour.price}"/>
+                                </div>
+                            </div>
                         </div>
-                        <a href="/user/buy.html?tourId=${tour.id}" class="pull-right btn-tour-info fix-footer-overlay">Детальніше</a>
-                    </div>
+                    </a>
                 </div>
-            </div>
 
-        </c:forEach>
+            </c:forEach>
+        </div>
 
-        <c:if test="${not empty tours}">
-            <form method="post" class="fix-footer-overlay pull-left">
-                <input type="hidden" name="__method" value="get"/>
-                <input type="hidden" name="direction" value="-1"/>
-                <input type="hidden" name="currId" value="${prevId}"/>
-                <input type="hidden" name="currPrice" value="${prevPrice}"/>
-                <a href="#" class="btn btn-default" onclick="this.parentNode.submit()"><i class="glyphicon glyphicon-menu-left"></i></a>
-            </form>
-        </c:if>
 
         <c:if test="${not empty nextId || empty tours}">
-            <form method="post" class="fix-footer-overlay pull-rig">
+            <form method="post" class="fix-footer-overlay pull-right">
                 <input type="hidden" name="__method" value="get"/>
                 <input type="hidden" name="direction" value="+1"/>
                 <input type="hidden" name="currId" value="${nextId}"/>
                 <input type="hidden" name="currPrice" value="${nextPrice}"/>
                 <a href="#" class="btn btn-default" onclick="this.parentNode.submit()"><i class="glyphicon glyphicon-menu-right"></i></a>
+            </form>
+        </c:if>
+
+        <c:if test="${not empty tours}">
+            <form method="post" class="fix-footer-overlay pull-right">
+                <input type="hidden" name="__method" value="get"/>
+                <input type="hidden" name="direction" value="-1"/>
+                <input type="hidden" name="currId" value="${prevId}"/>
+                <input type="hidden" name="currPrice" value="${prevPrice}"/>
+                <a href="#" class="btn btn-default" onclick="this.parentNode.submit()"><i class="glyphicon glyphicon-menu-left"></i></a>
             </form>
         </c:if>
 
