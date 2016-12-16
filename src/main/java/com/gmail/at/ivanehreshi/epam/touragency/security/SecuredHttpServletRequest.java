@@ -26,6 +26,10 @@ public class SecuredHttpServletRequest extends HttpServletRequestWrapper {
     @Override
     public Principal getUserPrincipal() {
         User user = (User) getHttpRequest().getSession(false).getAttribute("user");
+        if(user == null) {
+            return null;
+        }
+
         return new UserPrincipal(user.getId().toString());
     }
 

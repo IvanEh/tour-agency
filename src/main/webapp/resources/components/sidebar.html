@@ -5,10 +5,5 @@
     <li><a href="/">Головна</a></li>
 </ul>
 
-<c:if test="${loggedIn}">
-    <c:import url="/resources/components/sidebar-agent.html"/>
-
-    <hr/>
-
-    <c:import url="/resources/components/sidebar-user.html"/>
-</c:if>
+<c:import url="/resources/components/sidebar-agent.html"/>
+<c:import url="/resources/components/sidebar-user.html"/>

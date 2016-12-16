@@ -1,11 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="u" uri="util" %>
 
-<c:if test="${pageContext.request.isUserInRole('TOUR_AGENT')}">
+<u:if-user role="TOUR_AGENT">
     <hr/>
     <ul class="nav nav-pills nav-stacked">
         <li><a href="/agent/new-tour.html">Новий тур</a></li>
         <li><a href="/agent/tours.html">Адміністрування турів</a></li>
         <li><a href="/agent/users.html">Всі користувачі</a></li>
     </ul>
-</c:if>
+</u:if-user>

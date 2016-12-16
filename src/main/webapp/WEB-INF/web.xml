@@ -4,6 +4,11 @@
          version="3.1">
 
     <jsp-config>
+        <taglib>
+            <taglib-uri>util</taglib-uri>
+            <taglib-location>/WEB-INF/tld/util.tld</taglib-location>
+        </taglib>
+
         <jsp-property-group>
             <url-pattern>*.html</url-pattern>
         </jsp-property-group>
