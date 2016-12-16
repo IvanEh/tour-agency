@@ -2,6 +2,7 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.TourType;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.Dao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ScrollDirection;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.Slice;
 import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;

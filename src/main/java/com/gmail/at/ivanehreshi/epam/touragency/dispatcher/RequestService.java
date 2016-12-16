@@ -1,4 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.servlet;
+package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import org.apache.logging.log4j.LogManager;

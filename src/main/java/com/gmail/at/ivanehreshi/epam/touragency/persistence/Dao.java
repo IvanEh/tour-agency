@@ -1,4 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao;
+package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 
 import java.io.Serializable;
 import java.util.List;

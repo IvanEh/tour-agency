@@ -1,4 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.web;
+package com.gmail.at.ivanehreshi.epam.touragency.util;
 
 import javax.servlet.ServletContext;
 import java.util.Map;

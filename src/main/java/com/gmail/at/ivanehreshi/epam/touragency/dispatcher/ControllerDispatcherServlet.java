@@ -1,6 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.servlet;
-
-import com.gmail.at.ivanehreshi.epam.touragency.command.Controller;
+package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,12 +10,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CommandDispatcherServlet extends HttpServlet {
+public class ControllerDispatcherServlet extends HttpServlet {
     private final List<MatcherEntry> httpMatchers;
     private final List<MatcherEntry> httpServiceMatchers;
 
 
-    public CommandDispatcherServlet() {
+    public ControllerDispatcherServlet() {
         httpMatchers = new ArrayList<>();
         httpServiceMatchers = new ArrayList<>();
     }

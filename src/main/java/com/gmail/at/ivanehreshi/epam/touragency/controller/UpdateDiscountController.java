@@ -1,9 +1,10 @@
-package com.gmail.at.ivanehreshi.epam.touragency.command;
+package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.Controller;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.RequestService;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
-import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.web.ServiceLocator;
+import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
 
 public class UpdateDiscountController extends Controller {
     private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);

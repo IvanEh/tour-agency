@@ -1,6 +1,8 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
-import com.gmail.at.ivanehreshi.epam.touragency.command.*;
+import com.gmail.at.ivanehreshi.epam.touragency.controller.*;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.ControllerDispatcherServletBuilder;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.HttpMethod;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
@@ -11,9 +13,8 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.PurchaseJdb
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.TourJdbcDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.UserJdbcDao;
 import com.gmail.at.ivanehreshi.epam.touragency.security.SecurityContext;
-import com.gmail.at.ivanehreshi.epam.touragency.servlet.CommandDispatcherServletBuilder;
-import com.gmail.at.ivanehreshi.epam.touragency.servlet.HttpMethod;
 import com.gmail.at.ivanehreshi.epam.touragency.util.ResourcesUtil;
+import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -48,7 +49,7 @@ public enum WebApplication {
         SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)
                                 .addSecurityConstraint("/user/.*");
 
-        CommandDispatcherServletBuilder servletBuilder = new CommandDispatcherServletBuilder(servletContext);
+        ControllerDispatcherServletBuilder servletBuilder = new ControllerDispatcherServletBuilder(servletContext);
         servletBuilder
                       .addMapping("/", new RedirectController("/index.html"))
                       .addMapping("/tours", new ToursController())

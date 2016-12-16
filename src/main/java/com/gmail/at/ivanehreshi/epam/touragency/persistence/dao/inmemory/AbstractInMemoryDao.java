@@ -1,7 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.inmemory;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.Dao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.Dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;

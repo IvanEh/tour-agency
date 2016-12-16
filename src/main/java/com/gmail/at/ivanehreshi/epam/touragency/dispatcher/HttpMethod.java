@@ -1,4 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.servlet;
+package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
 import java.util.Arrays;
 

@@ -1,7 +1,5 @@
-package com.gmail.at.ivanehreshi.epam.touragency.command;
+package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
-import com.gmail.at.ivanehreshi.epam.touragency.servlet.HttpMethod;
-import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
