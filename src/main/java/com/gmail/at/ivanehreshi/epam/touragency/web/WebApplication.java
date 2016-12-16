@@ -25,24 +25,24 @@ public enum WebApplication {
 
     private ConnectionManager connectionManager;
 
-    private ObjectFactory objectFactory;
+    private ServiceLocator serviceLocator;
 
     WebApplication() {
         connectionManager = new ConnectionManager();
     }
 
     protected void init() {
-        ObjectFactory.INSTANCE.setServletContext(servletContext);
-        objectFactory = ObjectFactory.INSTANCE;
+        ServiceLocator.INSTANCE.setServletContext(servletContext);
+        serviceLocator = ServiceLocator.INSTANCE;
 
         createDb();
 
         TourDao tourDao = new TourJdbcDao(connectionManager);
         UserDao userDao = new UserJdbcDao(connectionManager);
 
-        objectFactory.publish(TourDao.class, tourDao);
-        objectFactory.publish(UserDao.class, userDao);
-        objectFactory.publish(PurchaseDao.class, new PurchaseJdbcDao(connectionManager, userDao, tourDao));
+        serviceLocator.publish(TourDao.class, tourDao);
+        serviceLocator.publish(UserDao.class, userDao);
+        serviceLocator.publish(PurchaseDao.class, new PurchaseJdbcDao(connectionManager, userDao, tourDao));
 
         SecurityContext.INSTANCE.setUserDao(userDao);
         SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)

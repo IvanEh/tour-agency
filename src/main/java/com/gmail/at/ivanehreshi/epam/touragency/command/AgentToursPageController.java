@@ -3,12 +3,12 @@ package com.gmail.at.ivanehreshi.epam.touragency.command;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.web.ObjectFactory;
+import com.gmail.at.ivanehreshi.epam.touragency.web.ServiceLocator;
 
 import java.util.List;
 
 public class AgentToursPageController extends Controller {
-    private TourDao tourDao = ObjectFactory.INSTANCE.get(TourDao.class);
+    private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
 
     @Override
     public void get(RequestService reqService) {

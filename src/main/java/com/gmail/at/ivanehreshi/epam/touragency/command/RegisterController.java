@@ -5,12 +5,12 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
 import com.gmail.at.ivanehreshi.epam.touragency.util.PasswordEncoder;
-import com.gmail.at.ivanehreshi.epam.touragency.web.ObjectFactory;
+import com.gmail.at.ivanehreshi.epam.touragency.web.ServiceLocator;
 
 import java.util.Arrays;
 
 public class RegisterController extends Controller {
-    private UserDao userDao = ObjectFactory.INSTANCE.get(UserDao.class);
+    private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
 
     @Override
     public void post(RequestService reqService) {

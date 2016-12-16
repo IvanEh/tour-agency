@@ -3,10 +3,10 @@ package com.gmail.at.ivanehreshi.epam.touragency.command;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.web.ObjectFactory;
+import com.gmail.at.ivanehreshi.epam.touragency.web.ServiceLocator;
 
 public class UpdateDiscountController extends Controller {
-    private UserDao userDao = ObjectFactory.INSTANCE.get(UserDao.class);
+    private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
 
     @Override
     public void post(RequestService reqService) {

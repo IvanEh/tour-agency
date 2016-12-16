@@ -7,16 +7,16 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.web.ObjectFactory;
+import com.gmail.at.ivanehreshi.epam.touragency.web.ServiceLocator;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 public class PurchaseController extends Controller {
-    private PurchaseDao purchaseDao = ObjectFactory.INSTANCE.get(PurchaseDao.class);
-    private TourDao tourDao = ObjectFactory.INSTANCE.get(TourDao.class);
-    private UserDao userDao = ObjectFactory.INSTANCE.get(UserDao.class);
+    private PurchaseDao purchaseDao = ServiceLocator.INSTANCE.get(PurchaseDao.class);
+    private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
+    private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
 
     @Override
     public void get(RequestService reqService) {

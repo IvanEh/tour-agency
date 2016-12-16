@@ -7,14 +7,14 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.Slice;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.servlet.RequestService;
 import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
-import com.gmail.at.ivanehreshi.epam.touragency.web.ObjectFactory;
+import com.gmail.at.ivanehreshi.epam.touragency.web.ServiceLocator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ToursController extends Controller {
-    private TourDao tourDao = ObjectFactory.INSTANCE.get(TourDao.class);
+    private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
 
     private static final int PAGE_SIZE = 10;
 

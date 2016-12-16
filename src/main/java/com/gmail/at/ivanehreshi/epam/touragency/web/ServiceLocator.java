@@ -4,8 +4,8 @@ import javax.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum ObjectFactory {
-    INSTANCE,;
+public enum ServiceLocator {
+    INSTANCE;
 
     private Map<String, Object> objects = new HashMap<>();
     private ServletContext servletContext;
