@@ -52,11 +52,21 @@ public enum WebApplication {
         serviceLocator.publish(PurchaseDao.class, new PurchaseJdbcDao(connectionManager, userDao, tourDao));
 
         SecurityContext.INSTANCE.setUserDao(userDao);
-        SecurityContext.INSTANCE.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)
-                .addSecurityConstraint("/user/.*");
+
+        configureSecurity(SecurityContext.INSTANCE);
 
         ControllerDispatcherServletBuilder servletBuilder = new ControllerDispatcherServletBuilder(servletContext);
-        servletBuilder
+        buildDispatcherServlet(servletBuilder)
+                .buildAndRegister("Command Dispatcher Servlet", "/app/*");
+    }
+
+    private void configureSecurity(SecurityContext sc) {
+        sc.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)
+                .addSecurityConstraint("/user/.*");
+    }
+
+    private ControllerDispatcherServletBuilder buildDispatcherServlet(ControllerDispatcherServletBuilder servletBuilder) {
+        return servletBuilder
                 .addMapping("/", new RedirectController("/index.html"))
                 .addMapping("/tours", new ToursController())
                 .addMapping("/tours\\.html", HttpMethod.GET.mask, new ToursController())
@@ -69,8 +79,7 @@ public enum WebApplication {
                 .addMapping("/login", new LoginController())
                 .addMapping("/logout", new LogoutController())
                 .addMapping("/user/purchases\\.html", new PurchaseController())
-                .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"))
-                .buildAndRegister("Command Dispatcher Servlet", "/app/*");
+                .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"));
     }
 
     private void createDb() {
