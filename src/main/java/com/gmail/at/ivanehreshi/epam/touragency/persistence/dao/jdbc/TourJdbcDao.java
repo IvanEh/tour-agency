@@ -37,8 +37,12 @@ public class TourJdbcDao implements TourDao {
     private static final String DELETE_SQL = "DELETE FROM tour WHERE id=?";
 
     private static final String COMPUTE_PRICE_SQL =
-            "SELECT tour.price * cast((100 - discount)/100 as DECIMAL(10,2))" +
+            "SELECT tour.price * cast((100 - discount)/100 as DECIMAL(10,2)) " +
             "FROM  `user`, tour WHERE `user`.id =? AND tour.id=?";
+
+    private static final String RANDOM_HOT_SQL = "SELECT * FROM tour " +
+            " WHERE id >= FLOOR(RAND()*(SELECT MAX(id) FROM tour)) " +
+            " AND `hot`='1' LIMIT 1 ";
 
     private static final BigDecimal LARGE_DECIMAL = new BigDecimal(Long.MAX_VALUE);
 
@@ -80,6 +84,11 @@ public class TourJdbcDao implements TourDao {
 
     public BigDecimal computePrice(Long tourId, Long userId) {
         return jdbcTemplate.queryObjects((rs) -> rs.getBigDecimal(1), COMPUTE_PRICE_SQL, userId, tourId).get(0);
+    }
+
+    @Override
+    public Tour findRandomHot() {
+        return jdbcTemplate.queryObject(TourJdbcDao::fromResultSet, RANDOM_HOT_SQL);
     }
 
     @Override

@@ -25,4 +25,6 @@ public interface TourDao extends Dao<Tour, Long> {
      */
     Slice<Tour> getToursSliceByCriteria(int count, Tour anchor, ScrollDirection dir,
                                         Ordering priceOrdering, TourType... types);
+
+    Tour findRandomHot();
 }

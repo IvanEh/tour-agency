@@ -74,6 +74,7 @@ public enum WebApplication {
                 .addMapping("/user/buy\\.html", new BuyController())
                 .addMapping("/agent/tours\\.html", new AgentToursPageController())
                 .addMapping("/agent/users\\.html", new AgentUsersPageController())
+                .addMapping("/index\\.html", new RandomHotTourController())
                 .addMapping("/register", new RegisterController())
                 .addMapping("/user/discount", new UpdateDiscountController())
                 .addMapping("/purchase", new PurchaseController())
