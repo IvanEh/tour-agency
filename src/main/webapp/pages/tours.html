@@ -1,5 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="lang" var="rb" />
 
 <html>
 <head>
@@ -20,14 +24,30 @@
 
     <div class="col-md-offset-3 col-md-8 content stretch">
         <ul class="nav nav-pills toolbar">
-            <li><a class="btn btn-default" onclick="sort()">Ціна <span class="glyphicon glyphicon-sort-by-order"></span></a></li>
-            <li><a class="btn btn-default" onclick="setTourType('RECREATION')">Відпочинок</a></li>
-            <li><a class="btn btn-default" onclick="setTourType('EXCURSION')"> Екскурсія</a></li>
-            <li><a class="btn btn-default" onclick="setTourType('SHOPPING')">  Шопінг</a></li>
+
+            <li><a class="btn btn-default" onclick="sort()">
+                <fmt:message key="tour.price" bundle="${rb}"/>
+                <span class="glyphicon glyphicon-sort-by-order"></span></a>
+            </li>
+
+            <li><a class="btn btn-default" onclick="setTourType('RECREATION')">
+                    <fmt:message key="tour.recreation" bundle="${rb}"/>
+                </a>
+            </li>
+
+            <li><a class="btn btn-default" onclick="setTourType('EXCURSION')">
+                    <fmt:message key="tour.excursion" bundle="${rb}"/>
+                </a>
+            </li>
+
+            <li><a class="btn btn-default" onclick="setTourType('SHOPPING')">
+                    <fmt:message key="tour.shopping" bundle="${rb}"/>
+                </a>
+            </li>
         </ul>
 
         <c:if test="${empty tours}">
-            Вибачте, немає турів, що задовольняють критерії
+            <fmt:message key="tours.empty" bundle="${rb}"/>
         </c:if>
 
         <div class="tours">
@@ -38,8 +58,9 @@
                         <div class="tour clearfix">
                             <c:if test="${tour.isHot()}">
                                 <div class="hot">
+                                    <fmt:message key="tour.hothint" var="hothint" bundle="${rb}"/>
                                     <img src="/resources/images/hot.png"
-                                         title="Гаряча пропозиція!">
+                                         title="${hothint}">
                                 </div>
                             </c:if>
 

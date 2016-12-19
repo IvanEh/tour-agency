@@ -2,6 +2,7 @@ package com.gmail.at.ivanehreshi.epam.touragency.web;
 
 import com.gmail.at.ivanehreshi.epam.touragency.controller.*;
 import com.gmail.at.ivanehreshi.epam.touragency.controller.service.JspController;
+import com.gmail.at.ivanehreshi.epam.touragency.controller.service.LocaleController;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.ControllerDispatcherServletBuilder;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.HttpMethod;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
@@ -79,7 +80,8 @@ public enum WebApplication {
                 .addMapping("/login", new LoginController())
                 .addMapping("/logout", new LogoutController())
                 .addMapping("/user/purchases\\.html", new PurchaseController())
-                .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"));
+                .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"))
+                .addMapping("/(.*)\\.html", new LocaleController());
     }
 
     private void createDb() {

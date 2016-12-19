@@ -1,5 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="lang" var="rb" />
 
 <html>
 <head>
@@ -16,7 +20,9 @@
         </div>
 
         <div class="col-md-offset-3 col-md-8 stretch content">
-            <h1>Адміністрування турів</h1>
+            <h1>
+                <fmt:message key="admin_tours.title" bundle="${rb}"/>
+            </h1>
             <hr/>
             
             <c:forEach var="tour" items="${tours}">
@@ -41,8 +47,10 @@
                     <c:set var="editLink" value="/agent/edit-tour.html?id=${tour.id}"/>
                     <a class="btn btn-sm btn-default pull-right" href="${editLink}">Змінити</a>
 
+                    <fmt:message key="tour.enable" var="enable" bundle="${rb}"/>
+                    <fmt:message key="tour.disable" var="disable" bundle="${rb}"/>
                     <div class="btn btn-sm btn-default pull-right" data-enabled="${tour.enabled}" onclick="toggleEnabled(this, ${tour.id})">
-                        ${tour.enabled ? 'Деактивувати' : 'Активувати'}
+                        ${tour.enabled ? disable : enable}
                     </div>
 
                 </div>
@@ -58,11 +66,11 @@
             if(enabled === true || enabled === 'true') {
                 $el.parents('.entry-box').find('.title').wrapInner('<strike></strike');
                 $el.data('enabled', false);
-                $el.html('Активувати');
+                $el.html('${enable}');
             } else {
                 $el.parents('.entry-box').find('.title strike').contents().unwrap();
                 $el.data('enabled', true);
-                $el.html('Деактивувати');
+                $el.html('${disable}');
             }
 
         }

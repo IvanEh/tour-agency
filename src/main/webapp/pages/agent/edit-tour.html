@@ -2,6 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="lang" var="rb" />
+
 <html>
 <head>
     <title>Tour Agency</title>
@@ -22,7 +25,9 @@
 
     <div class="col-md-offset-3 col-md-8 stretch content">
         <c:if test="${not empty param.failed}">
-            <p class="bg-danger">Форма заповнена неправильно!</p>
+            <p class="bg-danger">
+                <fmt:message key="form.error" bundle="${rb}"/>
+            </p>
         </c:if>
 
         <form class="col-md-12 form-horizontal" method="post" action="/tours">
@@ -30,26 +35,36 @@
 
             <fieldset>
 
-                <legend>Редагування туру</legend>
+                <legend>
+                    <fmt:message key="edit_tour.title" bundle="${rb}"/>
+                </legend>
 
                 <input type="hidden" name="id" value="${tour.id}"/>
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="">Назва туру</label>
+                    <label class="col-md-4 control-label" for="">
+                        <fmt:message key="tour.title" bundle="${rb}"/>
+                    </label>
                     <div class="col-md-4">
                         <input  name="title" value="${tour.title}" placeholder="Тур" class="form-control input-md" required="" type="text">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="description">Детальний опис туру</label>
+                    <label class="col-md-4 control-label" for="description">
+                        <fmt:message key="tour.info" bundle="${rb}"/>
+                    </label>
+
                     <div class="col-md-4">
                         <textarea class="form-control" id="description" name="description"><c:out value="${tour.description}"/></textarea>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="price">Ціна</label>
+                    <label class="col-md-4 control-label" for="price">
+                        <fmt:message key="tour.price" bundle="${rb}"/>
+                    </label>
+
                     <div class="col-md-4">
                         <div class="input-group">
                             <input value="${tour.price}" id="price" name="price" class="form-control" placeholder="100" required="" type="text">
@@ -60,18 +75,30 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="type">Тип туру</label>
+                    <label class="col-md-4 control-label" for="type">
+                        <fmt:message key="tour.type" bundle="${rb}"/>
+                    </label>
+
                     <div class="col-md-4">
                         <select id="type" name="type" class="form-control">
-                            <option value="0" ${tour.type.ordinal() == 0 ? 'selected=selected' : ''}>Відпочинок</option>
-                            <option value="1" ${tour.type.ordinal() == 1 ? 'selected=selected' : ''}>Екскурсія</option>
-                            <option value="2" ${tour.type.ordinal() == 2 ? 'selected=selected' : ''}>Шопінг</option>
+                            <option value="0" ${tour.type.ordinal() == 0 ? 'selected=selected' : ''}>
+                                <fmt:message key="tour.recreation" bundle="${rb}"/>
+                            </option>
+                            <option value="1" ${tour.type.ordinal() == 1 ? 'selected=selected' : ''}>
+                                <fmt:message key="tour.excursion" bundle="${rb}"/>
+                            </option>
+                            <option value="2" ${tour.type.ordinal() == 2 ? 'selected=selected' : ''}>
+                                <fmt:message key="tour.shopping" bundle="${rb}"/>
+                            </option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="opts">Позначити як гарячий</label>
+                    <label class="col-md-4 control-label" for="opts">
+                        <fmt:message key="tour.set_hot" bundle="${rb}"/>
+                    </label>
+
                     <div class="col-md-4">
                         <div class="checkbox">
                             <label for="opts-0">
@@ -83,12 +110,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="opts">Активований</label>
+                    <label class="col-md-4 control-label" for="opts">
+                        <fmt:message key="tour.enabled" bundle="${rb}"/>
+                    </label>
+
                     <div class="col-md-4">
                         <div class="checkbox">
                             <label for="opts-1">
                                 <input name="enabled" id="opts-1" value="1" ${tour.enabled eq true ? 'checked=checked' : 'not'} type="checkbox">
-                                Так
+                                <fmt:message key="yes" bundle="${rb}"/>
                             </label>
                         </div>
                     </div>
@@ -96,7 +126,8 @@
 
             </fieldset>
 
-            <input type="submit" class="btn btn-success pull-right" value="Зберегти"/>
+            <fmt:message key="save" var="save" bundle="${rb}"/>
+            <input type="submit" class="btn btn-success pull-right" value="${save}"/>
         </form>
     </div>
 </div>

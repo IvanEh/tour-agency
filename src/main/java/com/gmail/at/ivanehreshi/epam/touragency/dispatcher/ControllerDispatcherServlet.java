@@ -43,9 +43,9 @@ public class ControllerDispatcherServlet extends HttpServlet {
 
     void addMapping(MatcherEntry entry) {
         if (entry.controller.isService()) {
-            httpMatchers.add(entry);
-        } else {
             httpServiceMatchers.add(entry);
+        } else {
+            httpMatchers.add(entry);
         }
     }
 

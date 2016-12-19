@@ -38,6 +38,10 @@ hr {
     box-shadow: 0px 0px 2px 2px gray;
 }
 
+#lang > img {
+    height: 19px;
+}
+
 .sidebar li {
     border: solid 1px #0089ff;
     border-radius: 3% !important;
