@@ -22,25 +22,31 @@
         <c:import url="/resources/components/sidebar.html"/>
     </div>
 
+    ${ord}fd
     <div class="col-md-offset-3 col-md-8 content stretch">
         <ul class="nav nav-pills toolbar">
 
-            <li><a class="btn btn-default" onclick="sort()">
+            <c:set var="ordCss" value="${ord eq 'NO' ? '' : 'active'}"/>
+            <c:set var="ordAsc" value="${ord eq 'ASC' ? '-alt' : ''}"/>
+            <li><a class="btn btn-default ${ordCss}" onclick="sort()">
                 <fmt:message key="tour.price" bundle="${rb}"/>
-                <span class="glyphicon glyphicon-sort-by-order"></span></a>
+                <span class="glyphicon glyphicon-sort-by-order${ordAsc}"></span></a>
             </li>
 
-            <li><a class="btn btn-default" onclick="setTourType('RECREATION')">
+            <c:set var="recreationCss" value="${RECREATION ? 'active' : ''}"/>
+            <li><a class="btn btn-default ${recreationCss}" onclick="setTourType('RECREATION')">
                     <fmt:message key="tour.recreation" bundle="${rb}"/>
                 </a>
             </li>
 
-            <li><a class="btn btn-default" onclick="setTourType('EXCURSION')">
+            <c:set var="excursionCss" value="${EXCURSION ? 'active' : ''}"/>
+            <li><a class="btn btn-default ${excursionCss}" onclick="setTourType('EXCURSION')">
                     <fmt:message key="tour.excursion" bundle="${rb}"/>
                 </a>
             </li>
 
-            <li><a class="btn btn-default" onclick="setTourType('SHOPPING')">
+            <c:set var="shoppingCss" value="${SHOPPING ? 'active' : ''}"/>
+            <li><a class="btn btn-default ${shoppingCss}" onclick="setTourType('SHOPPING')">
                     <fmt:message key="tour.shopping" bundle="${rb}"/>
                 </a>
             </li>

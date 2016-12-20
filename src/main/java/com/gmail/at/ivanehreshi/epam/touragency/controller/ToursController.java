@@ -59,6 +59,12 @@ public final class ToursController extends Controller {
 
         reqService.putParameter("tours",  tours.getPayload());
 
+        for(TourType t: tourTypesArr) {
+            reqService.putParameter(t.name(), true);
+        }
+
+        reqService.putParameter("ord", priceOrd.name());
+
         if(tours.getBottomAnchor() != null) {
             reqService.putParameter("nextId", tours.getBottomAnchor().getId());
             reqService.putParameter("nextPrice", tours.getBottomAnchor().getPrice());
