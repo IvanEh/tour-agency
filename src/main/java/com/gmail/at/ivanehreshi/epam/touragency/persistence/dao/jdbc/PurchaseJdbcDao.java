@@ -1,13 +1,14 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Purchase;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.PurchaseMapper;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.TourMapper;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.UserMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,21 +31,25 @@ public class PurchaseJdbcDao implements PurchaseDao {
             "UPDATE `purchase` SET `user_id`=?, `tour_id`=?," +
             " `date`=?, `price`=? WHERE `id`=?";
 
+    private static final String READ_TOUR_SQL = "SELECT * FROM tour WHERE id=?";
+
+    private static final String READ_USER_SQL = "SELECT * FROM `user` WHERE id=?";
+
     private static final String DELETE_SQL = "DELETE FROM `purchase` WHERE id=?";
 
     private ConnectionManager connectionManager;
 
     private JdbcTemplate jdbcTemplate;
+//
+//    private UserDao userDao;
 
-    private UserDao userDao;
-
-    private TourDao tourDao;
-
+//    private TourDao tourDao;
+//
     public PurchaseJdbcDao(ConnectionManager connectionManager, UserDao userDao, TourDao tourDao) {
         this.connectionManager = connectionManager;
         this.jdbcTemplate = new JdbcTemplate(connectionManager);
-        this.userDao = userDao;
-        this.tourDao = tourDao;
+//        this.userDao = userDao;
+//        this.tourDao = tourDao;
     }
 
     @Override
@@ -62,8 +67,14 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
     @Override
     public Purchase deepen(Purchase purchase) {
-        purchase.setUser(userDao.read(purchase.getUser().getId()));
-        purchase.setTour(tourDao.read(purchase.getTour().getId()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionManager);
+
+        jdbcTemplate.startTransaction();
+
+        purchase.setUser(jdbcTemplate.queryObject(UserMapper::map, READ_USER_SQL, purchase.getUser().getId()));
+        purchase.setTour(jdbcTemplate.queryObject(TourMapper::map, READ_TOUR_SQL, purchase.getTour().getId()));
+
+        jdbcTemplate.commit();
         return purchase;
     }
 
@@ -90,12 +101,6 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
 
     private static Purchase fromResultSet(ResultSet rs) throws SQLException {
-        Purchase purchase = new Purchase();
-        purchase.setId(rs.getLong("id"));
-        purchase.setUser(new User(rs.getLong("user_id")));
-        purchase.setTour(new Tour(rs.getLong("tour_id")));
-        purchase.setPrice(rs.getBigDecimal("price"));
-        purchase.setDate(rs.getDate("date"));
-        return purchase;
+        return PurchaseMapper.map(rs);
     }
 }

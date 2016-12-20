@@ -21,17 +21,66 @@ public class JdbcTemplate {
 
     private ConnectionManager connectionManager;
 
+    private Connection txConnection;
+
     public JdbcTemplate(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
 
     public Connection getConnection() {
+        if(txConnection != null) {
+            return txConnection;
+        }
+
         return this.connectionManager.getConnection();
     }
 
+    public void startTransaction(int txIsolationLevel) {
+        txConnection = getConnection();
+
+        try {
+            txConnection.setAutoCommit(false);
+            txConnection.setTransactionIsolation(txIsolationLevel);
+        } catch (SQLException e) {
+            LOGGER.error("Cannot start transaction. Your application may be data inconsistent", e);
+        }
+    }
+
+    public void startTransaction() {
+        startTransaction(Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+    public void commit() {
+        if(txConnection == null) {
+            LOGGER.error("Tried to commit transaction before starting one");
+            return;
+        }
+
+        try {
+            txConnection.commit();
+            txConnection.setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.error("Cannot commit");
+        } finally {
+            tryClose(txConnection);
+        }
+    }
+
+    public void rollback() {
+        if(txConnection != null) {
+            try {
+                txConnection.rollback();
+            } catch (SQLException e) {
+                LOGGER.error("<>", e);
+            }
+        } else {
+            LOGGER.error("err");
+        }
+    }
     public <R> void query(ResultSetFunction<R> fn, String query, Object... params) {
         Connection conn = getConnection();
+
 
         if(conn == null)
             return;
@@ -46,10 +95,11 @@ public class JdbcTemplate {
         } catch (SQLException e) {
             LOGGER.warn("Error creating prepared statement. Query: " + query, e);
         } finally {
-            close(conn);
+            tryClose(conn);
         }
     }
 
+    // TODO: while? filter?
     public <R> List<R> queryObjects(ResultSetFunction<R> producer, String query, Object... params) {
         List<R> entities = new ArrayList<>();
 
@@ -88,7 +138,7 @@ public class JdbcTemplate {
         } catch (SQLException e) {
             LOGGER.error("Cannot execute update query", e);
         } finally {
-            close(conn);
+            tryClose(conn);
         }
 
         return 0;
@@ -116,7 +166,7 @@ public class JdbcTemplate {
         } catch (SQLException e) {
             LOGGER.error("Cannot insert values into DB", e);
         } finally {
-            close(conn);
+            tryClose(conn);
         }
 
         return null;
@@ -131,7 +181,7 @@ public class JdbcTemplate {
             try {
                 rs.close();
             } catch (SQLException e) {
-                LOGGER.error("Cannot close ResultSet", e);
+                LOGGER.error("Cannot tryClose ResultSet", e);
             }
         }
 
@@ -159,7 +209,7 @@ public class JdbcTemplate {
                         }
                     }
                 } finally {
-                    close(conn);
+                    tryClose(conn);
                 }
 
                 return true;
@@ -177,11 +227,19 @@ public class JdbcTemplate {
         return false;
     }
 
-    public void close(Connection connection) {
+
+    // TODO: make private
+    /**
+     *
+     * @param connection
+     */
+    public void tryClose(Connection connection) {
         try {
-            connection.close();
+            if(txConnection != connection) {
+                connection.close();
+            }
         } catch (SQLException e) {
-            LOGGER.error("Cannot close jdbc connection", e);
+            LOGGER.error("Cannot tryClose jdbc connection", e);
         }
     }
 

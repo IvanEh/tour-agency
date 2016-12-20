@@ -5,6 +5,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.UserMapper;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -150,15 +151,9 @@ public class UserJdbcDao implements UserDao {
 
         return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_BY_COUNT);
     }
+
     private static User fromResultSet(ResultSet rs) throws SQLException {
-        User user = new User();
-        user.setId(rs.getLong("id"));
-        user.setUsername(rs.getString("username"));
-        user.setFirstName(rs.getString("firstName"));
-        user.setLastName(rs.getString("lastName"));
-        user.setPassword(rs.getString("password"));
-        user.setDiscount(rs.getInt("discount"));
-        return user;
+        return UserMapper.map(rs);
     }
 
 }
