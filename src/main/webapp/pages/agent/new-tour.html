@@ -40,7 +40,8 @@
                     </label>
 
                     <div class="col-md-4">
-                        <input  name="title" placeholder="Тур" class="form-control input-md" required="" type="text">
+                        <input  name="title" placeholder="Тур" class="form-control input-md" required=""
+                                type="text" value="${tour.title}">
                     </div>
                 </div>
 
@@ -50,7 +51,9 @@
                     </label>
 
                     <div class="col-md-4">
-                        <textarea class="form-control" id="description" name="description">Інформація про тур...</textarea>
+                        <textarea class="form-control" id="description" name="description">
+                            ${tour.description}
+                        </textarea>
                     </div>
                 </div>
 
@@ -61,7 +64,8 @@
 
                     <div class="col-md-4">
                         <div class="input-group">
-                            <input id="price" name="price" class="form-control" placeholder="100" required="" type="text">
+                            <input id="price" name="price" class="form-control" placeholder="100"
+                                   required="" type="text" value="${tour.price}">
                             <span class="input-group-addon">$</span>
                         </div>
 
@@ -74,7 +78,7 @@
                     </label>
 
                     <div class="col-md-4">
-                        <select id="type" name="type" class="form-control">
+                        <select id="type" name="type" class="form-control" value="${tour.type}">
                             <option value="0">
                                 <fmt:message key="tour.recreation" bundle="${rb}"/>
                             </option>

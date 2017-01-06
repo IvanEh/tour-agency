@@ -19,6 +19,9 @@ import java.util.regex.Pattern;
 public class ControllerDispatcherServlet extends HttpServlet {
     public static final Logger LOGGER = LogManager.getLogger(ControllerDispatcherServlet.class);
 
+    public static final String FLASH_SESSION_KEY = "__flash";
+    public static final String REDIRECT_KEY = "__redirect";
+
     private final List<MatcherEntry> httpMatchers;
 
     private final List<MatcherEntry> httpServiceMatchers;
@@ -69,17 +72,24 @@ public class ControllerDispatcherServlet extends HttpServlet {
         if (pathInfo == null)
             pathInfo = "/";
 
+        System.out.println(pathInfo);
+
         RequestService requestService = new RequestService(req, resp, null);
 
         boolean any = false;
         any |= dispatchLoop(req, resp, pathInfo, requestService, httpMatchers, true);
         any |= dispatchLoop(req, resp, pathInfo, requestService, httpServiceMatchers, false);
 
+
         tryRedirect(resp, requestService);
 
         tryRender(req, resp, requestService, any);
 
-
+        if(!requestService.isRedirect()) {
+            requestService.clearFlash();
+        } else {
+            requestService.clearRedirectFlag();
+        }
     }
 
     private void tryRender(HttpServletRequest req, HttpServletResponse resp, RequestService requestService, boolean any) {
@@ -101,6 +111,8 @@ public class ControllerDispatcherServlet extends HttpServlet {
     private void tryRedirect(HttpServletResponse resp, RequestService requestService) {
         if (requestService.getRedirectPath() != null) {
             try {
+                requestService.getRequest().getSession().setAttribute(REDIRECT_KEY, true);
+                System.out.println("redi");
                 resp.sendRedirect(requestService.getRedirectPath());
             } catch (IOException e) {
                 e.printStackTrace();

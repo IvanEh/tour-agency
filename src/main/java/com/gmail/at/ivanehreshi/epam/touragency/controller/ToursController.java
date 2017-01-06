@@ -78,8 +78,9 @@ public final class ToursController extends Controller {
 
     @Override
     public void post(RequestService reqService) {
+        Tour tour = new Tour();
+
         try {
-            Tour tour = new Tour();
             tour.setTitle(reqService.getString("title"));
             tour.setDescription(reqService.getString("description"));
             tour.setPrice(new BigDecimal(reqService.getString("price")));
@@ -88,10 +89,11 @@ public final class ToursController extends Controller {
             tour.setEnabled(reqService.getBool("enabled"));
 
             tourDao.create(tour);
-
+            
             reqService.redirect("/agent/tours.html");
         } catch (NumberFormatException e) {
             reqService.redirect("/agent/new-tour.html?failed=true");
+            reqService.putFlashParameter("tour", tour);
         }
     }
 

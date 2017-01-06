@@ -57,8 +57,3 @@ CREATE TABLE IF NOT EXISTS `user_role` (
     REFERENCES `tour_agency`.`user` (`id`))
 DEFAULT CHARACTER SET = utf8;
 
-INSERT INTO `role` (`id`, `name`) VALUES ('1', 'CUSTOMER');
-INSERT INTO `role` (`id`, `name`) VALUES ('2', 'TOUR_AGENT');
-INSERT INTO `user` (`id`, `username`, `firstName`, `lastName`, `password`)
-       VALUES('1', 'admin', 'Admin', 'Admin', 'jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=');
-INSERT INTO `user_role` (id, user_id, role_id) VALUES('1', '1', '2');

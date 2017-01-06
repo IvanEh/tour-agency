@@ -62,6 +62,11 @@ public class JdbcTemplate {
             txConnection.setAutoCommit(false);
         } catch (SQLException e) {
             LOGGER.error("Cannot commit");
+            try {
+                txConnection.rollback();
+            } catch (SQLException e1) {
+                LOGGER.error("", e1);
+            }
         } finally {
             tryClose(txConnection);
         }

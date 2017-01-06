@@ -81,6 +81,7 @@ public enum WebApplication {
                 .addMapping("/login", new LoginController())
                 .addMapping("/logout", new LogoutController())
                 .addMapping("/user/purchases\\.html", new PurchaseController())
+                .addMapping("/agent/new-tour\\.html", new AgentNewTourPageController())
                 .addMapping("/(.*)\\.html", new JspController("/pages/", ".html"))
                 .addMapping("/(.*)\\.html", new LocaleController());
     }

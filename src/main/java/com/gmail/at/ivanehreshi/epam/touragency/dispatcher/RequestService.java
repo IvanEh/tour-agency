@@ -6,7 +6,9 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -106,6 +108,16 @@ public class RequestService {
         return (User) request.getSession(false).getAttribute("user");
     }
 
+    public boolean isRedirect() {
+        Boolean b = (Boolean) request.getSession().getAttribute(ControllerDispatcherServlet.REDIRECT_KEY);
+
+        return b != null && b == true;
+    }
+
+    public void clearRedirectFlag() {
+        request.getSession().setAttribute(ControllerDispatcherServlet.REDIRECT_KEY, null);
+    }
+
     // TODO: what if  __method=rubbish ???
     public HttpMethod getMethod() {
         String formMethod = getString("__method");
@@ -116,5 +128,40 @@ public class RequestService {
         } catch (IllegalArgumentException e) { }
 
         return HttpMethod.valueOf(request.getMethod());
+    }
+
+    public void putFlashParameter(String param, Object o) {
+        Map<String, Object> flash =
+                (Map<String, Object>) request.getSession().getAttribute(ControllerDispatcherServlet.FLASH_SESSION_KEY);
+        if(flash == null) {
+            flash = new HashMap<>();
+        }
+
+        flash.put(param, o);
+
+        request.getSession().setAttribute(ControllerDispatcherServlet.FLASH_SESSION_KEY, flash);
+    }
+
+    public Object getFlashParameter(String param) {
+        Map<String, Object> flash =
+                (Map<String, Object>) request.getSession().getAttribute(ControllerDispatcherServlet.FLASH_SESSION_KEY);
+        if(flash == null) {
+            return null;
+        }
+
+        return flash.get(param);
+    }
+
+    public void clearFlash() {
+        Map<String, Object> flash =
+                (Map<String, Object>) request.getSession().getAttribute(ControllerDispatcherServlet.FLASH_SESSION_KEY);
+
+        if(flash == null) {
+            flash = new HashMap<>();
+        }
+
+        flash.clear();
+
+        request.getSession().setAttribute(ControllerDispatcherServlet.FLASH_SESSION_KEY, flash);
     }
 }

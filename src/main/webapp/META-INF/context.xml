@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/">
+<Context antiJARLocking="true" path="/" debug="1" reloadable="true">
     <Resource
             name="jdbc/tour_agency"
             author="Container"
