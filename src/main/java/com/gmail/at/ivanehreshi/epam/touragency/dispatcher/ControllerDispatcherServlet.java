@@ -72,8 +72,6 @@ public class ControllerDispatcherServlet extends HttpServlet {
         if (pathInfo == null)
             pathInfo = "/";
 
-        System.out.println(pathInfo);
-
         RequestService requestService = new RequestService(req, resp, null);
 
         boolean any = false;
@@ -112,7 +110,6 @@ public class ControllerDispatcherServlet extends HttpServlet {
         if (requestService.getRedirectPath() != null) {
             try {
                 requestService.getRequest().getSession().setAttribute(REDIRECT_KEY, true);
-                System.out.println("redi");
                 resp.sendRedirect(requestService.getRedirectPath());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -137,14 +134,6 @@ public class ControllerDispatcherServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_OK);
 
                 any = true;
-
-                List<String> groups = new ArrayList<>(matcherEntry.matcher.groupCount());
-
-                requestService.setGroups(groups);
-
-                for (int i = 0; i < matcherEntry.matcher.groupCount(); i++) {
-                    groups.add(matcherEntry.matcher.group(i + 1));
-                }
 
                 matcherEntry.call(requestService);
 

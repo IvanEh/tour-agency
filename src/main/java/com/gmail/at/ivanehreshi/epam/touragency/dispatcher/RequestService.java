@@ -65,14 +65,6 @@ public class RequestService {
         return response;
     }
 
-    public List<String> getPathParameters() {
-        return groups;
-    }
-
-    public String getPathParameter(int i) {
-        return i >= groups.size() ? groups.get(i) : "";
-    }
-
     public Optional<String> getParameter(String parameter) {
         String s = request.getParameter(parameter);
         return Optional.ofNullable(s).filter(v -> !v.isEmpty());
@@ -100,10 +92,6 @@ public class RequestService {
     public Optional<Boolean> getBool(String param) {
         return getParameter(param)
                 .flatMap((s) -> TryOptionalUtil.of(() -> s.equals("1") || s.equals(true)));
-    }
-
-    public void setGroups(List<String> groups) {
-        this.groups = groups;
     }
 
     public String getRenderPage() {
