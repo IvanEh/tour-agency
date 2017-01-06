@@ -21,6 +21,10 @@ public class JdbcTemplate {
 
     private ConnectionManager connectionManager;
 
+    /**
+     * The ongoing transaction's connection. Normally this field is null
+     * and a connection from connectionManager directly used and disposed
+     */
     private Connection txConnection;
 
     public JdbcTemplate(ConnectionManager connectionManager) {
@@ -104,11 +108,10 @@ public class JdbcTemplate {
         }
     }
 
-    // TODO: while? filter?
     public <R> List<R> queryObjects(ResultSetFunction<R> producer, String query, Object... params) {
         List<R> entities = new ArrayList<>();
 
-        query((rs) -> {
+        query(rs -> {
             while (rs.next()) {
                 entities.add(producer.apply(rs));
             }
