@@ -40,7 +40,6 @@ public enum WebApplication {
     }
 
     protected void init() {
-        ServiceLocator.INSTANCE.setServletContext(servletContext);
         serviceLocator = ServiceLocator.INSTANCE;
 
         createDb();
@@ -48,9 +47,9 @@ public enum WebApplication {
         TourDao tourDao = new TourJdbcDao(connectionManager);
         UserDao userDao = new UserJdbcDao(connectionManager);
 
-        serviceLocator.publish(TourDao.class, tourDao);
-        serviceLocator.publish(UserDao.class, userDao);
-        serviceLocator.publish(PurchaseDao.class, new PurchaseJdbcDao(connectionManager, userDao, tourDao));
+        serviceLocator.publish(tourDao, TourDao.class);
+        serviceLocator.publish(userDao, UserDao.class);
+        serviceLocator.publish(new PurchaseJdbcDao(connectionManager, userDao, tourDao), PurchaseDao.class);
 
         SecurityContext.INSTANCE.setUserDao(userDao);
 
