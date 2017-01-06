@@ -1,13 +1,16 @@
 package com.gmail.at.ivanehreshi.epam.touragency.security;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
@@ -92,6 +95,19 @@ public enum SecurityContext {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    public void updateUserCache(HttpServletRequest req) {
+        Optional<User> maybeUser = getCurrentUser(req);
+        if(maybeUser.isPresent()) {
+            Long id = maybeUser.get().getId();
+            User user = userDao.read(id);
+            req.getSession().setAttribute("user", user);
+        }
+    }
+
+    public Optional<User> getCurrentUser(HttpServletRequest req) {
+        return Optional.ofNullable((User) req.getSession(true).getAttribute("user"));
     }
 
     /**

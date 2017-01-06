@@ -11,8 +11,9 @@ import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
 import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class ToursController extends Controller {
     private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
@@ -24,25 +25,23 @@ public final class ToursController extends Controller {
         String priceOrdStr = reqService.getString("price");
         String tourTypesStr = reqService.getString("type");
 
-        Integer direction = reqService.getInt("direction");
-        direction = direction == null ? 1 : direction;
+        ScrollDirection dir = reqService.getInt("direction")
+                .map(ScrollDirection::valueOf)
+                .orElse(ScrollDirection.DOWN);
 
-        ScrollDirection dir = ScrollDirection.valueOf(direction);
 
         Tour anchor = null;
         boolean hasCurrId = reqService.getString("currId") != null;
         if (hasCurrId && !reqService.getString("currId").isEmpty()) {
-            anchor = new Tour(reqService.getLong("currId"));
+            anchor = new Tour(reqService.getLong("currId").orElse(null));
             anchor.setPrice(new BigDecimal(reqService.getString("currPrice")));
         }
 
-        tourTypesStr = tourTypesStr == null ? "" : tourTypesStr;
-        List<TourType> tourTypes = new ArrayList<>();
-        for (String t: tourTypesStr.split(",")) {
-            try {
-                tourTypes.add(TourType.valueOf(t.toUpperCase()));
-            } catch (IllegalArgumentException e){}
-        }
+        List<TourType> tourTypes = Stream.of(tourTypesStr.split(","))
+                .filter(s -> !s.isEmpty())
+                .map(String::toUpperCase)
+                .map(TourType::valueOf)
+                .collect(Collectors.toList());
 
         Ordering priceOrd = Ordering.NO;
         if (priceOrdStr != null) {
@@ -53,7 +52,7 @@ public final class ToursController extends Controller {
             }
         }
 
-        TourType[] tourTypesArr = (TourType[]) tourTypes.toArray(new TourType[]{});
+        TourType[] tourTypesArr = tourTypes.toArray(new TourType[]{});
         Slice<Tour> tours = tourDao.getToursSliceByCriteria(PAGE_SIZE, anchor,
                         dir, priceOrd, tourTypesArr);
 
@@ -84,9 +83,9 @@ public final class ToursController extends Controller {
             tour.setTitle(reqService.getString("title"));
             tour.setDescription(reqService.getString("description"));
             tour.setPrice(new BigDecimal(reqService.getString("price")));
-            tour.setType(TourType.values()[reqService.getInt("type")]);
-            tour.setHot(reqService.getBool("hot"));
-            tour.setEnabled(reqService.getBool("enabled"));
+            tour.setType(TourType.values()[reqService.getInt("type").get()]);
+            tour.setHot(reqService.getBool("hot").orElse(false));
+            tour.setEnabled(reqService.getBool("enabled").orElse(true));
 
             tourDao.create(tour);
             
@@ -99,16 +98,16 @@ public final class ToursController extends Controller {
 
     @Override
     public void put(RequestService reqService) {
-        Long id = reqService.getLong("id");
+        Long id = reqService.getLong("id").orElse(null);
         try {
             Tour tour = new Tour();
             tour.setId(id);
             tour.setTitle(reqService.getString("title"));
             tour.setDescription(reqService.getString("description"));
             tour.setPrice(new BigDecimal(reqService.getString("price")));
-            tour.setType(TourType.values()[reqService.getInt("type")]);
-            tour.setHot(reqService.getBool("hot"));
-            tour.setEnabled(reqService.getBool("enabled"));
+            tour.setType(TourType.values()[reqService.getInt("type").get()]);
+            tour.setHot(reqService.getBool("hot").orElse(false));
+            tour.setEnabled(reqService.getBool("enabled").orElse(true));
 
             tourDao.update(tour);
             reqService.redirect("/agent/tours.html");

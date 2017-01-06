@@ -1,6 +1,10 @@
 package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
+import com.gmail.at.ivanehreshi.epam.touragency.security.SecurityContext;
+import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
+import com.gmail.at.ivanehreshi.epam.touragency.util.TryOptionalUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A wrapper class that contains all the necessary information for
@@ -24,6 +28,7 @@ public class RequestService {
     private List<String> groups;
     private String pagePath = null;
     private String redirectPath = null;
+    private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
 
     public RequestService(HttpServletRequest request, HttpServletResponse response,
                           List<String> groups) {
@@ -68,28 +73,33 @@ public class RequestService {
         return i >= groups.size() ? groups.get(i) : "";
     }
 
-    public Long getLong(String parameter) {
+    public Optional<String> getParameter(String parameter) {
         String s = request.getParameter(parameter);
-        if (s == null || s.isEmpty()) {
-            return null;
-        }
-        return Long.valueOf(s);
+        return Optional.ofNullable(s).filter(v -> !v.isEmpty());
     }
 
-    public Integer getInt(String parameter) {
-        String s = request.getParameter(parameter);
-        if (s == null || s.isEmpty()) {
-            return null;
-        }
-        return Integer.valueOf(request.getParameter(parameter));
+    public Optional<Long> getLong(String param) {
+        return getParameter(param)
+                .flatMap((s) -> TryOptionalUtil.of(() -> Long.valueOf(s)));
     }
 
-    public String getString(String parameter) {
-        return request.getParameter(parameter);
+    public Optional<Integer> getInt(String param) {
+        return getParameter(param)
+                .flatMap((s) -> TryOptionalUtil.of(() -> Integer.valueOf(s)));
     }
 
-    public boolean getBool(String parameter) {
-        return Objects.equals(request.getParameter(parameter), "1");
+    /**
+     * Retrieves <b>param</b> request parameter as a non null String
+     * @param param
+     * @return a String representation of the request parameter or an empty string
+     */
+    public String getString(String param) {
+        return getParameter(param).orElse("");
+    }
+
+    public Optional<Boolean> getBool(String param) {
+        return getParameter(param)
+                .flatMap((s) -> TryOptionalUtil.of(() -> s.equals("1") || s.equals(true)));
     }
 
     public void setGroups(List<String> groups) {
@@ -104,14 +114,19 @@ public class RequestService {
         return redirectPath;
     }
 
-    public User getUser() {
-        return (User) request.getSession(false).getAttribute("user");
+    public Optional<User> getUser() {
+        return SecurityContext.INSTANCE.getCurrentUser(request);
+    }
+
+    public Optional<User> loadUser() {
+        SecurityContext.INSTANCE.updateUserCache(request);
+        return SecurityContext.INSTANCE.getCurrentUser(request);
     }
 
     public boolean isRedirect() {
         Boolean b = (Boolean) request.getSession().getAttribute(ControllerDispatcherServlet.REDIRECT_KEY);
 
-        return b != null && b == true;
+        return b != null && b;
     }
 
     public void clearRedirectFlag() {

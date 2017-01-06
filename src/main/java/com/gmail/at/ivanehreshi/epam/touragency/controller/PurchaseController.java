@@ -23,7 +23,7 @@ public final class PurchaseController extends Controller {
 
     @Override
     public void get(RequestService reqService) {
-        User user = reqService.getUser();
+        User user = reqService.loadUser().orElse(null);
         List<Purchase> purchases = purchaseDao.findByUser(user.getId());
         purchases.forEach(purchaseDao::deepen);
         reqService.putParameter("purchases", purchases);
@@ -31,8 +31,8 @@ public final class PurchaseController extends Controller {
 
     @Override
     public void post(RequestService reqService) {
-        Long tourId = reqService.getLong("tourId");
-        Long userId = reqService.getUser().getId();
+        Long tourId = reqService.getLong("tourId").orElse(null);
+        Long userId = reqService.getUser().orElse(null).getId();
 
         Purchase purchase = new Purchase();
         Tour tour = tourDao.read(tourId);

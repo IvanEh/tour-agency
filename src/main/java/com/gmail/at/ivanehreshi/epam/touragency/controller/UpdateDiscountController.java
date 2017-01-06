@@ -11,8 +11,8 @@ public final class UpdateDiscountController extends Controller {
 
     @Override
     public void post(RequestService reqService) {
-        Long userId = reqService.getLong("id");
-        Integer discount = reqService.getInt("discount");
+        Long userId = reqService.getLong("id").orElse(null);
+        Integer discount = reqService.getInt("discount").orElse(0);
         User user = userDao.read(userId);
         user.setDiscount(discount);
         userDao.update(user);

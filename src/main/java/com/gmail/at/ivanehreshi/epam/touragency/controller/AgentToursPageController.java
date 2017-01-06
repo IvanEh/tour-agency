@@ -24,7 +24,7 @@ public final class AgentToursPageController extends Controller {
     @Override
     public void post(RequestService reqService) {
         String command = reqService.getString("command");
-        Long id = reqService.getLong("id");
+        Long id = reqService.getLong("id").orElse(null);
 
         switch (command) {
             case "toggle":

@@ -13,6 +13,9 @@ public final class LoginController extends Controller {
         String password = reqService.getString("password");
 
         try {
+            System.out.print("username: ");
+            System.out.println(username);
+
             reqService.getRequest().login(username, password);
 
             reqService.redirect("/tours.html");

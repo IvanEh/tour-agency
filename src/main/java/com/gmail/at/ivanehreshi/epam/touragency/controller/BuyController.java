@@ -11,9 +11,9 @@ public final class BuyController extends Controller {
 
     @Override
     public void get(RequestService reqService) {
-        Long tourId = reqService.getLong("tourId");
+        Long tourId = reqService.getLong("tourId").get();
         Tour tour = tourDao.read(tourId);
-        Long userId = reqService.getUser().getId();
+        Long userId = reqService.getUser().get().getId();
 
         reqService.putParameter("tour", tour);
         reqService.putParameter("price", tourDao.computePrice(tourId, userId));
