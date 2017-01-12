@@ -1,7 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.domain;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import java.math.*;
+import java.util.*;
 
 public class Purchase {
     private Long id;
@@ -11,6 +11,12 @@ public class Purchase {
     private BigDecimal price;
 
     public Purchase() {
+    }
+
+    public Purchase(User user, Tour tour, BigDecimal price) {
+        this.user = user;
+        this.tour = tour;
+        this.price = price;
     }
 
     public Purchase(Long id) {
