@@ -1,16 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.*;
+import java.nio.file.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
 
 /**
  * This class encapsulate a lot of boilerplate codes for JDBC
@@ -87,7 +83,7 @@ public class JdbcTemplate {
             LOGGER.error("err");
         }
     }
-    public <R> void query(ResultSetFunction<R> fn, String query, Object... params) {
+    public void query(ResultSetFunction fn, String query, Object... params) {
         Connection conn = getConnection();
 
 
@@ -108,26 +104,24 @@ public class JdbcTemplate {
         }
     }
 
-    public <R> List<R> queryObjects(ResultSetFunction<R> producer, String query, Object... params) {
+    public <R> List<R> queryObjects(EntityExtractor<R> producer, String query, Object... params) {
         List<R> entities = new ArrayList<>();
 
         query(rs -> {
             while (rs.next()) {
                 entities.add(producer.apply(rs));
             }
-            return null;
         }, query, params);
 
         return entities;
     }
 
-    public <R> R queryObject(ResultSetFunction<R> producer, String query, Object... params) {
+    public <R> R queryObject(EntityExtractor<R> producer, String query, Object... params) {
         Object[] r = new Object[]{null};
         query((rs) -> {
             if (rs.next()) {
                 r[0] = producer.apply(rs);
             }
-            return null;
         }, query, params);
 
         return (R) r[0];
@@ -180,9 +174,9 @@ public class JdbcTemplate {
         return null;
     }
 
-    public <R> R withRs(ResultSet rs, ResultSetFunction<R> fn) {
+    public void withRs(ResultSet rs, ResultSetFunction fn) {
         try {
-            return fn.apply(rs);
+            fn.apply(rs);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -192,8 +186,6 @@ public class JdbcTemplate {
                 LOGGER.error("Cannot tryClose ResultSet", e);
             }
         }
-
-        return null;
     }
 
 
@@ -252,7 +244,12 @@ public class JdbcTemplate {
     }
 
     @FunctionalInterface
-    public interface ResultSetFunction<R>{
+    public interface ResultSetFunction{
+        void apply(ResultSet resultSet) throws SQLException;
+    }
+
+    @FunctionalInterface
+    public interface EntityExtractor<R> {
         R apply(ResultSet resultSet) throws SQLException;
     }
 }

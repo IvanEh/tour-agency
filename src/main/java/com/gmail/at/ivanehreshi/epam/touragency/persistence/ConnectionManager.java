@@ -1,21 +1,14 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 
-import com.gmail.at.ivanehreshi.epam.touragency.util.ResourcesUtil;
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
+import com.mysql.jdbc.jdbc2.optional.*;
+import org.apache.logging.log4j.*;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
+import javax.naming.*;
+import javax.sql.*;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 
 /**
  * ConnectionManager encapsulates a data source. The static factory methods
@@ -35,7 +28,9 @@ public class ConnectionManager {
     private int poolSize;
 
 
-    public ConnectionManager() {
+    public ConnectionManager(DataSource dataSource) {
+        this.dataSource = dataSource;
+        poolSize = 1;
     }
 
 
@@ -64,7 +59,6 @@ public class ConnectionManager {
      * @return
      */
     public static ConnectionManager fromProperties(String filename) {
-        ConnectionManager connManager = new ConnectionManager();
         MysqlDataSource mysqlDs = new MysqlDataSource();
 
         Properties props = loadProperties();
@@ -73,8 +67,8 @@ public class ConnectionManager {
         mysqlDs.setUser(props.getProperty(JDBC_USER, "root"));
         mysqlDs.setPassword(props.getProperty(JDBC_PASSWORD, "root"));
 
+        ConnectionManager connManager = new ConnectionManager(mysqlDs);
         connManager.poolSize = Integer.parseInt(props.getProperty(JDBC_POOL, DEFAULT_POOL_SIZE));
-        connManager.dataSource = mysqlDs;
         return connManager;
     }
 
@@ -89,8 +83,8 @@ public class ConnectionManager {
             Context initContext = new InitialContext();
             Context envContext  = (Context)initContext.lookup("java:/comp/env");
             DataSource ds = (DataSource)envContext.lookup(name);
-            ConnectionManager connManager = new ConnectionManager();
-            connManager.dataSource = ds;
+
+            ConnectionManager connManager = new ConnectionManager(ds);
             return connManager;
         } catch (NamingException e) {
             LOGGER.error("Cannot create InitialContext", e);
