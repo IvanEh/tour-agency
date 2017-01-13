@@ -1,23 +1,16 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.TourType;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.ScrollDirection;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.Slice;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder.QueryBuilder;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder.WhereBuilder;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.TourMapper;
-import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
-import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.math.*;
+import java.sql.*;
+import java.util.*;
+import java.util.stream.*;
 
 public class TourJdbcDao implements TourDao {
 
@@ -83,6 +76,7 @@ public class TourJdbcDao implements TourDao {
         return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, FIND_ALL_ORDERED_SQL);
     }
 
+    @Override
     public BigDecimal computePrice(Long tourId, Long userId) {
         return jdbcTemplate.queryObjects((rs) -> rs.getBigDecimal(1), COMPUTE_PRICE_SQL, userId, tourId).get(0);
     }
