@@ -1,7 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class User {
     private Long id;
@@ -73,6 +72,25 @@ public class User {
 
     public void setDiscount(int discount) {
         this.discount = discount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return discount == user.discount &&
+                Objects.equals(id, user.id) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, username, password, discount, roles);
     }
 
     @Override

@@ -64,6 +64,24 @@ public class Purchase {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Purchase purchase = (Purchase) o;
+        return Objects.equals(id, purchase.id) &&
+                Objects.equals(user, purchase.user) &&
+                Objects.equals(tour, purchase.tour) &&
+                Objects.equals(date, purchase.date) &&
+                price == null ? purchase.price == null :
+                    price.compareTo(purchase.price) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user, tour, date, price);
+    }
+
+    @Override
     public String toString() {
         return "Purchase{" +
                 "date=" + date +

@@ -1,6 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.domain;
 
-import java.math.BigDecimal;
+import java.math.*;
+import java.util.*;
 
 public class Tour {
     private Long id;
@@ -72,6 +73,25 @@ public class Tour {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tour tour = (Tour) o;
+        return hot == tour.hot &&
+                enabled == tour.enabled &&
+                Objects.equals(id, tour.id) &&
+                Objects.equals(title, tour.title) &&
+                Objects.equals(description, tour.description) &&
+                type == tour.type &&
+                price == null ? tour.price == null : price.compareTo(tour.getPrice()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, type, hot, price, enabled);
     }
 
     @Override
