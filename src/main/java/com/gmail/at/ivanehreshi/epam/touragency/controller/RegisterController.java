@@ -1,14 +1,11 @@
 package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.Controller;
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
-import com.gmail.at.ivanehreshi.epam.touragency.util.PasswordEncoder;
-import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 public final class RegisterController extends Controller {
     private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
@@ -25,7 +22,7 @@ public final class RegisterController extends Controller {
         String encodedPass = PasswordEncoder.encodePassword(pass);
         user.setPassword(encodedPass);
 
-        user.setRoles(Arrays.asList(Role.CUSTOMER));
+        user.setRoles(Collections.singletonList(Role.CUSTOMER));
 
         userDao.create(user);
         reqService.redirect("/login.html");
