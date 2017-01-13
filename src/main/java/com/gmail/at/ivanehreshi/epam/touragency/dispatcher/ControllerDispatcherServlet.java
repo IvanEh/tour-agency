@@ -1,17 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
 
 /**
  * Dispatches incoming request to mapped Controllers
@@ -112,7 +107,7 @@ public class ControllerDispatcherServlet extends HttpServlet {
                 requestService.getRequest().getSession().setAttribute(REDIRECT_KEY, true);
                 resp.sendRedirect(requestService.getRedirectPath());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.warn("An exception happened at redirecting");
             }
         }
     }

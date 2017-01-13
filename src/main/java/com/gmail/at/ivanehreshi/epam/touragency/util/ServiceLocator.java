@@ -1,10 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Allows sharing objects between different application modules
@@ -68,5 +67,9 @@ public enum ServiceLocator {
 
     public <T> T get(Class<T> clazz) {
         return (T) get(clazz.getName());
+    }
+
+    public void clear() {
+        this.objects.clear();
     }
 }

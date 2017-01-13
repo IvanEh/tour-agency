@@ -1,7 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.controller.service;
 
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.Controller;
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.RequestService;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 
 /**
  * Redirects incoming request to JSP pages
@@ -27,13 +26,28 @@ public final class JspController extends Controller {
         this.location = loc;
         this.oldPrefix = oldPref;
         this.prefix = pref;
+
+        fixStrings();
     }
-    
+
+    private void fixStrings() {
+        if(oldPrefix.charAt(0) != '.') {
+            oldPrefix = "." + oldPrefix;
+        }
+
+        if(location.charAt(location.length() - 1) != '/') {
+            location = location + "/";
+        }
+    }
+
     @Override
     public void get(RequestService reqService) {
         String page = reqService.getRequest().getPathInfo().substring(1);
-        page = page.substring(0, page.indexOf(oldPrefix));
-        reqService.renderPage(location + page + prefix);
+        int pos = page.indexOf(oldPrefix);
+        if(pos != -1 && pos + oldPrefix.length() == page.length()) {
+            page = page.substring(0, pos);
+            reqService.renderPage(location + page + prefix);
+        }
     }
 
     @Override

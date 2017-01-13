@@ -1,21 +1,16 @@
 package com.gmail.at.ivanehreshi.epam.touragency.security;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import org.apache.logging.log4j.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.servlet.http.*;
+import java.util.*;
+import java.util.concurrent.locks.*;
+import java.util.regex.*;
 
+// TODO: UserDao should reside here?
+// TODO: auth constraint short-hand method
 /**
  * A singleton object for encapsulating user authorization and authentication
  * Allows adding security constrains to the web application
@@ -108,6 +103,11 @@ public enum SecurityContext {
 
     public Optional<User> getCurrentUser(HttpServletRequest req) {
         return Optional.ofNullable((User) req.getSession(true).getAttribute("user"));
+    }
+
+    public void reset() {
+        securityConstraints.clear();
+        setUserDao(null);
     }
 
     /**
