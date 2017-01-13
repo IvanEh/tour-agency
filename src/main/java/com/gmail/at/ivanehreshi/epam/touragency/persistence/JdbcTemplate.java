@@ -77,7 +77,7 @@ public class JdbcTemplate {
             try {
                 txConnection.rollback();
             } catch (SQLException e) {
-                LOGGER.error("<>", e);
+                LOGGER.error("Cannot call rollback", e);
             }
         } else {
             LOGGER.error("err");

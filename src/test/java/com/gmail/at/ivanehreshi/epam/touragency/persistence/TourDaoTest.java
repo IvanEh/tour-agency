@@ -6,7 +6,6 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 import org.junit.*;
 
-import java.math.*;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -76,19 +75,6 @@ public class TourDaoTest {
         Tour tour2 = tourDao.read(id);
 
         assertNull(tour2);
-    }
-
-    @Test
-    public void testComputePrice() {
-        UserDao userDao = new UserJdbcDao(connectionManager);
-        User user = TestData.getUser();
-        Tour tour = TestData.getExcursionTour();
-
-        Long userId = userDao.create(user);
-        Long tourId = tourDao.create(tour);
-
-        BigDecimal price = tourDao.computePrice(tourId, userId);
-        assertEquals(80, price.intValue());
     }
 
     @Test

@@ -84,7 +84,7 @@ public class PurchaseDaoTest {
 
     @Test
     public void testDeepen() {
-        Purchase purchase = new Purchase(data.user, data.tour1, null);
+        Purchase purchase = new Purchase(data.user, data.tour1, BigDecimal.ZERO);
         Long id = purchaseDao.create(purchase);
         purchase.setId(id);
 
@@ -92,7 +92,7 @@ public class PurchaseDaoTest {
         purchaseDao.deepen(dbPurchase);
 
         dbPurchase.setDate(null);
-        purchase.getUser().getRoles().clear();
+        purchase.getUser().setRoles(Collections.EMPTY_LIST);
 
         assertEquals(purchase, dbPurchase);
     }

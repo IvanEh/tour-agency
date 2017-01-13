@@ -1,18 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Purchase;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.PurchaseMapper;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.TourMapper;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.UserMapper;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 public class PurchaseJdbcDao implements PurchaseDao {
     private static final String CREATE_SQL =
@@ -61,7 +55,8 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
     @Override
     public Purchase read(Long id) {
-        Purchase purchase = jdbcTemplate.queryObjects(PurchaseJdbcDao::fromResultSet, READ_SQL, id).get(0);
+        Purchase purchase = jdbcTemplate.queryObject(PurchaseJdbcDao::fromResultSet,
+                READ_SQL, id);
         return purchase;
     }
 

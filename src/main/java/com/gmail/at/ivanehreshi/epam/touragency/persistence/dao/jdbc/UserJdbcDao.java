@@ -1,16 +1,13 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.UserMapper;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.*;
 
-import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import java.math.*;
+import java.sql.*;
+import java.util.*;
 
 public class UserJdbcDao implements UserDao {
     private static final String CREATE_SQL = "INSERT INTO `user` (`username`, `firstName`, " +
@@ -68,8 +65,11 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public User read(Long id) {
-        User user = jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, READ_SQL, id).get(0);
-        user.setRoles(readRoles(user.getId()));
+        User user = jdbcTemplate.queryObject(UserJdbcDao::fromResultSet, READ_SQL, id);
+        if (user != null) {
+            user.setRoles(readRoles(user.getId()));
+        }
+
         return user;
     }
 
@@ -124,7 +124,10 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public List<User> findAll() {
-        return jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet, FIND_ALL_SQL);
+        List<User> users = jdbcTemplate.queryObjects(UserJdbcDao::fromResultSet,
+                     FIND_ALL_SQL);
+        users.forEach(u -> u.setRoles(readRoles(u.getId())));
+        return users;
     }
 
     @Override

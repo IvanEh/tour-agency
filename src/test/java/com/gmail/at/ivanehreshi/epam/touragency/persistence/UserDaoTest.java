@@ -70,12 +70,9 @@ public class UserDaoTest {
         Long id = userDao.create(user1);
         user1.setId(id);
 
-        String oldName = user1.getFirstName();
         user1.setFirstName("Joe");
 
         userDao.update(user1);
-
-        user1.setFirstName(oldName);
 
         User user2 = userDao.read(user1.getId());
         assertEquals(user1, user2);
@@ -87,7 +84,6 @@ public class UserDaoTest {
         Long id = userDao.create(user1);
         user1.setId(id);
 
-        userDao.addRoles(id, Arrays.asList(Role.TOUR_AGENT));
         userDao.addRoles(id, Arrays.asList(Role.TOUR_AGENT));
 
         User user2 = userDao.read(id);

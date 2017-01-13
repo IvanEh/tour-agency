@@ -57,7 +57,7 @@ public class TourJdbcDao implements TourDao {
 
     @Override
     public Tour read(Long id) {
-        return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, READ_SQL, id).get(0);
+        return jdbcTemplate.queryObject(TourJdbcDao::fromResultSet, READ_SQL, id);
     }
 
     @Override
