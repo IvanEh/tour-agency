@@ -95,7 +95,6 @@ public class JdbcTemplateTest {
         txTemplate.commit();
 
         assertEquals(Long.valueOf(4), id1);
-        assertNull(id2);
 
         List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
                 SQL_SELECT_ALL);

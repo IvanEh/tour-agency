@@ -60,8 +60,6 @@ public enum SecurityContext {
                 roles = new ArrayList<>();
             }
 
-            boolean matched = false;
-
             for (SecurityConstraint sc : securityConstraints) {
 
                 if (sc.matches(path)) {
@@ -132,7 +130,7 @@ public enum SecurityContext {
 
         public boolean allowed(List<Role> roles) {
             if (rolesAllowed.isEmpty()) {
-                return !roles.isEmpty();
+                return true;
             }
 
             for (Role role : roles) {

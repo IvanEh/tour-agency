@@ -23,6 +23,8 @@ public class JdbcTemplate {
      */
     private Connection txConnection;
 
+    private boolean isRollback = false;
+
     public JdbcTemplate(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
@@ -30,6 +32,9 @@ public class JdbcTemplate {
 
     public Connection getConnection() {
         if(txConnection != null) {
+            if (isRollback) {
+                return null;
+            }
             return txConnection;
         }
 
@@ -75,6 +80,7 @@ public class JdbcTemplate {
     public void rollback() {
         if(txConnection != null) {
             try {
+                isRollback = true;
                 txConnection.rollback();
             } catch (SQLException e) {
                 LOGGER.error("Cannot call rollback", e);
@@ -85,7 +91,6 @@ public class JdbcTemplate {
     }
     public void query(ResultSetFunction fn, String query, Object... params) {
         Connection conn = getConnection();
-
 
         if(conn == null)
             return;
@@ -130,6 +135,9 @@ public class JdbcTemplate {
     public int update(String updQuery, Object... params) {
         Connection conn = getConnection();
 
+        if (conn == null)
+            return 0;
+
         try (PreparedStatement stmt = conn.prepareStatement(updQuery)) {
 
             for (int i = 0; i < params.length; i++) {
@@ -138,6 +146,7 @@ public class JdbcTemplate {
 
             return stmt.executeUpdate();
         } catch (SQLException e) {
+            rollback();
             LOGGER.error("Cannot execute update query", e);
         } finally {
             tryClose(conn);
@@ -148,6 +157,9 @@ public class JdbcTemplate {
 
     public Long insert(String updQuery, Object... params) {
         Connection conn = getConnection();
+
+        if (conn == null)
+            return null;
 
         try (PreparedStatement stmt
                      = conn.prepareStatement(updQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -166,6 +178,7 @@ public class JdbcTemplate {
             return null;
 
         } catch (SQLException e) {
+            rollback();
             LOGGER.error("Cannot insert values into DB", e);
         } finally {
             tryClose(conn);
@@ -178,11 +191,13 @@ public class JdbcTemplate {
         try {
             fn.apply(rs);
         } catch (Exception e) {
-            e.printStackTrace();
+            rollback();
+            LOGGER.info("ResultSetFunctions has thrown an exception", e);
         } finally {
             try {
                 rs.close();
             } catch (SQLException e) {
+                rollback();
                 LOGGER.error("Cannot tryClose ResultSet", e);
             }
         }
