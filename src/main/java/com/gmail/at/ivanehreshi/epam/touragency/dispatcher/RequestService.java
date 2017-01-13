@@ -1,19 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
-import com.gmail.at.ivanehreshi.epam.touragency.security.SecurityContext;
-import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
-import com.gmail.at.ivanehreshi.epam.touragency.util.TryOptionalUtil;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.security.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
+import org.apache.logging.log4j.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.servlet.http.*;
+import java.util.*;
 
 /**
  * A wrapper class that contains all the necessary information for
@@ -28,7 +21,6 @@ public class RequestService {
     private List<String> groups;
     private String pagePath = null;
     private String redirectPath = null;
-    private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
 
     public RequestService(HttpServletRequest request, HttpServletResponse response,
                           List<String> groups) {

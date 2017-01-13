@@ -1,14 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.security;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
-import com.gmail.at.ivanehreshi.epam.touragency.util.PasswordEncoder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
+import org.apache.logging.log4j.*;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import java.security.Principal;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.security.*;
 
 /**
  * A wrapper around HttpServletRequest that override methods related to
@@ -47,6 +45,7 @@ public class SecuredHttpServletRequest extends HttpServletRequestWrapper {
             return false;
         }
 
+        // TODO: simplify this
         if (user.getRoles().stream().map(Enum::name).anyMatch(s -> s.equals(role))) {
             return true;
         }

@@ -1,6 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder;
 
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.SelectQuery;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.*;
 
 /**
  * QueryBuilder helps to build up a dynamic query in
@@ -17,6 +17,7 @@ public abstract class QueryBuilder {
         return query.getSQL();
     }
 
+    // TODO: rename to `from`
     public static SelectBuilder select(String table) {
         return new SelectBuilder(new SelectQuery(table));
     }
