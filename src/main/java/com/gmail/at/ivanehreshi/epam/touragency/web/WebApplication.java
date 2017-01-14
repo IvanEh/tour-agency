@@ -1,25 +1,19 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
 import com.gmail.at.ivanehreshi.epam.touragency.controller.*;
-import com.gmail.at.ivanehreshi.epam.touragency.controller.service.JspController;
-import com.gmail.at.ivanehreshi.epam.touragency.controller.service.LocaleController;
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.ControllerDispatcherServletBuilder;
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.HttpMethod;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.ConnectionManager;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.JdbcTemplate;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.PurchaseDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.PurchaseJdbcDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.TourJdbcDao;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.UserJdbcDao;
-import com.gmail.at.ivanehreshi.epam.touragency.security.SecurityContext;
-import com.gmail.at.ivanehreshi.epam.touragency.util.ResourcesUtil;
-import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
+import com.gmail.at.ivanehreshi.epam.touragency.controller.service.*;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.*;
+import com.gmail.at.ivanehreshi.epam.touragency.security.*;
+import com.gmail.at.ivanehreshi.epam.touragency.service.*;
+import com.gmail.at.ivanehreshi.epam.touragency.service.impl.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
-import javax.servlet.ServletContext;
-import java.io.File;
+import javax.servlet.*;
+import java.io.*;
 
 /**
  * The web application itself. It has two goals:
@@ -46,10 +40,20 @@ public enum WebApplication {
 
         TourDao tourDao = new TourJdbcDao(connectionManager);
         UserDao userDao = new UserJdbcDao(connectionManager);
+        PurchaseDao purchaseDao = new PurchaseJdbcDao(connectionManager, userDao, tourDao);
+
+        UserService userService = new UserServiceImpl(userDao);
+        TourService tourService = new TourServiceImpl(tourDao);
+        PurchaseService purchaseService = new PurchaseServiceImpl(purchaseDao, tourDao,
+                userDao);
 
         serviceLocator.publish(tourDao, TourDao.class);
         serviceLocator.publish(userDao, UserDao.class);
-        serviceLocator.publish(new PurchaseJdbcDao(connectionManager, userDao, tourDao), PurchaseDao.class);
+        serviceLocator.publish(purchaseDao, PurchaseDao.class);;
+
+        serviceLocator.publish(userService, UserService.class);
+        serviceLocator.publish(tourService, TourService.class);
+        serviceLocator.publish(purchaseService, PurchaseService.class);
 
         SecurityContext.INSTANCE.setUserDao(userDao);
 

@@ -62,14 +62,16 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
     @Override
     public Purchase deepen(Purchase purchase) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionManager);
+        JdbcTemplate jdbcTemplate1 = new JdbcTemplate(connectionManager);
 
-        jdbcTemplate.startTransaction();
+//        jdbcTemplate1.startTransaction();
 
-        purchase.setUser(jdbcTemplate.queryObject(UserMapper::map, READ_USER_SQL, purchase.getUser().getId()));
-        purchase.setTour(jdbcTemplate.queryObject(TourMapper::map, READ_TOUR_SQL, purchase.getTour().getId()));
+        purchase.setUser(jdbcTemplate1.queryObject(UserMapper::map, READ_USER_SQL,
+                purchase.getUser().getId()));
+        purchase.setTour(jdbcTemplate1.queryObject(TourMapper::map, READ_TOUR_SQL,
+                purchase.getTour().getId()));
 
-        jdbcTemplate.commit();
+//        jdbcTemplate1.commit();
         return purchase;
     }
 
