@@ -5,16 +5,18 @@ import org.junit.*;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class JdbcTemplateTest {
     private static final String SQL_SELECT_ALL = "SELECT * FROM test";
 
     private ConnectionManager connectionManager;
+
     private JdbcTemplate jdbcTemplate;
 
     @Before
     public void setUp() throws Exception {
-        connectionManager = H2Db.init("test.sql");
+        connectionManager = spy(H2Db.init("test.sql"));
         jdbcTemplate = new JdbcTemplate(connectionManager);
     }
 
@@ -64,7 +66,7 @@ public class JdbcTemplateTest {
     }
 
     @Test
-    public void testTxImplicitRollback() {
+    public void testTxImplicitRollbackSecondOp() {
         JdbcTemplate txTemplate = new JdbcTemplate(connectionManager);
         txTemplate.startTransaction();
 
@@ -79,8 +81,28 @@ public class JdbcTemplateTest {
         List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
                 SQL_SELECT_ALL);
         assertEquals(Arrays.asList("x", "y", "z"), cols);
+        verify(connectionManager, times(2)).getConnection();
     }
 
+    @Test
+    public void testTxImplicitRollbackFirstOp() {
+        JdbcTemplate txTemplate = new JdbcTemplate(connectionManager);
+        txTemplate.startTransaction();
+
+        Long id1 = txTemplate.insert("INSERT INTO test(col, id) VALUES(?, ?)", null, 1);
+        Long id2 = txTemplate.insert("INSERT INTO test(col) VALUES(?)", "alpha");
+
+        txTemplate.commit();
+
+        assertNull(id1);
+        assertNull(id2);
+
+        List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
+                SQL_SELECT_ALL);
+        assertEquals(Arrays.asList("x", "y", "z"), cols);
+
+        verify(connectionManager, times(2)).getConnection();
+    }
     @Test
     public void testTxExplicitRollback() {
         JdbcTemplate txTemplate = new JdbcTemplate(connectionManager);
@@ -99,5 +121,7 @@ public class JdbcTemplateTest {
         List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
                 SQL_SELECT_ALL);
         assertEquals(Arrays.asList("x", "y", "z"), cols);
+
+        verify(connectionManager, times(2)).getConnection();
     }
 }

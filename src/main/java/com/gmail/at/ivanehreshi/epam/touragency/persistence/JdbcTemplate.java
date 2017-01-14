@@ -47,6 +47,7 @@ public class JdbcTemplate {
         try {
             txConnection.setAutoCommit(false);
             txConnection.setTransactionIsolation(txIsolationLevel);
+            isRollback = false;
         } catch (SQLException e) {
             LOGGER.error("Cannot start transaction. Your application may be data inconsistent", e);
         }
@@ -63,17 +64,20 @@ public class JdbcTemplate {
         }
 
         try {
+            isRollback = false;
+            txConnection.setAutoCommit(true);
             txConnection.commit();
-            txConnection.setAutoCommit(false);
         } catch (SQLException e) {
             LOGGER.error("Cannot commit");
             try {
                 txConnection.rollback();
             } catch (SQLException e1) {
-                LOGGER.error("", e1);
+                LOGGER.error("Cannot call rollback on connection", e1);
             }
         } finally {
-            tryClose(txConnection);
+            Connection tempConnection = txConnection;
+            txConnection = null;
+            tryClose(tempConnection);
         }
     }
 
@@ -103,6 +107,7 @@ public class JdbcTemplate {
             ResultSet rs = stmt.executeQuery();
             withRs(rs, fn);
         } catch (SQLException e) {
+            rollback();
             LOGGER.warn("Error creating prepared statement. Query: " + query, e);
         } finally {
             tryClose(conn);
@@ -250,7 +255,7 @@ public class JdbcTemplate {
      */
     public void tryClose(Connection connection) {
         try {
-            if(txConnection != connection) {
+            if(txConnection != connection || isRollback) {
                 connection.close();
             }
         } catch (SQLException e) {
