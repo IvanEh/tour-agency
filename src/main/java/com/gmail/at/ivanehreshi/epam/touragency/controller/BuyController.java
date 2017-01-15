@@ -1,21 +1,20 @@
 package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.Controller;
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
-import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.service.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
 public final class BuyController extends Controller {
-    private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
+    private TourService tourService = ServiceLocator.INSTANCE.get(TourService.class);
 
     @Override
     public void get(RequestService reqService) {
         Long tourId = reqService.getLong("tourId").get();
-        Tour tour = tourDao.read(tourId);
+        Tour tour = tourService.read(tourId);
         Long userId = reqService.getUser().get().getId();
 
         reqService.putParameter("tour", tour);
-        reqService.putParameter("price", tourDao.computePrice(tourId, userId));
+        reqService.putParameter("price", tourService.computePrice(tourId, userId));
     }
 }

@@ -2,13 +2,12 @@ package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
-import java.util.*;
-
 public final class RegisterController extends Controller {
-    private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
+
+    private AuthService authService = ServiceLocator.INSTANCE.get(AuthService.class);
 
     @Override
     public void post(RequestService reqService) {
@@ -19,13 +18,9 @@ public final class RegisterController extends Controller {
         user.setLastName(reqService.getString("lastName"));
 
         String pass = reqService.getString("password");
-        String encodedPass = PasswordEncoder.encodePassword(pass);
-        user.setPassword(encodedPass);
 
-        user.setRoles(Collections.singletonList(Role.CUSTOMER));
+        authService.register(user, pass);
 
-        userDao.create(user);
         reqService.redirect("/login.html");
-
     }
 }

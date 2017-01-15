@@ -46,6 +46,7 @@ public enum WebApplication {
         TourService tourService = new TourServiceImpl(tourDao);
         PurchaseService purchaseService = new PurchaseServiceImpl(purchaseDao, tourDao,
                 userDao);
+        AuthService authService = new AuthServiceImpl(userService);
 
         serviceLocator.publish(tourDao, TourDao.class);
         serviceLocator.publish(userDao, UserDao.class);
@@ -54,6 +55,7 @@ public enum WebApplication {
         serviceLocator.publish(userService, UserService.class);
         serviceLocator.publish(tourService, TourService.class);
         serviceLocator.publish(purchaseService, PurchaseService.class);
+        serviceLocator.publish(authService, AuthService.class);
 
         SecurityContext.INSTANCE.setUserDao(userDao);
 
@@ -85,6 +87,7 @@ public enum WebApplication {
                 .addMapping("/logout", new LogoutController())
                 .addMapping("/user/purchases\\.html", new PurchaseController())
                 .addMapping("/agent/new-tour\\.html", new AgentNewTourPageController())
+                .addMapping("/agent/edit-tour\\.html", new AgentEditTourController())
                 .addMapping("/(.*)\\.html", new JspController("/pages/", ".html", ".html"))
                 .addMapping("/(.*)\\.html", new LocaleController());
     }

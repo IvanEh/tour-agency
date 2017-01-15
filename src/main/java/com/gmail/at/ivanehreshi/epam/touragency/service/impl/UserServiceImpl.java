@@ -4,6 +4,8 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 
+import java.util.*;
+
 public class UserServiceImpl extends AbstractDaoService<User, Long>
         implements UserService {
 
@@ -22,5 +24,10 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
     @Override
     public UserDao getDao() {
         return userDao;
+    }
+
+    @Override
+    public List<User> findAllOrderByRegularity(boolean byTotalPrice) {
+        return userDao.findAllOrderByRegularity(byTotalPrice);
     }
 }

@@ -1,19 +1,18 @@
 package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.Controller;
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.UserDao;
-import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.service.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
-import java.util.List;
+import java.util.*;
 
 public final class AgentUsersPageController extends Controller {
-    private UserDao userDao = ServiceLocator.INSTANCE.get(UserDao.class);
+    private UserService userService = ServiceLocator.INSTANCE.get(UserService.class);
 
     @Override
     public void get(RequestService reqService) {
-        List<User> users = userDao.findAllOrderByRegularity(true);
+        List<User> users = userService.findAllOrderByRegularity(true);
         reqService.putParameter("users", users);
     }
 }

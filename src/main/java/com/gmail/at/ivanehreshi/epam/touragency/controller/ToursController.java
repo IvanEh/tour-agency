@@ -1,22 +1,20 @@
 package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.Controller;
-import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.RequestService;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.TourType;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.ScrollDirection;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.Slice;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.TourDao;
-import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
-import com.gmail.at.ivanehreshi.epam.touragency.util.ServiceLocator;
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.service.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.math.*;
+import java.util.*;
+import java.util.stream.*;
 
 public final class ToursController extends Controller {
     private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
+
+    private TourService tourService = ServiceLocator.INSTANCE.get(TourService.class);
 
     private static final int PAGE_SIZE = 10;
 
@@ -77,42 +75,46 @@ public final class ToursController extends Controller {
 
     @Override
     public void post(RequestService reqService) {
-        Tour tour = new Tour();
+        WithStatus<Tour> tourWithStatus = extractTour(reqService);
 
-        try {
-            tour.setTitle(reqService.getString("title"));
-            tour.setDescription(reqService.getString("description"));
-            tour.setPrice(new BigDecimal(reqService.getString("price")));
-            tour.setType(TourType.values()[reqService.getInt("type").get()]);
-            tour.setHot(reqService.getBool("hot").orElse(false));
-            tour.setEnabled(reqService.getBool("enabled").orElse(true));
-
-            tourDao.create(tour);
-            
+        if (tourWithStatus.isOk()) {
+            tourService.create(tourWithStatus.getPayload());
             reqService.redirect("/agent/tours.html");
-        } catch (NumberFormatException e) {
+        } else {
             reqService.redirect("/agent/new-tour.html?failed=true");
-            reqService.putFlashParameter("tour", tour);
+            reqService.putFlashParameter("tour", tourWithStatus.getPayload());
         }
     }
 
     @Override
     public void put(RequestService reqService) {
-        Long id = reqService.getLong("id").orElse(null);
-        try {
-            Tour tour = new Tour();
-            tour.setId(id);
-            tour.setTitle(reqService.getString("title"));
-            tour.setDescription(reqService.getString("description"));
-            tour.setPrice(new BigDecimal(reqService.getString("price")));
-            tour.setType(TourType.values()[reqService.getInt("type").get()]);
-            tour.setHot(reqService.getBool("hot").orElse(false));
-            tour.setEnabled(reqService.getBool("enabled").orElse(true));
+        WithStatus<Tour> tourWithStatus = extractTour(reqService);
+        Long id = tourWithStatus.getPayload().getId();
 
-            tourDao.update(tour);
+        if (tourWithStatus.isOk()) {
+            tourDao.update(tourWithStatus.getPayload());
             reqService.redirect("/agent/tours.html");
-        } catch (NumberFormatException e) {
+        } else {
             reqService.redirect("/agent/edit-tour.html?failed=true&id=" + id);
         }
+    }
+
+    private WithStatus<Tour> extractTour(RequestService reqService) {
+        Tour tour = new Tour();
+
+        tour.setId(reqService.getLong("id").orElse(null));
+        tour.setTitle(reqService.getString("title"));
+        tour.setDescription(reqService.getString("description"));
+        tour.setType(TourType.values()[reqService.getInt("type").get()]);
+        tour.setHot(reqService.getBool("hot").orElse(false));
+        tour.setEnabled(reqService.getBool("enabled").orElse(true));
+
+        try {
+            tour.setPrice(new BigDecimal(reqService.getString("price")));
+        } catch (NumberFormatException e) {
+            return WithStatus.bad(tour);
+        }
+
+        return WithStatus.ok(tour);
     }
 }
