@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS `tour` (
   `hot` TINYINT(1) NOT NULL DEFAULT '0',
   `price` DECIMAL(10,4) NOT NULL,
   `enabled` INT(11) NOT NULL DEFAULT '1',
+  `avg_rating` DECIMAL(3,2) NULL,
+  `votes_count` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`));
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -53,6 +55,23 @@ CREATE TABLE IF NOT EXISTS `user_role` (
   CONSTRAINT `fk_user_id0`
     FOREIGN KEY (`user_id`)
     REFERENCES `user` (`id`));
+
+CREATE TABLE IF NOT EXISTS `review` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `text` NVARCHAR(1024) NOT NULL,
+  `rating` INT NOT NULL,
+  `date` DATETIME NOT NULL,
+  `author_id` INT NOT NULL,
+  `tour_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_review_author_id` (`author_id` ASC),
+  INDEX `fk_review_tour_id` (`tour_id` ASC),
+  CONSTRAINT `fk_review_author_id`
+    FOREIGN KEY (`author_id`)
+    REFERENCES `user` (`id`),
+  CONSTRAINT `fk_review_tour_id`
+    FOREIGN KEY (`tour_id`)
+    REFERENCES `tour` (`id`));
 
 INSERT INTO `role` VALUES(1, 'CUSTOMER');
 INSERT INTO `role` VALUES(2, 'AGENT');

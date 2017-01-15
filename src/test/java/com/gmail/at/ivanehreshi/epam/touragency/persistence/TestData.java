@@ -84,6 +84,50 @@ public class TestData {
         return new UserTestData(tour1, tour2, user);
     }
 
+    public static ReviewTestData getReviewTestData(UserDao userDao, TourDao tourDao) {
+        User user1 = new User();
+        user1.setFirstName("u1");
+        user1.setUsername("u1");
+
+        User user2 = new User();
+        user2.setFirstName("u2");
+        user1.setUsername("u2");
+
+        Long id = userDao.create(user1);
+        user1.setId(id);
+        id = userDao.create(user2);
+        user2.setId(id);
+
+        Tour tour = getExcursionTour();
+        id = tourDao.create(tour);
+        tour.setId(id);
+
+        return new ReviewTestData(tour, user1, user2);
+    }
+
+    public static Review getReview(User user1, Tour tour) {
+        Review review = new Review();
+
+        review.setAuthor(user1);
+        review.setTour(tour);
+        review.setRating(4);
+        review.setText("Some text_"+ user1.getFirstName() + "_" + tour.getTitle());
+
+        return review;
+    }
+
+    public static class ReviewTestData {
+        public Tour tour;
+        public User user1;
+        public User user2;
+
+        public ReviewTestData(Tour tour, User user1, User user2) {
+            this.tour = tour;
+            this.user1 = user1;
+            this.user2 = user2;
+        }
+    }
+
     public static class UserTestData {
         public Tour tour1;
         public Tour tour2;

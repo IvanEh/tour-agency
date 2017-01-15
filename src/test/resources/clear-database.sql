@@ -1,4 +1,5 @@
 SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE `review`;
 TRUNCATE TABLE `purchase`;
 TRUNCATE TABLE `tour`;
 TRUNCATE TABLE `user_role`;

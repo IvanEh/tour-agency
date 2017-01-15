@@ -3,12 +3,19 @@ package com.gmail.at.ivanehreshi.epam.touragency.domain;
 import java.util.*;
 
 public class User {
+
     private Long id;
+
     private String firstName;
+
     private String lastName;
+
     private String username;
+
     private String password;
+
     private int discount;
+
     private List<Role> roles = new ArrayList<>();
 
     public User() {

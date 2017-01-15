@@ -4,13 +4,24 @@ import java.math.*;
 import java.util.*;
 
 public class Tour {
+
     private Long id;
+
     private String title;
+
     private String description;
+
     private TourType type;
+
     boolean hot;
+
     private BigDecimal price;
+
     private boolean enabled;
+
+    private Double avgRating;
+
+    private int votesCount;
 
     public Tour() {
     }
@@ -73,6 +84,22 @@ public class Tour {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Double getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(Double avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public int getVotesCount() {
+        return votesCount;
+    }
+
+    public void setVotesCount(int votesCount) {
+        this.votesCount = votesCount;
     }
 
     @Override

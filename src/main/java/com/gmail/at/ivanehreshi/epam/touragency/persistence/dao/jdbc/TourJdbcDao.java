@@ -16,7 +16,8 @@ public class TourJdbcDao implements TourDao {
 
     private static final String CREATE_SQL =
             "INSERT INTO `tour` (`title`, `description`, `type`," +
-                    " `hot`, `price`, `enabled`) VALUES (?, ?, ?, ?, ?, ?)";
+                    " `hot`, `price`, `enabled`, `avg_rating`, `votes_count`) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String FIND_ALL_SQL = "SELECT * FROM tour";
 
@@ -26,7 +27,8 @@ public class TourJdbcDao implements TourDao {
     private static final String READ_SQL = "SELECT * FROM tour WHERE id=?";
 
     private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, " +
-            "`description`=?, `type`=?, `hot`=?, `price`=?, `enabled`=? WHERE `id`=?";
+            "`description`=?, `type`=?, `hot`=?, `price`=?, `enabled`=?,`avg_rating`=? " +
+            "`votes_count`=? WHERE `id`=?";
 
     private static final String DELETE_SQL = "DELETE FROM tour WHERE id=?";
 
@@ -51,8 +53,9 @@ public class TourJdbcDao implements TourDao {
 
     @Override
     public Long create(Tour t) {
-        return jdbcTemplate.insert(CREATE_SQL, t.getTitle(), t.getDescription(), t.getType().ordinal(),
-                t.isHot(), t.getPrice(), t.isEnabled());
+        return jdbcTemplate.insert(CREATE_SQL, t.getTitle(), t.getDescription(),
+                t.getType().ordinal(), t.isHot(), t.getPrice(), t.isEnabled(),
+                t.getAvgRating(), t.getVotesCount());
     }
 
     @Override
@@ -63,7 +66,8 @@ public class TourJdbcDao implements TourDao {
     @Override
     public void update(Tour t) {
         jdbcTemplate.update(UPDATE_SQL, t.getTitle(), t.getDescription(),
-                t.getType().ordinal(), t.isHot(), t.getPrice(), t.isEnabled(), t.getId());
+                t.getType().ordinal(), t.isHot(), t.getPrice(), t.isEnabled(),
+                t.getAvgRating(), t.getVotesCount(), t.getId());
     }
 
     @Override
