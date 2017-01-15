@@ -29,13 +29,13 @@ public class JdbcTemplate {
         this.connectionManager = connectionManager;
     }
 
-
     public Connection getConnection() {
-        if(txConnection != null) {
-            if (isRollback) {
+        if (isTransactionMode()) {
+            if(isRollback) {
                 return null;
+            } else {
+                return txConnection;
             }
-            return txConnection;
         }
 
         return this.connectionManager.getConnection();
@@ -58,39 +58,32 @@ public class JdbcTemplate {
     }
 
     public void commit() {
-        if(txConnection == null) {
+        if(!isTransactionMode()) {
             LOGGER.error("Tried to commit transaction before starting one");
             return;
         }
 
         try {
-            isRollback = false;
-            txConnection.setAutoCommit(true);
-            txConnection.commit();
+            if(!isRollback) {
+                txConnection.commit();
+                tryCloseTxConnection();
+            }
         } catch (SQLException e) {
             LOGGER.error("Cannot commit");
-            try {
-                txConnection.rollback();
-            } catch (SQLException e1) {
-                LOGGER.error("Cannot call rollback on connection", e1);
-            }
-        } finally {
-            Connection tempConnection = txConnection;
-            txConnection = null;
-            tryClose(tempConnection);
         }
     }
 
     public void rollback() {
-        if(txConnection != null) {
+        if(isTransactionMode()) {
             try {
                 isRollback = true;
                 txConnection.rollback();
+                tryCloseTxConnection();
             } catch (SQLException e) {
                 LOGGER.error("Cannot call rollback", e);
             }
         } else {
-            LOGGER.error("err");
+            LOGGER.error("no transactions");
         }
     }
     public void query(ResultSetFunction fn, String query, Object... params) {
@@ -208,7 +201,6 @@ public class JdbcTemplate {
         }
     }
 
-
     public boolean executeSqlFile(File file) {
         try {
             if (file.exists()) {
@@ -247,21 +239,36 @@ public class JdbcTemplate {
         return false;
     }
 
+    public boolean isTransactionMode() {
+        return txConnection != null || isRollback ;
+    }
+
 
     // TODO: make private
     /**
      *
      * @param connection
      */
-    public void tryClose(Connection connection) {
+    private void tryClose(Connection connection) {
         try {
-            if(txConnection != connection || isRollback) {
+            if(connection != txConnection) {
                 connection.close();
+            } else if (connection != null){
+                LOGGER.error("Cannot close connection before finishing connection");
             }
         } catch (SQLException e) {
             LOGGER.error("Cannot tryClose jdbc connection", e);
         }
     }
+
+    private void tryCloseTxConnection() throws SQLException {
+        if(txConnection != null) {
+            txConnection.setAutoCommit(false);
+            txConnection.close();
+            txConnection = null;
+        }
+    }
+
 
     @FunctionalInterface
     public interface ResultSetFunction{
