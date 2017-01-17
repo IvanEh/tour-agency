@@ -202,6 +202,7 @@ public class JdbcTemplate {
     }
 
     public boolean executeSqlFile(File file) {
+        int line = 0;
         try {
             if (file.exists()) {
                 String content = new String(Files.readAllBytes(file.toPath()));
@@ -217,6 +218,7 @@ public class JdbcTemplate {
                     for (String query : queries) {
                         try (Statement stmt = conn.createStatement()) {
                             String tr = query.trim();
+                            line++;
                             stmt.execute(query.trim());
                         }
                     }
@@ -232,7 +234,8 @@ public class JdbcTemplate {
             LOGGER.warn("SQL script file not found");
             return false;
         }catch (SQLException e) {
-            LOGGER.error("Errors while executing SQL script " + file.getAbsolutePath(), e);
+            LOGGER.error("Errors while executing SQL script at #" + line +
+                    " in file " + file.getAbsolutePath(), e);
             return false;
         }
 
