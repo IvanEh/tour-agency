@@ -2,7 +2,9 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.util;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 
+import java.math.*;
 import java.sql.*;
+import java.util.*;
 
 public class TourMapper {
    public static Tour map(ResultSet rs) throws SQLException {
@@ -15,7 +17,9 @@ public class TourMapper {
        tour.setType(TourType.values()[rs.getInt("type")]);
        tour.setHot(rs.getBoolean("hot"));
        tour.setEnabled(rs.getBoolean("enabled"));
-       tour.setAvgRating(rs.getObject("avg_rating", Double.class));
+       tour.setAvgRating(Optional.ofNullable(rs.getBigDecimal("avg_rating"))
+               .map(BigDecimal::doubleValue)
+               .orElse(null));
        tour.setVotesCount(rs.getInt("votes_count"));
 
        return tour;

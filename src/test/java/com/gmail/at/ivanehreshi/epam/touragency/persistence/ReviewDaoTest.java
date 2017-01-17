@@ -6,6 +6,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 import org.junit.*;
 
+import java.math.*;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -19,6 +20,8 @@ public class ReviewDaoTest {
 
     private UserDao userDao;
 
+    private PurchaseDao purchaseDao;
+
     private TestData.ReviewTestData data;
 
     @Before
@@ -27,6 +30,7 @@ public class ReviewDaoTest {
         reviewDao = new ReviewJdbcDao(connectionManager);
         tourDao = new TourJdbcDao(connectionManager);
         userDao = new UserJdbcDao(connectionManager);
+        purchaseDao = new PurchaseJdbcDao(connectionManager, null, null);
         data = TestData.getReviewTestData(userDao, tourDao);
     }
 
@@ -184,8 +188,64 @@ public class ReviewDaoTest {
         review2.setId(id2);
 
         List<Review> reviews = reviewDao.findAll();
-        assertWeakEquals(review1, reviews.get(0));
-        assertWeakEquals(review2, reviews.get(1));
+        assertWeakEquals(review1, reviews.get(1));
+        assertWeakEquals(review2, reviews.get(0));
+    }
+
+    @Test
+    public void testFindById() {
+        Tour anotherTour = TestData.getExcursionTour();
+        Long tourId = tourDao.create(anotherTour);
+        anotherTour.setId(tourId);
+
+        Review review1 = TestData.getReview(data.user1, data.tour);
+        Review review2 = TestData.getReview(data.user2, data.tour);
+        Review review3 = TestData.getReview(data.user1, anotherTour);
+
+        Long id1 = reviewDao.create(review1);
+        Long id2 = reviewDao.create(review2);
+        Long id3 = reviewDao.create(review3);
+
+        assertNotNull(id1);
+        assertNotNull(id2);
+        assertNotNull(id3);
+
+        review1.setId(id1);
+        review2.setId(id2);
+        review3.setId(id3);
+
+        List<Review> reviews1 = reviewDao.findByTour(data.tour.getId());
+        List<Review> reviews2 = reviewDao.findByTour(anotherTour.getId());
+
+        assertEquals(2, reviews1.size());
+        assertEquals(1, reviews2.size());
+
+        assertWeakEquals(review2, reviews1.get(0));
+        assertWeakEquals(review1, reviews1.get(1));
+        assertWeakEquals(review3, reviews2.get(0));
+    }
+
+    @Test
+    public void testCanVoteGivenPurchase() {
+        Purchase purchase = new Purchase(data.user1, data.tour, new BigDecimal(0));
+        purchaseDao.create(purchase);
+
+        assertTrue(reviewDao.canVote(data.user1.getId(), data.tour.getId()));
+    }
+
+    @Test
+    public void testCanVoteGivenReview() {
+        Purchase purchase = new Purchase(data.user1, data.tour, new BigDecimal(0));
+        purchaseDao.create(purchase);
+        Review review = TestData.getReview(data.user1, data.tour);
+        reviewDao.create(review);
+
+        assertFalse(reviewDao.canVote(data.user1.getId(), data.tour.getId()));
+    }
+
+    @Test
+    public void testCanVoteGivenNoPurchase() {
+        assertFalse(reviewDao.canVote(data.user1.getId(), data.tour.getId()));
     }
 
     private static void assertWeakEquals(Review expected, Review actual) {

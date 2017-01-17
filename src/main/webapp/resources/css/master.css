@@ -130,6 +130,63 @@ hr {
     padding: 5px;
     box-shadow: 0px 0px 2px 1px gray;
 }
+
+.vcentered-container {
+    display: table;
+}
+
+.vcentered-container.inline {
+    display: inline-table;
+}
+
+.vcentered-container > .vcentered {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.push-right-sm {
+    margin-left: 10px;
+}
+
+.btn-contrast {
+    color: white;
+    background: #ffbc3b;
+    border: 1px solid #daa300;
+}
+
+.discount {
+    background: #ffbc3b;
+    width: 50px;
+    height: 50px;
+    padding-top: 9px;
+    text-align: center;
+    transform: rotate(30deg);
+    font-size: 15pt;
+    color: white;
+    border-radius: 50% !important;
+}
+
+.danger {
+    color: #d2280c;
+}
+
+.price {
+    font-weight: 600;
+    color: #337ab7;
+    font-size: 14pt;
+}
+
+.clear-margin {
+    margin: 0px;
+}
+
+.submit {
+    cursor: pointer;
+}
+
+.submit:hover {
+    opacity: 0.8;
+}
 /*
 .nav > li > a, .nav > li > a.btn, .navbar .navbar-nav > li > a {
     color: white;

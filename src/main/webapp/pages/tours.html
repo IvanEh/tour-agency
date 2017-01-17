@@ -10,6 +10,7 @@
     <title>Tour Agency</title>
     <c:import url="/resources/components/head.html"/>
     <link rel="stylesheet" href="/resources/css/tour.css"/>
+    <link rel="stylesheet" href="/resources/bower_components/rateYo/src/jquery.rateyo.css"/>
     <script src="/resources/js/params.js"></script>
     <script src="/resources/js/tours.js"></script>
 </head>
@@ -22,7 +23,6 @@
         <c:import url="/resources/components/sidebar.html"/>
     </div>
 
-    ${ord}fd
     <div class="col-md-offset-3 col-md-8 content stretch">
         <ul class="nav nav-pills toolbar">
 
@@ -60,7 +60,7 @@
             <c:forEach var="tour" items="${tours}">
 
                 <div class="tour-wrapper col-md-12">
-                    <a href="/user/buy.html?tourId=${tour.id}">
+                    <a href="/tour.html?id=${tour.id}">
                         <div class="tour clearfix">
                             <c:if test="${tour.isHot()}">
                                 <div class="hot">
@@ -79,6 +79,16 @@
                             <div class="footer">
                                 <div class="pull-left badge" style="line-height: 20px">
                                     $<c:out value="${tour.price.doubleValue()}"/>
+                                </div>
+                                <div class="pull-right">
+                                    <div class="vcentered-container">
+                                        <div class="stars vcentered" style="display: inline-block"
+                                             data-rating="${tour.avgRating}">
+                                        </div>
+                                        <div class="counter inline vcentered">
+                                            ${tour.votesCount}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -111,6 +121,23 @@
 
     </div>
 </div>
+
+<script src="/resources/bower_components/rateYo/src/jquery.rateyo.js"></script>
+
+<script>
+$(function () {
+
+  $('.stars').each(function() {
+    var $this = $(this);
+    $this.rateYo({
+        rating: $this.data('rating') || 0,
+        readOnly: true,
+        starWidth: '17px'
+    });
+  });
+
+});
+</script>
 
 </body>
 </html>

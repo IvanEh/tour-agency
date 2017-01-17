@@ -93,11 +93,30 @@ public class ReviewJdbcDao implements ReviewDao {
     @Override
     public List<Review> findAll() {
         return jdbcTemplate.queryObjects(ReviewJdbcDao::fromResultSet,
-                "SELECT * FROM `review`");
+                "SELECT * FROM `review` ORDER BY id DESC");
     }
 
     private static Review fromResultSet(ResultSet rs) throws SQLException {
         return ReviewMapper.map(rs);
     }
 
+    @Override
+    public List<Review> findByTour(Long id) {
+        return jdbcTemplate.queryObjects(ReviewJdbcDao::fromResultSet,
+                "SELECT * FROM `review` WHERE tour_id=? ORDER BY id DESC", id);
+    }
+
+    @Override
+    public boolean canVote(Long userId, Long tourId) {
+        boolean flagWrapper[] = new boolean[]{false};
+        jdbcTemplate.query(rs -> flagWrapper[0] = !rs.next(),
+                "SELECT id FROM `review` WHERE author_id=? AND tour_id=?", userId,
+                tourId);
+
+        jdbcTemplate.query(rs -> flagWrapper[0] &= rs.next(),
+                "SELECT id FROM `purchase` WHERE user_id=? AND tour_id=?", userId,
+                tourId);
+
+        return flagWrapper[0];
+    }
 }

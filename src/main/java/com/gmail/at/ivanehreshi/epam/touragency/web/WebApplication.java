@@ -41,12 +41,14 @@ public enum WebApplication {
         TourDao tourDao = new TourJdbcDao(connectionManager);
         UserDao userDao = new UserJdbcDao(connectionManager);
         PurchaseDao purchaseDao = new PurchaseJdbcDao(connectionManager, userDao, tourDao);
+        ReviewDao reviewDao = new ReviewJdbcDao(connectionManager);
 
         UserService userService = new UserServiceImpl(userDao);
         TourService tourService = new TourServiceImpl(tourDao);
         PurchaseService purchaseService = new PurchaseServiceImpl(purchaseDao, tourDao,
                 userDao);
         AuthService authService = new AuthServiceImpl(userService);
+        ReviewService reviewService = new ReviewServiceImpl(reviewDao, userDao);
 
         serviceLocator.publish(tourDao, TourDao.class);
         serviceLocator.publish(userDao, UserDao.class);
@@ -56,6 +58,7 @@ public enum WebApplication {
         serviceLocator.publish(tourService, TourService.class);
         serviceLocator.publish(purchaseService, PurchaseService.class);
         serviceLocator.publish(authService, AuthService.class);
+        serviceLocator.publish(reviewService, ReviewService.class);
 
         SecurityContext.INSTANCE.setUserDao(userDao);
 
@@ -68,7 +71,7 @@ public enum WebApplication {
 
     private void configureSecurity(SecurityContext sc) {
         sc.addSecurityConstraint("/agent/.*", Role.TOUR_AGENT)
-                .addSecurityConstraint("/user/.*");
+                .addSecurityConstraint("/user/.*", Role.CUSTOMER, Role.TOUR_AGENT);
     }
 
     private ControllerDispatcherServletBuilder buildDispatcherServlet(ControllerDispatcherServletBuilder servletBuilder) {
@@ -76,6 +79,7 @@ public enum WebApplication {
                 .addMapping("/", new RedirectController("/index.html"))
                 .addMapping("/tours", new ToursController())
                 .addMapping("/tours\\.html", HttpMethod.GET.mask, new ToursController())
+                .addMapping("/tour\\.html", new TourController())
                 .addMapping("/user/buy\\.html", new BuyController())
                 .addMapping("/agent/tours\\.html", new AgentToursPageController())
                 .addMapping("/agent/users\\.html", new AgentUsersPageController())
@@ -85,6 +89,7 @@ public enum WebApplication {
                 .addMapping("/purchase", new PurchaseController())
                 .addMapping("/login", new LoginController())
                 .addMapping("/logout", new LogoutController())
+                .addMapping("/review", new ReviewController())
                 .addMapping("/user/purchases\\.html", new PurchaseController())
                 .addMapping("/agent/new-tour\\.html", new AgentNewTourPageController())
                 .addMapping("/agent/edit-tour\\.html", new AgentEditTourController())

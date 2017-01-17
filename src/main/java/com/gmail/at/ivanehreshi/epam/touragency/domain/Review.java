@@ -87,4 +87,16 @@ public class Review {
     public int hashCode() {
         return Objects.hash(id, text, rating, date, author, tour);
     }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "author=" + author +
+                ", id=" + id +
+                ", text='" + text + '\'' +
+                ", rating=" + rating +
+                ", date=" + date +
+                ", tour=" + tour +
+                '}';
+    }
 }
