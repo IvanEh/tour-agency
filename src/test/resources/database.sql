@@ -73,5 +73,17 @@ CREATE TABLE IF NOT EXISTS `review` (
     FOREIGN KEY (`tour_id`)
     REFERENCES `tour` (`id`));
 
+CREATE TABLE IF NOT EXISTS `tour_image` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `tour_id` INT NOT NULL,
+  `image_url` VARCHAR(512) NOT NULL,
+  `thumbnail_url` VARCHAR(512) NULL,
+  PRIMARY KEY (`id`, `tour_id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  INDEX `fk_tour_image_tour_idx` (`tour_id` ASC),
+  CONSTRAINT `fk_tour_image_tour`
+    FOREIGN KEY (`tour_id`)
+    REFERENCES `tour` (`id`));
+
 INSERT INTO `role` VALUES(1, 'CUSTOMER');
 INSERT INTO `role` VALUES(2, 'AGENT');

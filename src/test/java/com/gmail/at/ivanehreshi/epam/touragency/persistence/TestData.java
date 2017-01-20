@@ -3,11 +3,15 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.*;
+import org.apache.logging.log4j.*;
 
 import java.math.*;
+import java.net.*;
 import java.util.*;
 
 public class TestData {
+    private static final Logger LOGGER = LogManager.getLogger(TestData.class);
+
     public static User getUser() {
         User user = new User();
         user.setPassword("passw");
@@ -56,6 +60,18 @@ public class TestData {
         tour.setTitle("Tour 3");
         tour.setType(TourType.RECREATION);
         return tour;
+    }
+
+    public static TourImage getTourImage(Tour tour) {
+        TourImage tourImage = new TourImage();
+        tourImage.setTour(tour);
+        try {
+            tourImage.setImageUrl(new URL("http://127.1/hi.jpeg"));
+            tourImage.setThumbnailUrl(new URL("http://127.1/hi-thumb.jpeg"));
+        } catch (MalformedURLException e) {
+            LOGGER.error("Malformed test URL");
+        }
+        return tourImage;
     }
 
     public static UserTestData getUserTestData(ConnectionManager cm) {
