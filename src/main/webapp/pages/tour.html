@@ -82,49 +82,13 @@
         <div class="row">
             <div class="col-md-12 galery">
                 <c:forEach var="tourImage" items="${tourImages}">
-                    <div class="image-container pull-left">
-                        <div class="image dropdown">
-                            <a href="${tourImage.imageUrl}" class="image"
-                               data-lightbox="image-1">
-                                <div class="image-frame">
-                                    <img src="${tourImage.thumbnailUrl}"/>
-                                </div>
-                            </a>
-
-                            <u:if-user role="TOUR_AGENT">
-                                <div class="dropdown-content">
-                                    <a href="#" data-action="removeImage"
-                                       data-id="${tourImage.id}"><i class="glyphicon glyphicon-trash"></i></a>
-                                    <!--<a href="#"><i class="glyphicon glyphicon-trash"></i></a>-->
-                                </div>
-                            </u:if-user>
-                        </div>
-                    </div>
+                    <%@include file="/resources/components/tour-image.html" %>
                 </c:forEach>
 
-                <div class="vcentered-container image-container pull-left hidden"
-                     id="image-template">
-                    <div class="vcentered">
-                        <center>
-                            <div class="btn-circ-new">
-                                <i class="glyphicon glyphicon-open"></i>
-                            </div>
-                        </center>
-                    </div>
-                </div>
+                <%@include file="/resources/components/fake-tour-image.html" %>
 
                 <u:if-user role="TOUR_AGENT">
-                    <div class="vcentered-container image-container pull-left"
-                         id="upload-images-action">
-                        <div class="vcentered">
-                            <center>
-                                <div class="btn-circ-new" data-toggle="modal"
-                                     data-target="#upload-images-modal">
-                                    <i class="glyphicon glyphicon-plus-sign"></i>
-                                </div>
-                            </center>
-                        </div>
-                    </div>
+                    <%@include file="/resources/components/tour-image-new-btn.html" %>
                 </u:if-user>
             </div>
         </div>
@@ -145,63 +109,11 @@
 
                 <br/>
 
-                <div id="new-review" class="hidden">
-                    <div class="review clearfix">
-                        <div class="review-header">
-                            <div class="vcentered-container">
-                                <div class="new-review-stars vcentered" style="display: inline-block">
-                                </div>
-                                <div class="counter inline vcentered"></div>
-                            </div>
-                        </div>
-
-                        <form id="new-review-form" method="post" action="/review">
-                            <div class="form-group">
-                                <input type="hidden" id="new-review-rating"
-                                       name="rating" value=""/>
-                                <input type="hidden" name="tourId" value="${tour.id}"/>
-                                <input type="hidden" name="userId" value="${user.id}"/>
-                                <textarea class="form-control" id="text" name="text"></textarea>
-                            </div>
-
-                            <input type="submit" class="btn pull-right btn-contrast"
-                                   id="submit-review" disabled="disabled"
-                                   value="Оцінити" >
-                            </input>
-                        </form>
-                    </div>
-                </div>
+                <%@include file="/resources/components/review-input.html" %>
 
                 <div class="reviews">
                     <c:forEach var="review" items="${reviews}">
-                        <div class="review">
-                            <div class="review-header clearfix">
-                                <div class="pull-left">
-                                    <div class="vcentered-container inline">
-                                        <span class="rating-box vcentered">${review.rating}</span>
-                                        <span class="push-right-sm">Good</span>
-                                    </div>
-                                </div>
-                                <div class="review-author pull-right clearfix">
-                                    ${review.author.firstName} ${review.author.lastName}
-                                    <c:if test="${user.id == review.author.id || agent}">
-                                        <form method="post" action="/review"
-                                              class="clear-margin inline">
-                                            <input type="hidden" name="__method" value="DELETE"/>
-                                            <input type="hidden" name="id" value="${review.id}"/>
-                                            <div class="submit danger">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </div>
-                                        </form>
-                                    </c:if>
-                                </div>
-                            </div>
-                            <c:if test="${not empty review.text}">
-                                <div class="review-content">
-                                    <c:out value="${review.text}"/>
-                                </div>
-                            </c:if>
-                        </div>
+                        <%@include file="/resources/components/review.html" %>
                     </c:forEach>
                 </div>
             </div>
@@ -210,35 +122,16 @@
 
 </div>
 
-<div class="modal fade" id="upload-images-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Load image</h4>
-            </div>
-            <div class="modal-body">
-                <form action="/image-provider" id="images-upload" method="post" enctype="multipart/form-data">
-                  <input type="file" name="images" id="images-input" multiple="multiple">
-                  <input type="submit" class="hidden">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="upload-images-btn">Upload</button>
-            </div>
-        </div>
-    </div>
-</div>
+<%@include file="/resources/components/upload-images-modal.html" %>
 
-<form action="/tour-images" method="post"
+<form action="/tour-images" method="post" class="hidden"
       id="tour-images-create-form">
     <input type="hidden" name="tourId" value="${tour.id}"/>
     <input type="hidden" name="imageUrl" value=""/>
     <input type="hidden" name="thumbnailUrl" value=""/>
 </form>
 
-<form action="/tour-images" method="post"
+<form action="/tour-images" method="post" class="hidden"
       id="tour-image-remove-form">
     <input type="hidden" name="__method" value="DELETE"/>
     <input type="hidden" name="id" value=""/>
