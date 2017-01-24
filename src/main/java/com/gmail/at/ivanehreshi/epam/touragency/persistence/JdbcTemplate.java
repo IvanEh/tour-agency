@@ -256,8 +256,6 @@ public class JdbcTemplate {
         try {
             if(connection != txConnection) {
                 connection.close();
-            } else if (connection != null){
-                LOGGER.error("Cannot close connection before finishing connection");
             }
         } catch (SQLException e) {
             LOGGER.error("Cannot tryClose jdbc connection", e);
@@ -274,7 +272,7 @@ public class JdbcTemplate {
 
 
     @FunctionalInterface
-    public interface ResultSetFunction{
+    public interface ResultSetFunction {
         void apply(ResultSet resultSet) throws SQLException;
     }
 
