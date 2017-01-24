@@ -15,24 +15,24 @@ import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
  * @see com.gmail.at.ivanehreshi.epam.touragency.filter.StaticResourceFilter
  */
 public final class JspController extends Controller {
-    private String oldPrefix = ".html";
-    private String prefix = ".jsp";
+    private String oldSuffix = ".html";
+    private String suffix = ".jsp";
     private String location = "/pages/";
     
     public JspController() {
     }
     
-    public JspController(String loc, String oldPref, String pref) {
+    public JspController(String loc, String oldSuff, String suff) {
         this.location = loc;
-        this.oldPrefix = oldPref;
-        this.prefix = pref;
+        this.oldSuffix = oldSuff;
+        this.suffix = suff;
 
         fixStrings();
     }
 
     private void fixStrings() {
-        if(oldPrefix.charAt(0) != '.') {
-            oldPrefix = "." + oldPrefix;
+        if(oldSuffix.charAt(0) != '.') {
+            oldSuffix = "." + oldSuffix;
         }
 
         if(location.charAt(location.length() - 1) != '/') {
@@ -43,10 +43,10 @@ public final class JspController extends Controller {
     @Override
     public void get(RequestService reqService) {
         String page = reqService.getRequest().getPathInfo().substring(1);
-        int pos = page.indexOf(oldPrefix);
-        if(pos != -1 && pos + oldPrefix.length() == page.length()) {
+        int pos = page.indexOf(oldSuffix);
+        if(pos != -1 && pos + oldSuffix.length() == page.length()) {
             page = page.substring(0, pos);
-            reqService.renderPage(location + page + prefix);
+            reqService.renderPage(location + page + suffix);
         }
     }
 
