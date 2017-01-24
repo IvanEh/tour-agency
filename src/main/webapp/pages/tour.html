@@ -12,8 +12,15 @@
     <c:import url="/resources/components/head.html"/>
     <link rel="stylesheet" href="/resources/css/review.css"/>
     <link rel="stylesheet" href="/resources/css/purchase.css"/>
+    <link rel="stylesheet" href="/resources/css/galery.css"/>
+    <link rel="stylesheet" href="/resources/css/dropdown.css"/>
+    <link rel="stylesheet" href="/resources/bower_components/lightbox2/dist/css/lightbox.css"/>
     <link rel="stylesheet" href="/resources/bower_components/rateYo/src/jquery.rateyo.css"/>
+    <link rel="stylesheet" href="/resources/bower_components/jquery.filer/css/jquery.filer.css"/>
     <script src="/resources/js/util.js"></script>
+    <script src="/resources/bower_components/lightbox2/dist/js/lightbox.js"></script>
+    <script src="/resources/bower_components/bootstrap/js/modal.js"/></script>
+    <script src="/resources/bower_components/jquery.filer/js/jquery.filer.js"></script>
 </head>
 <body>
 
@@ -39,7 +46,7 @@
                 </div>
                 <div class="pull-right">
                     <div class="vcentered-container">
-                        <div id="rating" class="vcentered" style="display: inline-block"></div>
+                        <div id="rating-static" class="vcentered" style="display: inline-block"></div>
                             (<a class="vcentered" href="">${tour.votesCount}</a>)
                     </div>
                 </div>
@@ -69,6 +76,56 @@
             <div class="col-offset-md-1 col-md-12">
                 <a class="btn pull-right"
                    href="/user/buy.html?tourId=${tour.id}">${buy}</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 galery">
+                <c:forEach var="tourImage" items="${tourImages}">
+                    <div class="image-container pull-left">
+                        <div class="image dropdown">
+                            <a href="${tourImage.imageUrl}" class="image"
+                               data-lightbox="image-1">
+                                <div class="image-frame">
+                                    <img src="${tourImage.thumbnailUrl}"/>
+                                </div>
+                            </a>
+
+                            <u:if-user role="TOUR_AGENT">
+                                <div class="dropdown-content">
+                                    <a href="#" data-action="removeImage"
+                                       data-id="${tourImage.id}"><i class="glyphicon glyphicon-trash"></i></a>
+                                    <!--<a href="#"><i class="glyphicon glyphicon-trash"></i></a>-->
+                                </div>
+                            </u:if-user>
+                        </div>
+                    </div>
+                </c:forEach>
+
+                <div class="vcentered-container image-container pull-left hidden"
+                     id="image-template">
+                    <div class="vcentered">
+                        <center>
+                            <div class="btn-circ-new">
+                                <i class="glyphicon glyphicon-open"></i>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+
+                <u:if-user role="TOUR_AGENT">
+                    <div class="vcentered-container image-container pull-left"
+                         id="upload-images-action">
+                        <div class="vcentered">
+                            <center>
+                                <div class="btn-circ-new" data-toggle="modal"
+                                     data-target="#upload-images-modal">
+                                    <i class="glyphicon glyphicon-plus-sign"></i>
+                                </div>
+                            </center>
+                        </div>
+                    </div>
+                </u:if-user>
             </div>
         </div>
 
@@ -153,47 +210,44 @@
 
 </div>
 
+<div class="modal fade" id="upload-images-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Load image</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/image-provider" id="images-upload" method="post" enctype="multipart/form-data">
+                  <input type="file" name="images" id="images-input" multiple="multiple">
+                  <input type="submit" class="hidden">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="upload-images-btn">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="/tour-images" method="post"
+      id="tour-images-create-form">
+    <input type="hidden" name="tourId" value="${tour.id}"/>
+    <input type="hidden" name="imageUrl" value=""/>
+    <input type="hidden" name="thumbnailUrl" value=""/>
+</form>
+
+<form action="/tour-images" method="post"
+      id="tour-image-remove-form">
+    <input type="hidden" name="__method" value="DELETE"/>
+    <input type="hidden" name="id" value=""/>
+</form>
+
+
 <script src="/resources/bower_components/rateYo/src/jquery.rateyo.js"></script>
 
-<script>
-$(function () {
-  var mess = {
-    0: "",
-    1: "Very bad",
-    2: "Bad",
-    3: "Moderate",
-    4: "Good",
-    5: "Exciting!"
-  };
-
-  processSubmitDivs($);
-
-  var $submitReview = $("#submit-review");
-  var $newReviewRating = $("#new-review-rating");
-
-  $("#rating").rateYo({
-    rating: $("#rating-val").val(),
-    readOnly: true
-  });
-  $(".new-review-stars").rateYo({
-    fullStars: true,
-    precision: 0,
-
-    onSet: function(rating) {
-        $submitReview.removeAttr('disabled');
-        $newReviewRating.val(rating);
-    },
-
-    onChange: function(rating, self) {
-        $(this).next().text(mess[rating]);
-    }
-  });
-  $("#new-review-btn").click(function() {
-    $("#new-review").removeClass("hidden");
-    $(this).hide();
-  });
-});
-</script>
+<script src="/resources/js/tour.html.js"></script>
 
 </body>
 </html>

@@ -193,6 +193,17 @@ hr {
 }
 */
 
+.btn-circ-new {
+    display: inline-block;
+
+    color: #FFBC3B;
+    cursor: pointer;
+    font-size: 18pt;
+
+    box-shadow: 0px 2px 3px 0px grey;
+    border-radius: 50% !important
+}
+
 #message {
 	position: fixed;
     width: 33%;

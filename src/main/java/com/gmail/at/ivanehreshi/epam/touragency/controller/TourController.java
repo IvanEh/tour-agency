@@ -9,8 +9,14 @@ import java.util.*;
 
 public class TourController extends Controller {
 
-    private TourService tourService = ServiceLocator.INSTANCE.get(TourService.class);
-    private ReviewService reviewService = ServiceLocator.INSTANCE.get(ReviewService.class);
+    private TourService tourService =
+            ServiceLocator.INSTANCE.get(TourService.class);
+
+    private ReviewService reviewService =
+            ServiceLocator.INSTANCE.get(ReviewService.class);
+
+    private TourImageService tourImageService =
+            ServiceLocator.INSTANCE.get(TourImageService.class);
 
     @Override
     public void get(RequestService reqService) {
@@ -21,6 +27,7 @@ public class TourController extends Controller {
             tour.setAvgRating(0.0);
 
         List<Review> reviews = reviewService.findByTour(id);
+        List<TourImage> tourImages = tourImageService.findByTour(tour.getId());
 
         reqService.putParameter("tour", tour);
 
@@ -35,5 +42,7 @@ public class TourController extends Controller {
                 .map(User::getId).orElse(null), id));
 
         reqService.putParameter("reviews", reviews);
+        reqService.putParameter("tourImages", tourImages);
+
     }
 }

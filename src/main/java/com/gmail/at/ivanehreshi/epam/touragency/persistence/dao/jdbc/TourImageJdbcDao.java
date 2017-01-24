@@ -52,4 +52,10 @@ public class TourImageJdbcDao implements TourImageDao {
         return jdbcTemplate.queryObjects(TourImageMapper::map, "SELECT * " +
                 "FROM `tour_image`");
     }
+
+    @Override
+    public List<TourImage> findByTour(Long tourId) {
+        return jdbcTemplate.queryObjects(TourImageMapper::map, "SELECT * " +
+               "FROM `tour_image` WHERE tour_id=?", tourId);
+    }
 }

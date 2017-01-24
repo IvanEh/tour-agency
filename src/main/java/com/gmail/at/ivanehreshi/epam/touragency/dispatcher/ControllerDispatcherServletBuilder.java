@@ -1,14 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
-import com.gmail.at.ivanehreshi.epam.touragency.filter.StaticResourceFilter;
+import com.gmail.at.ivanehreshi.epam.touragency.filter.*;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import javax.servlet.*;
+import java.util.*;
 
 /**
  * A more user friendly way of creating a registering a {@link ControllerDispatcherServlet}
@@ -54,10 +49,15 @@ public class ControllerDispatcherServletBuilder {
         ControllerDispatcherServlet servlet = build();
 
         ServletRegistration.Dynamic dynamic = servletContext.addServlet(name, servlet);
+        dynamic.setMultipartConfig(new MultipartConfigElement(""));
         dynamic.addMapping(mapping);
 
+        StaticResourceFilter filter =
+                new StaticResourceFilter(mapping.replace("/*", ""));
+        filter.ignore("/image-provider");
+
         FilterRegistration.Dynamic filterDynamic =
-                servletContext.addFilter("Static Resource Filter", new StaticResourceFilter(mapping.replace("/*", "")));
+                servletContext.addFilter("Static Resource Filter", filter);
         filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD), true, "/*");
 
         return servlet;
