@@ -8,18 +8,16 @@ CREATE TABLE IF NOT EXISTS `tour` (
   `enabled` INT(11) NOT NULL DEFAULT '1',
   `avg_rating` DECIMAL(3,2) NULL,
   `votes_count` INT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`))
-DEFAULT CHARACTER SET = utf8;
+  PRIMARY KEY (`id`));
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(45) CHARACTER SET 'utf8' NOT NULL,
-  `firstName` VARCHAR(35) CHARACTER SET 'utf8' NOT NULL,
-  `lastName` VARCHAR(35) CHARACTER SET 'utf8' NOT NULL,
-  `password` VARCHAR(45) CHARACTER SET 'utf8' NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
+  `firstName` VARCHAR(35) NOT NULL,
+  `lastName` VARCHAR(35) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
   `discount` INT(11) NULL DEFAULT '0',
-  PRIMARY KEY (`id`))
-DEFAULT CHARACTER SET = utf8;
+  PRIMARY KEY (`id`));
 
 CREATE TABLE IF NOT EXISTS `purchase` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -35,14 +33,14 @@ CREATE TABLE IF NOT EXISTS `purchase` (
     REFERENCES `tour` (`id`),
   CONSTRAINT `fk_purchase_user_id0`
     FOREIGN KEY (`user_id`)
-    REFERENCES `user` (`id`))
-DEFAULT CHARACTER SET = utf8;
+    REFERENCES `user` (`id`));
+
+DROP TABLE IF EXISTS `role`;
 
 CREATE TABLE IF NOT EXISTS `role` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-DEFAULT CHARACTER SET = utf8;
+  PRIMARY KEY (`id`));
 
 CREATE TABLE IF NOT EXISTS `user_role` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -56,8 +54,7 @@ CREATE TABLE IF NOT EXISTS `user_role` (
     REFERENCES `role` (`id`),
   CONSTRAINT `fk_user_id0`
     FOREIGN KEY (`user_id`)
-    REFERENCES `user` (`id`))
-DEFAULT CHARACTER SET = utf8;
+    REFERENCES `user` (`id`));
 
 CREATE TABLE IF NOT EXISTS `review` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -87,3 +84,6 @@ CREATE TABLE IF NOT EXISTS `tour_image` (
   CONSTRAINT `fk_tour_image_tour`
     FOREIGN KEY (`tour_id`)
     REFERENCES `tour` (`id`));
+
+INSERT INTO `role` VALUES(1, 'CUSTOMER');
+INSERT INTO `role` VALUES(2, 'AGENT');
