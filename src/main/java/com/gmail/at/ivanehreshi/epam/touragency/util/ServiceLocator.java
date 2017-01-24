@@ -36,14 +36,14 @@ public enum ServiceLocator {
      */
     public <T> void publish(Class<T> clazz) {
         try {
-            Object o = clazz.newInstance();
+            T o = clazz.newInstance();
             publish(o, clazz);
         } catch (InstantiationException | IllegalAccessException e) {
             LOGGER.error("Cannot publish object", e);
         }
     }
 
-    public <T> void publish(Object o, Class<T> clazz) {
+    public <T> void publish(T o, Class<T> clazz) {
         publish(clazz.getName(), o);
     }
 
