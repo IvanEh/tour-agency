@@ -26,6 +26,6 @@ public class LocaleController extends Controller {
 
         Config.set(reqService.getRequest().getSession(), Config.FMT_LOCALE,
                 langString);
-        reqService.putParameter(SESSION_LOCALE, langString);
+        reqService.getRequest().getSession().setAttribute(SESSION_LOCALE, langString);
     }
 }
