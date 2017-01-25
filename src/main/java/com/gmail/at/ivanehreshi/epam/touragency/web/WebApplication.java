@@ -6,7 +6,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.factory.*;
 import com.gmail.at.ivanehreshi.epam.touragency.security.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.impl.*;
@@ -29,6 +29,8 @@ public enum WebApplication {
 
     private ServiceLocator serviceLocator;
 
+    private DaoFactory daoFactory;
+
     WebApplication() {
         connectionManager = ConnectionManager.fromJndi("jdbc/tour_agency");
     }
@@ -38,23 +40,21 @@ public enum WebApplication {
 
         createDb();
 
-        TourDao tourDao = new TourJdbcDao(connectionManager);
-        UserDao userDao = new UserJdbcDao(connectionManager);
-        PurchaseDao purchaseDao = new PurchaseJdbcDao(connectionManager, userDao, tourDao);
-        ReviewDao reviewDao = new ReviewJdbcDao(connectionManager);
-        TourImageDao tourImageDao = new TourImageJdbcDao(connectionManager);
+        daoFactory = new JdbcDaoFactory(connectionManager);
 
-        UserService userService = new UserServiceImpl(userDao);
-        TourService tourService = new TourServiceImpl(tourDao);
-        PurchaseService purchaseService = new PurchaseServiceImpl(purchaseDao, tourDao,
-                userDao);
+        UserService userService = new UserServiceImpl(daoFactory.getUserDao());
+
+        TourService tourService = new TourServiceImpl(daoFactory.getTourDao());
+
+        PurchaseService purchaseService = new PurchaseServiceImpl(daoFactory.getPurchaseDao(),
+                        daoFactory.getTourDao(), daoFactory.getUserDao());
+
         AuthService authService = new AuthServiceImpl(userService);
-        ReviewService reviewService = new ReviewServiceImpl(reviewDao, userDao);
-        TourImageService tourImageService = new TourImageServiceImpl(tourImageDao);
 
-        serviceLocator.publish(tourDao, TourDao.class);
-        serviceLocator.publish(userDao, UserDao.class);
-        serviceLocator.publish(purchaseDao, PurchaseDao.class);;
+        ReviewService reviewService = new ReviewServiceImpl(daoFactory.getReviewDao(),
+                daoFactory.getUserDao());
+
+        TourImageService tourImageService = new TourImageServiceImpl(daoFactory.getTourImageDao());
 
         serviceLocator.publish(userService, UserService.class);
         serviceLocator.publish(tourService, TourService.class);
@@ -62,8 +62,9 @@ public enum WebApplication {
         serviceLocator.publish(authService, AuthService.class);
         serviceLocator.publish(reviewService, ReviewService.class);
         serviceLocator.publish(tourImageService, TourImageService.class);
+        serviceLocator.publish(daoFactory.getTourDao(), TourDao.class);
 
-        SecurityContext.INSTANCE.setUserDao(userDao);
+        SecurityContext.INSTANCE.setUserDao(daoFactory.getUserDao());
 
         configureSecurity(SecurityContext.INSTANCE);
 

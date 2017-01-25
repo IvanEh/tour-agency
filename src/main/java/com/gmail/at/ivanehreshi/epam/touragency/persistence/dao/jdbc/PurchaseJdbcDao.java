@@ -34,16 +34,10 @@ public class PurchaseJdbcDao implements PurchaseDao {
     private ConnectionManager connectionManager;
 
     private JdbcTemplate jdbcTemplate;
-//
-//    private UserDao userDao;
 
-//    private TourDao tourDao;
-//
-    public PurchaseJdbcDao(ConnectionManager connectionManager, UserDao userDao, TourDao tourDao) {
+    public PurchaseJdbcDao(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
         this.jdbcTemplate = new JdbcTemplate(connectionManager);
-//        this.userDao = userDao;
-//        this.tourDao = tourDao;
     }
 
     @Override
