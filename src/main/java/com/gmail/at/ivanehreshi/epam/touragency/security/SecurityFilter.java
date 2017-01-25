@@ -51,13 +51,15 @@ public class SecurityFilter implements Filter {
 
         HttpMethod method = HttpMethod.valueOf(((HttpServletRequest) request).getMethod());
 
-        if(!SecurityContext.INSTANCE.allowed(extraPath, method ,roles)) {
-            try {
-                request.getRequestDispatcher(SecurityContext.INSTANCE.getLoginPage())
-                        .forward(request, response);
-            } catch (AccessDeniedException e) {
-                LOGGER.info("Someone tried to access a resource without permission", e);
+        if(!SecurityContext.INSTANCE.allowed(extraPath, method, roles)) {
+            if (!roles.isEmpty()) {
+                ((HttpServletResponse) response).
+                        sendError(HttpServletResponse.SC_FORBIDDEN);
+                throw new AccessDeniedException();
             }
+
+            request.getRequestDispatcher(SecurityContext.INSTANCE.getLoginPage())
+                    .forward(request, response);
 
             return false;
         }
