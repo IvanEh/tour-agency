@@ -19,7 +19,7 @@ public class PurchaseDaoTest {
     @Before
     public void setUp() throws Exception {
         connectionManager = H2Db.init("database.sql");
-        purchaseDao = new PurchaseJdbcDao(connectionManager, null, null);
+        purchaseDao = new PurchaseJdbcDao(connectionManager);
         data = TestData.getUserTestData(connectionManager);
     }
 

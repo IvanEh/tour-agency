@@ -30,7 +30,7 @@ public class ReviewDaoTest {
         reviewDao = new ReviewJdbcDao(connectionManager);
         tourDao = new TourJdbcDao(connectionManager);
         userDao = new UserJdbcDao(connectionManager);
-        purchaseDao = new PurchaseJdbcDao(connectionManager, null, null);
+        purchaseDao = new PurchaseJdbcDao(connectionManager);
         data = TestData.getReviewTestData(userDao, tourDao);
     }
 

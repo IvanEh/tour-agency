@@ -147,7 +147,7 @@ public class UserDaoTest {
 
     @Test
     public void testCountPurchases() {
-        PurchaseDao purchaseDao = new PurchaseJdbcDao(connectionManager, null, null);
+        PurchaseDao purchaseDao = new PurchaseJdbcDao(connectionManager);
         TestData.UserTestData data = TestData.getUserTestData(connectionManager);
 
         purchaseDao.create(new Purchase(data.user, data.tour1, null));
@@ -158,7 +158,7 @@ public class UserDaoTest {
 
     @Test
     public void testComputePurchasesTotalPrice() {
-        PurchaseDao purchaseDao = new PurchaseJdbcDao(connectionManager, null, null);
+        PurchaseDao purchaseDao = new PurchaseJdbcDao(connectionManager);
         TestData.UserTestData data = TestData.getUserTestData(connectionManager);
 
         purchaseDao.create(new Purchase(data.user, data.tour1, new BigDecimal(80)));
