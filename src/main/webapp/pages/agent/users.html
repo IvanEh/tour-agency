@@ -28,13 +28,15 @@
                     <fmt:message key="save" bundle="${rb}"/>
                 </div>
                 
-                <c:forEach var="user" items="${users}">
+                <c:forEach var="summary" items="${summaries}">
+                <c:set var="user" value="${summary.user}"/>
+
                 <div class="col-md-12">
                     <div class="entry-box bordered">
                         <c:out value="${user.firstName} ${user.lastName}"/>
                         <span class="badge">
-                           ${userDao.countPurchases(user.id)} |
-                           $ ${userDao.computePurchasesTotalPrice(user.id).doubleValue()}
+                           ${summary.purchaseCount} |
+                           $ ${summary.totalPrice}
                         </span>
 
                         <form method="post" action="/user/discount" class="pull-right" data-dirty="false">
