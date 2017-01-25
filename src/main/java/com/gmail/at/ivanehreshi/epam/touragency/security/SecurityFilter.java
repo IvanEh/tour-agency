@@ -37,19 +37,24 @@ public class SecurityFilter implements Filter {
         List<Role> roles = Objects.isNull(currentUser) ?
                 new ArrayList<>() : currentUser.getRoles();
 
-        checkPermissions(request, response, roles);
+        if(!checkPermissions(request, response, roles)) {
+            return;
+        }
 
         chain.doFilter(httpRequest, response);
 
     }
 
-    private void checkPermissions(ServletRequest request, ServletResponse response, List<Role> roles) throws ServletException, IOException {
+    private boolean checkPermissions(ServletRequest request, ServletResponse response, List<Role> roles) throws ServletException, IOException {
         String extraPath = ((HttpServletRequest) request).getRequestURI();
 
         if(!SecurityContext.INSTANCE.allowed(extraPath, roles)) {
             request.getRequestDispatcher(SecurityContext.INSTANCE.getLoginPage())
                     .forward(request, response);
+            return false;
         }
+
+        return true;
     }
 
     @Override
