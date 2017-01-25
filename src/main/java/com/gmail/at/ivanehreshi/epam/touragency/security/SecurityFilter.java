@@ -29,27 +29,27 @@ public class SecurityFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
                             throws IOException, ServletException {
 
-        if (!(request instanceof HttpServletRequest)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        HttpServletRequest httpRequest = new SecuredHttpServletRequest((HttpServletRequest) request);
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-        String extraPath = httpRequest.getRequestURI();
+        HttpServletRequest httpRequest =
+                new SecuredHttpServletRequest((HttpServletRequest) request);
 
         User currentUser = getCurrentUser(httpRequest);
-        List<Role> roles = Objects.isNull(currentUser) ? new ArrayList<>() : currentUser.getRoles();
 
-        if(!SecurityContext.INSTANCE.allowed(extraPath, roles)) {
-            httpRequest.getRequestDispatcher(SecurityContext.INSTANCE.getLoginPage())
-                    .forward(request, response);
-            return;
-        }
+        List<Role> roles = Objects.isNull(currentUser) ?
+                new ArrayList<>() : currentUser.getRoles();
+
+        checkPermissions(request, response, roles);
 
         chain.doFilter(httpRequest, response);
 
+    }
+
+    private void checkPermissions(ServletRequest request, ServletResponse response, List<Role> roles) throws ServletException, IOException {
+        String extraPath = ((HttpServletRequest) request).getRequestURI();
+
+        if(!SecurityContext.INSTANCE.allowed(extraPath, roles)) {
+            request.getRequestDispatcher(SecurityContext.INSTANCE.getLoginPage())
+                    .forward(request, response);
+        }
     }
 
     @Override
