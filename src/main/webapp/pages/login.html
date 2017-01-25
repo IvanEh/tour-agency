@@ -22,6 +22,8 @@
         </c:if>
 
         <form class="col-md-12 form-horizontal" method="post" action="/login">
+            <input type="hidden" name="destination" value="${request.getHeader('Referer')}"/>
+
             <fieldset>
 
                 <legend><fmt:message key="login.login" bundle="${rb}"/></legend>

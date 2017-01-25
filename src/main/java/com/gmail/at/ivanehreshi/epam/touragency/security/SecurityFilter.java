@@ -1,18 +1,13 @@
 package com.gmail.at.ivanehreshi.epam.touragency.security;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Role;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import org.apache.logging.log4j.*;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * The filter 'weaves' the SecurityContext constraints into the web application
@@ -48,7 +43,8 @@ public class SecurityFilter implements Filter {
         List<Role> roles = Objects.isNull(currentUser) ? new ArrayList<>() : currentUser.getRoles();
 
         if(!SecurityContext.INSTANCE.allowed(extraPath, roles)) {
-            httpResponse.sendRedirect(SecurityContext.INSTANCE.getLoginPage());
+            httpRequest.getRequestDispatcher(SecurityContext.INSTANCE.getLoginPage())
+                    .forward(request, response);
             return;
         }
 

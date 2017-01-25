@@ -12,9 +12,14 @@ public final class LoginController extends Controller {
     public void post(RequestService reqService) {
         String username = reqService.getString("username");
         String password = reqService.getString("password");
+        String destination = reqService.getRequest().getHeader("Referer");
 
         if (authService.login(reqService.getRequest(), username, password)) {
-            reqService.redirect("/tours.html");
+            if(destination.contains("login")) {
+                reqService.redirect("/");
+            } else {
+                reqService.redirect(destination);
+            }
         } else {
             reqService.redirect("/login.html?failed=true");
         }
