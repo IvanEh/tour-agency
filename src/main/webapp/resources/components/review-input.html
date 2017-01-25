@@ -19,9 +19,11 @@
                 <textarea class="form-control" id="text" name="text"></textarea>
             </div>
 
+            <fmt:message key="review.rate_action" var="rateMsg" bundle="${rb}"/>
+
             <input type="submit" class="btn pull-right btn-contrast"
                    id="submit-review" disabled="disabled"
-                   value="Оцінити" >
+                   value="${rateMsg}" >
             </input>
         </form>
     </div>

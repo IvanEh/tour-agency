@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<fmt:setLocale value="${locale}" scope="session" />
 <fmt:setBundle basename="lang" var="rb" />
 
 <div class="navbar navbar-default" role="navigation">
@@ -25,7 +24,7 @@
             </c:if>
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="?lang=${locale eq 'ua_UA' ? 'en' : 'ua'}" id="lang" data-alt="${locale eq 'ua_UA' ? 'en' : 'ua'}"
+                    <li><a href="#" id="lang" data-alt="${locale eq 'ua_UA' ? 'en' : 'ua'}"
                            style="border-right: solid 1px blue"><span>${locale eq 'ua_UA' ? 'ua' : 'en'}</span>
                                 <img src="/resources/images/lang.png"/>
                         </a>
@@ -48,27 +47,8 @@
 </div>
 
 <script>
-    function logout() {
-        $.post('/logout')
-         .done(function(data, textStatus, jqXHR) {
-            location.href = '/login.html';
-         })
-    }
-
-    function hoverSwap($el) {
-        var swap = function(e) {
-            var $span = $el.find('span');
-            var currentText = $span.text();
-            $span.text($el.data('alt'));
-            $el.data('alt', currentText);
-        };
-
-        $el.hover(swap, swap);
-    }
-
-    $(function () {
-        hoverSwap($("#lang"));
-    });
 </script>
+
+<script src="/resources/js/components/navbar.html.js"></script>
 
 <img src="/resources/images/footer.png" id="footer-image"/>

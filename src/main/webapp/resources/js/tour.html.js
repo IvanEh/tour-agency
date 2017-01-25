@@ -1,13 +1,14 @@
 $(function () {
   // Constants
 
+  var $messages = $('#rating-messages');
   var mess = {
     0: '',
-    1: 'Very bad',
-    2: 'Bad',
-    3: 'Moderate',
-    4: 'Good',
-    5: 'Exciting!'
+    1: $messages.find('input[name=one]').val(),
+    2: $messages.find('input[name=two]').val(),
+    3: $messages.find('input[name=three]').val(),
+    4: $messages.find('input[name=four]').val(),
+    5: $messages.find('input[name=five]').val(),
   };
 
   // DOM Cache

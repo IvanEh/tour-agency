@@ -3,7 +3,6 @@
 <%@ taglib prefix="u" uri="util" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<fmt:setLocale value="${locale}" scope="session" />
 <fmt:setBundle basename="lang" var="rb" />
 
 <html>
@@ -98,7 +97,7 @@
         <div class="row">
             <div class="col-offset-md-1 col-md-12">
                 <h3>
-                    Відгуки
+                    <fmt:message key="review.title" bundle="${rb}"/>
                 </h3>
 
                 <c:if test="${canVote}">
@@ -136,6 +135,20 @@
     <input type="hidden" name="__method" value="DELETE"/>
     <input type="hidden" name="id" value=""/>
 </form>
+
+<div id="rating-messages">
+    <fmt:message key="review.one" var="one" bundle="${rb}"/>
+    <fmt:message key="review.two" var="two" bundle="${rb}"/>
+    <fmt:message key="review.three" var="three" bundle="${rb}"/>
+    <fmt:message key="review.four" var="four" bundle="${rb}"/>
+    <fmt:message key="review.five" var="five" bundle="${rb}"/>
+
+    <input type="hidden" name="one" value="${one}">
+    <input type="hidden" name="two" value="${two}">
+    <input type="hidden" name="three" value="${three}">
+    <input type="hidden" name="four" value="${four}">
+    <input type="hidden" name="five" value="${five}">
+</div>
 
 
 <script src="/resources/bower_components/rateYo/src/jquery.rateyo.js"></script>

@@ -93,12 +93,12 @@ public enum WebApplication {
                 .addMapping("/login", new LoginController())
                 .addMapping("/logout", new LogoutController())
                 .addMapping("/review", new ReviewController())
+                .addMapping("/lang", new LocaleController())
                 .addMapping("/tour-images", new TourImagesController())
                 .addMapping("/user/purchases\\.html", new PurchaseController())
                 .addMapping("/agent/new-tour\\.html", new AgentNewTourPageController())
                 .addMapping("/agent/edit-tour\\.html", new AgentEditTourController())
-                .addMapping("/(.*)\\.html", new JspController("/pages/", ".html", ".html"))
-                .addMapping("/(.*)\\.html", new LocaleController());
+                .addMapping("/(.*)\\.html", new JspController("/pages/", ".html", ".html"));
     }
 
     private void createDb() {
