@@ -81,21 +81,26 @@ public enum WebApplication {
     private ControllerDispatcherServletBuilder buildDispatcherServlet(ControllerDispatcherServletBuilder servletBuilder) {
         return servletBuilder
                 .addMapping("/", new RedirectController("/index.html"))
-                .addMapping("/tours", new ToursController())
-                .addMapping("/tours\\.html", HttpMethod.GET.mask, new ToursController())
+                .addMapping("/tours", HttpMethod.GET.single(), new ToursController())
+                .addMapping("/tours", HttpMethod.modifying(), new ToursController())
+                .addMapping("/tours\\.html", HttpMethod.GET.single(), new ToursController())
                 .addMapping("/tour\\.html", new TourController())
                 .addMapping("/user/buy\\.html", new BuyController())
                 .addMapping("/agent/tours\\.html", new AgentToursPageController())
                 .addMapping("/agent/users\\.html", new AgentUsersPageController())
                 .addMapping("/index\\.html", new RandomHotTourController())
                 .addMapping("/register", new RegisterController())
-                .addMapping("/user/discount", new UpdateDiscountController())
-                .addMapping("/purchase", new PurchaseController())
+                .addMapping("/user/discount", HttpMethod.any(),
+                        new UpdateDiscountController(), Role.TOUR_AGENT)
+                .addMapping("/purchase", HttpMethod.any(), new PurchaseController(),
+                        Role.CUSTOMER, Role.TOUR_AGENT)
                 .addMapping("/login", new LoginController())
                 .addMapping("/logout", new LogoutController())
                 .addMapping("/review", new ReviewController())
                 .addMapping("/lang", new LocaleController())
-                .addMapping("/tour-images", new TourImagesController())
+                .addMapping("/tour-images", HttpMethod.GET.single() ,new TourImagesController())
+                .addMapping("/tour-images", HttpMethod.modifying(),
+                        new TourImagesController(), Role.TOUR_AGENT)
                 .addMapping("/user/purchases\\.html", new PurchaseController())
                 .addMapping("/agent/new-tour\\.html", new AgentNewTourPageController())
                 .addMapping("/agent/edit-tour\\.html", new AgentEditTourController())

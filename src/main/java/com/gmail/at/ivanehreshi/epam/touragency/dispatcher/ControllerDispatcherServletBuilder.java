@@ -1,6 +1,8 @@
 package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.filter.*;
+import com.gmail.at.ivanehreshi.epam.touragency.security.*;
 
 import javax.servlet.*;
 import java.util.*;
@@ -18,16 +20,23 @@ public class ControllerDispatcherServletBuilder {
         this.servletContext = sc;
     }
 
-    public ControllerDispatcherServletBuilder addMapping(String regex, int mask, Controller controller) {
+    public ControllerDispatcherServletBuilder addMapping(String regex,
+                  HttpMethod.HttpMethodMask mask, Controller controller, Role... roles) {
+
         ControllerDispatcherServlet.MatcherEntry matcherEntry =
-                new ControllerDispatcherServlet.MatcherEntry(regex, mask, controller);
+                new ControllerDispatcherServlet.MatcherEntry(regex, mask.getMask(), controller);
+
+        if(roles.length != 0) {
+            SecurityContext.INSTANCE.addSecurityConstraint(regex, mask, roles);
+        }
+
         matchers.add(matcherEntry);
 
         return this;
     }
 
     public ControllerDispatcherServletBuilder addMapping(String regex, Controller controller) {
-        return addMapping(regex, HttpMethod.ANY_METHOD_MASK, controller);
+        return addMapping(regex, HttpMethod.any(), controller);
     }
 
     public ControllerDispatcherServletBuilder reset() {

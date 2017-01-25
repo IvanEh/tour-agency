@@ -1,5 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.security;
 
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import org.apache.logging.log4j.*;
@@ -36,15 +37,19 @@ public enum SecurityContext {
      *              if null - only authenticated user can access the pages
      * @return  the same SecurityContext
      */
-    public SecurityContext addSecurityConstraint(String s, Role... roles) {
+    public SecurityContext addSecurityConstraint(String s, HttpMethod.HttpMethodMask mask,
+                                                 Role... roles) {
         rwLock.writeLock().lock();
         try {
-            securityConstraints.add(new SecurityConstraint(s, roles));
+            securityConstraints.add(new SecurityConstraint(s, mask.getMask(), roles));
             return this;
-
         } finally {
             rwLock.writeLock().unlock();
         }
+    }
+
+    public SecurityContext addSecurityConstraint(String s, Role... roles) {
+        return addSecurityConstraint(s, HttpMethod.any(), roles);
     }
 
     /**
@@ -53,7 +58,7 @@ public enum SecurityContext {
      * @param roles roles of the user
      * @return true if user allowed to access the resource, false - otherwise
      */
-    public boolean allowed(String path, List<Role> roles) {
+    public boolean allowed(String path, HttpMethod method, List<Role> roles) {
         rwLock.readLock().lock();
         try {
             if (roles == null) {
@@ -62,7 +67,7 @@ public enum SecurityContext {
 
             for (SecurityConstraint sc : securityConstraints) {
 
-                if (sc.matches(path)) {
+                if (sc.matches(path, method)) {
                     return sc.allowed(roles);
                 }
             }
@@ -116,16 +121,18 @@ public enum SecurityContext {
         private final Pattern pattern;
         private final Matcher matcher;
         private final List<Role> rolesAllowed = new ArrayList<>();
+        private final int mask;
 
-        public SecurityConstraint(String pathPattern, Role... rolesAllowed) {
+        public SecurityConstraint(String pathPattern, int mask, Role... rolesAllowed) {
             pattern = Pattern.compile("^" + pathPattern + "$");
             matcher = pattern.matcher("");
             this.rolesAllowed.addAll(Arrays.asList(rolesAllowed));
+            this.mask = mask;
         }
 
-        public boolean matches(String path) {
+        public boolean matches(String path, HttpMethod method) {
             matcher.reset(path);
-            return matcher.matches();
+            return method.matches(mask) && matcher.matches();
         }
 
         public boolean allowed(List<Role> roles) {

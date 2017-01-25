@@ -1,5 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.security;
 
+import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import org.apache.logging.log4j.*;
 
@@ -48,9 +49,16 @@ public class SecurityFilter implements Filter {
     private boolean checkPermissions(ServletRequest request, ServletResponse response, List<Role> roles) throws ServletException, IOException {
         String extraPath = ((HttpServletRequest) request).getRequestURI();
 
-        if(!SecurityContext.INSTANCE.allowed(extraPath, roles)) {
-            request.getRequestDispatcher(SecurityContext.INSTANCE.getLoginPage())
-                    .forward(request, response);
+        HttpMethod method = HttpMethod.valueOf(((HttpServletRequest) request).getMethod());
+
+        if(!SecurityContext.INSTANCE.allowed(extraPath, method ,roles)) {
+            try {
+                request.getRequestDispatcher(SecurityContext.INSTANCE.getLoginPage())
+                        .forward(request, response);
+            } catch (AccessDeniedException e) {
+                LOGGER.info("Someone tried to access a resource without permission", e);
+            }
+
             return false;
         }
 
