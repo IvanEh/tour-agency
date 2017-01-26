@@ -9,6 +9,7 @@
     <title>Tour Agency</title>
     <c:import url="/resources/components/head.html"/>
 
+    <link rel="stylesheet" href="/resources/bower_components/rateYo/src/jquery.rateyo.css"/>
     <link rel="stylesheet" href="/resources/css/index.css"/>
 </head>
 <body>
@@ -42,18 +43,28 @@
                             </div>
 
                             <div class="carousel-caption">
-                                <h3>
-                                    <c:out value="${tour.title}"/>
-                                </h3>
-                                <p>
-                                    <c:out value="${tour.description}"/>
-                                </p>
-                                <p>
-                                    $
-                                    <fmt:formatNumber value="${tour.price}"
-                                                      type="NUMBER"/>
+                                <a href="/tour.html?id=${tour.id}">
 
-                                </p>
+                                    <h3>
+                                        <c:out value="${tour.title}"/>
+                                    </h3>
+                                    <p>
+                                        <c:out value="${tour.description}"/>
+                                    </p>
+                                    <p>
+                                        $
+                                        <fmt:formatNumber value="${tour.price}"
+                                                          type="NUMBER"/>
+
+                                    </p>
+                                    <center>
+                                        <div class="vcentered-container">
+                                            <div class="stars vcentered"
+                                                 data-rating="${tour.avgRating}" style="display: inline-block"></div>
+                                        </div>
+                                    </center>
+
+                                </a>
                             </div>
                         </div>
                     </c:forEach>
@@ -78,6 +89,22 @@
 
 <script src="/resources/bower_components/bootstrap/js/transition.js"></script>
 <script src="/resources/bower_components/bootstrap/js/carousel.js"> </script>
+<script src="/resources/bower_components/rateYo/src/jquery.rateyo.js"></script>
+
+<script>
+$(function () {
+
+$('.stars').each(function() {
+var $this = $(this);
+$this.rateYo({
+    rating: $this.data('rating') || 0,
+    readOnly: true,
+    starWidth: '17px'
+});
+});
+
+});
+</script>
 
 </body>
 </html>
