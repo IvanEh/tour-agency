@@ -11,4 +11,6 @@ public interface UserService extends CrudService<User, Long> {
     int countPurchases(Long userId);
 
     BigDecimal computePurchasesTotalPrice(Long userId);
+
+    void makeTourAgent(Long userId);
 }

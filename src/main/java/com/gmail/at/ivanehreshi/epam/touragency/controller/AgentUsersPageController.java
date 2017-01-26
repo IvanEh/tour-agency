@@ -16,7 +16,8 @@ public final class AgentUsersPageController extends Controller {
         List<User> users = userService.findAllOrderByRegularity(true);
         List<UserPurchaseSummaryDto> summaries = users.stream()
                      .map(u -> new UserPurchaseSummaryDto(u, userService.countPurchases(u.getId()),
-                                userService.computePurchasesTotalPrice(u.getId()).intValue()))
+                                userService.computePurchasesTotalPrice(u.getId()).intValue(),
+                                u.getRoles().contains(Role.TOUR_AGENT)))
                      .collect(Collectors.toList());
         reqService.putParameter("summaries", summaries);
     }
@@ -25,11 +26,14 @@ public final class AgentUsersPageController extends Controller {
         private User user;
         private int purchaseCount;
         private int totalPrice;
+        private boolean tourAgent;
 
-        public UserPurchaseSummaryDto(User user, int purchaseCount, int totalPrice) {
+        public UserPurchaseSummaryDto(User user, int purchaseCount, int totalPrice,
+                                      boolean isTourAgent) {
             this.user = user;
             this.purchaseCount = purchaseCount;
             this.totalPrice = totalPrice;
+            this.tourAgent = isTourAgent;
         }
 
         public int getPurchaseCount() {
@@ -42,6 +46,10 @@ public final class AgentUsersPageController extends Controller {
 
         public User getUser() {
             return user;
+        }
+
+        public boolean isTourAgent() {
+            return tourAgent;
         }
     }
 }

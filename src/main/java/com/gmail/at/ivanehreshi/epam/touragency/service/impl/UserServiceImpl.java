@@ -29,7 +29,9 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
 
     @Override
     public List<User> findAllOrderByRegularity(boolean byTotalPrice) {
-        return userDao.findAllOrderByRegularity(byTotalPrice);
+        List<User> users = userDao.findAllOrderByRegularity(byTotalPrice);
+        users.forEach(u -> u.setRoles(userDao.readRoles(u.getId())));
+        return users;
     }
 
     @Override
@@ -40,5 +42,15 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
     @Override
     public BigDecimal computePurchasesTotalPrice(Long userId) {
         return userDao.computePurchasesTotalPrice(userId);
+    }
+
+    @Override
+    public void makeTourAgent(Long userId) {
+        List<Role> roles = userDao.readRoles(userId);
+        if(!roles.contains(Role.TOUR_AGENT)) {
+            roles.add(Role.TOUR_AGENT);
+        }
+        userDao.updateRoles(userId, roles);
+        userDao.addRole(userId, Role.TOUR_AGENT);
     }
 }

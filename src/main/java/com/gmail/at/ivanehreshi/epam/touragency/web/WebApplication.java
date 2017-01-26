@@ -98,6 +98,7 @@ public enum WebApplication {
                 .addMapping("/logout", new LogoutController())
                 .addMapping("/review", new ReviewController())
                 .addMapping("/lang", new LocaleController())
+                .addMapping("/agent/setadmin", new AgentSetAdminController())
                 .addMapping("/tour-images", HttpMethod.GET.single() ,new TourImagesController())
                 .addMapping("/tour-images", HttpMethod.modifying(),
                         new TourImagesController(), Role.TOUR_AGENT)
