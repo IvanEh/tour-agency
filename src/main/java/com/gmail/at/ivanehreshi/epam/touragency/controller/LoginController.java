@@ -9,6 +9,12 @@ public final class LoginController extends Controller {
     private AuthService authService = ServiceLocator.INSTANCE.get(AuthService.class);
 
     @Override
+    public void get(RequestService reqService) {
+        String username = (String) reqService.getFlashParameter("username");
+        reqService.putParameter("username", username);
+    }
+
+    @Override
     public void post(RequestService reqService) {
         String username = reqService.getString("username");
         String password = reqService.getString("password");
@@ -22,6 +28,7 @@ public final class LoginController extends Controller {
             }
         } else {
             reqService.redirect("/login.html?failed=true");
+            reqService.putFlashParameter("username", username);
         }
     }
 }

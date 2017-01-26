@@ -101,6 +101,8 @@ public enum WebApplication {
                 .addMapping("/tour-images", HttpMethod.GET.single() ,new TourImagesController())
                 .addMapping("/tour-images", HttpMethod.modifying(),
                         new TourImagesController(), Role.TOUR_AGENT)
+                .addMapping("/login\\.html", HttpMethod.GET.single(), new LoginController())
+                .addMapping("/register\\.html", HttpMethod.GET.single(), new RegisterController())
                 .addMapping("/user/purchases\\.html", new PurchaseController())
                 .addMapping("/agent/new-tour\\.html", new AgentNewTourPageController())
                 .addMapping("/agent/edit-tour\\.html", new AgentEditTourController())
