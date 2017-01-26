@@ -10,6 +10,7 @@
     <c:import url="/resources/components/head.html"/>
     <link rel="stylesheet" href="/resources/css/tour.css"/>
     <link rel="stylesheet" href="/resources/bower_components/rateYo/src/jquery.rateyo.css"/>
+    <script src="/resources/bower_components/marked/lib/marked.js"></script>
     <script src="/resources/js/params.js"></script>
     <script src="/resources/js/tours.js"></script>
 </head>
@@ -72,9 +73,7 @@
                             <div class="heading">
                                 <c:out value="${tour.title}"/>
                             </div>
-                            <div class="body">
-                                <c:out value="${tour.description}"/>
-                            </div>
+                            <div class="body" data-provide="markdown"><c:out value="${tour.description}"/></div>
                             <div class="footer">
                                 <div class="pull-left badge" style="line-height: 20px">
                                     $<c:out value="${tour.price.doubleValue()}"/>
@@ -133,6 +132,11 @@ $(function () {
         readOnly: true,
         starWidth: '17px'
     });
+  });
+
+  $('div[data-provide=markdown]').each(function() {
+    var $this = $(this);
+    $this.html(marked($this.html().replace(/#/g, '').replace(/[\n\r]+/g, ' ')));
   });
 
 });

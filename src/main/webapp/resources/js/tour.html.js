@@ -32,11 +32,19 @@ $(function () {
 
   // Logic
 
+  replaceMarkdown();
   initReviews();
   var toolkit = initImagesLightbox();
   initImagesToolbar();
   initImagesUpload();
   useSubmitDivs($);
+
+  function replaceMarkdown() {
+    $('div[data-provide=markdown]').each(function() {
+      var $this = $(this);
+      $this.html(marked($this.html()));
+    });
+  }
 
 
   function initReviews() {

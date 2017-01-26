@@ -18,6 +18,8 @@ public final class ToursController extends Controller {
 
     private static final int PAGE_SIZE = 10;
 
+    private static final int MAX_DESC_LENGTH = 128;
+
     @Override
     public void get(RequestService reqService) {
         String priceOrdStr = reqService.getString("price");
@@ -54,6 +56,7 @@ public final class ToursController extends Controller {
         Slice<Tour> tours = tourDao.getToursSliceByCriteria(PAGE_SIZE, anchor,
                         dir, priceOrd, tourTypesArr);
 
+        tours.getPayload().forEach(t -> t.setDescription(shrinkText(t.getDescription())));
         reqService.putParameter("tours",  tours.getPayload());
 
         for(TourType t: tourTypesArr) {
@@ -71,6 +74,14 @@ public final class ToursController extends Controller {
             reqService.putParameter("prevId", tours.getTopAnchor().getId());
             reqService.putParameter("prevPrice", tours.getTopAnchor().getPrice());
         }
+    }
+
+    private String shrinkText(String text) {
+        if (text.length() > MAX_DESC_LENGTH) {
+            return text.substring(0, MAX_DESC_LENGTH) + "...";
+        }
+
+        return text;
     }
 
     @Override

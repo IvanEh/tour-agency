@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/resources/bower_components/lightbox2/dist/css/lightbox.css"/>
     <link rel="stylesheet" href="/resources/bower_components/rateYo/src/jquery.rateyo.css"/>
     <link rel="stylesheet" href="/resources/bower_components/jquery.filer/css/jquery.filer.css"/>
+    <script src="/resources/bower_components/marked/lib/marked.js"></script>
     <script src="/resources/js/util.js"></script>
     <script src="/resources/bower_components/lightbox2/dist/js/lightbox.js"></script>
     <script src="/resources/bower_components/bootstrap/js/modal.js"/></script>
@@ -61,9 +62,7 @@
                         -${discount}%
                     </div>
                 </c:if>
-                <div class="tour-desc col-md-10">
-                    <c:out value="${tour.description}"/>
-                </div>
+                <div class="tour-desc col-md-10" data-provide="markdown"><c:out value="${tour.description}"/></div>
             </div>
         </div>
 

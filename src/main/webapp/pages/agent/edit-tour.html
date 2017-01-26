@@ -48,16 +48,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="description">
-                        <fmt:message key="tour.info" bundle="${rb}"/>
-                    </label>
-
-                    <div class="col-md-4">
-                        <textarea class="form-control" id="description" name="description"><c:out value="${tour.description}"/></textarea>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label class="col-md-4 control-label" for="price">
                         <fmt:message key="tour.price" bundle="${rb}"/>
                     </label>
@@ -121,6 +111,19 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label class="col-md-1 control-label" for="description">
+                        <fmt:message key="tour.info" bundle="${rb}"/>
+                    </label>
+
+                    <div class="col-md-12">
+                        <div class="well" >
+                            <textarea class="form-control" id="description"
+                                      name="description" data-provide="markdown">${tour.description}</textarea>
+                        </div>
+                    </div>
+                </div>
+
             </fieldset>
 
             <fmt:message key="save" var="save" bundle="${rb}"/>
@@ -128,6 +131,15 @@
         </form>
     </div>
 </div>
+
+<script src="/resources/bower_components/markdown/lib/markdown.js"></script>
+<script src="/resources/bower_components/bootstrap-markdown/js/bootstrap-markdown.js"></script>
+<script>
+    $("#description").markdown({
+        fullscreen:{ enable: false },
+        resize: "vertical",
+    });
+</script>
 
 </body>
 </html>
