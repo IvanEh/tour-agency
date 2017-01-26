@@ -100,9 +100,16 @@
                     <fmt:message key="review.title" bundle="${rb}"/>
                 </h3>
 
-                <c:if test="${canVote}">
+                <c:if test="${canVote || oldReview != null }">
                     <center>
-                        <div id="new-review-btn"><i class="glyphicon glyphicon-plus-sign"></i></div>
+                        <div id="new-review-btn">
+                            <c:if test="${oldReview != null}">
+                                <i class="glyphicon glyphicon-record"></i>
+                            </c:if>
+                            <c:if test="${oldReview == null}">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </c:if>
+                        </div>
                     </center>
                 </c:if>
 

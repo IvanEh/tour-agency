@@ -14,9 +14,13 @@
             <div class="form-group">
                 <input type="hidden" id="new-review-rating"
                        name="rating" value=""/>
+                <c:if test="${oldReview != null}">
+                    <input type="hidden" name="__method" value="PUT"/>
+                    <input type="hidden" name="id" value="${oldReview.id}"/>
+                </c:if>
                 <input type="hidden" name="tourId" value="${tour.id}"/>
-                <input type="hidden" name="userId" value="${user.id}"/>
-                <textarea class="form-control" id="text" name="text"></textarea>
+                <textarea class="form-control"
+                          id="text" name="text">${oldReview.text}</textarea>
             </div>
 
             <fmt:message key="review.rate_action" var="rateMsg" bundle="${rb}"/>

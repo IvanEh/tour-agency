@@ -119,4 +119,10 @@ public class ReviewJdbcDao implements ReviewDao {
 
         return flagWrapper[0];
     }
+
+    @Override
+    public Review findByPurchase(Long userId, Long tourId) {
+        return jdbcTemplate.queryObject(ReviewJdbcDao::fromResultSet, "SELECT * " +
+                "FROM `review` WHERE author_id=? AND tour_id=?", userId, tourId);
+    }
 }

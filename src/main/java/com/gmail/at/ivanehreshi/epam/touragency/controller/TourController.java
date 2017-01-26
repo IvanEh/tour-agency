@@ -43,6 +43,8 @@ public class TourController extends Controller {
 
         reqService.putParameter("reviews", reviews);
         reqService.putParameter("tourImages", tourImages);
-
+        Review oldReview = reviewService.findByPurchase(
+                reqService.getUser().map(User::getId).orElse(null), tour.getId());
+        reqService.putParameter("oldReview", oldReview);
     }
 }

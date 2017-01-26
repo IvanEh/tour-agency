@@ -27,6 +27,12 @@ public class ReviewServiceImpl extends AbstractDaoService<Review, Long>
     }
 
     @Override
+    public void update(Review review) {
+        review.setDate(new Date());
+        super.update(review);
+    }
+
+    @Override
     public List<Review> findByTour(Long id) {
         List<Review> reviews = reviewDao.findByTour(id);
         for(Review review: reviews) {
@@ -42,6 +48,11 @@ public class ReviewServiceImpl extends AbstractDaoService<Review, Long>
             return false;
         }
         return reviewDao.canVote(userId, tourId);
+    }
+
+    @Override
+    public Review findByPurchase(Long userId, Long tourId) {
+        return reviewDao.findByPurchase(userId, tourId);
     }
 
     @Override

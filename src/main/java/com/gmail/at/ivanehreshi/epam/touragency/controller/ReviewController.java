@@ -15,10 +15,24 @@ public class ReviewController extends Controller {
         Review review = new Review();
         review.setRating(reqService.getInt("rating").get());
         review.setTour(reqService.getLong("tourId").map(Tour::new).get());
-        review.setAuthor(reqService.getLong("userId").map(User::new).get());
+        review.setAuthor(reqService.getUser().get());
         review.setText(reqService.getString("text"));
 
         reviewService.create(review);
+
+        reqService.redirect(reqService.getRequest().getHeader("Referer"));
+    }
+
+    @Override
+    public void put(RequestService reqService) {
+        Review review = new Review();
+        review.setId(reqService.getLong("id").get());
+        review.setRating(reqService.getInt("rating").get());
+        review.setTour(reqService.getLong("tourId").map(Tour::new).get());
+        review.setAuthor(reqService.getUser().get());
+        review.setText(reqService.getString("text"));
+
+        reviewService.update(review);
 
         reqService.redirect(reqService.getRequest().getHeader("Referer"));
     }
