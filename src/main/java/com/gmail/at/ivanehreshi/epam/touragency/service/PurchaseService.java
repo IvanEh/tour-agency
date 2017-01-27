@@ -1,6 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.service;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
 import java.util.*;
 
@@ -11,7 +12,7 @@ public interface PurchaseService extends CrudService<Purchase, Long> {
 
     List<Purchase> findByUserTour(Long userId, Long tourId);
 
-    Map<Tour, List<Purchase>> findByUserGroupByTour(Long id);
+    List<Group<Tour, Purchase>> findByUserGroupByTourOrdered(Long id);
 
     void acknowledge(Long purchaseId);
 

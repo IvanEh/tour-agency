@@ -27,7 +27,7 @@
             </h1>
             <hr/>
             
-            <c:forEach var="group" items="${purchaseGroups.entrySet()}">
+            <c:forEach var="group" items="${purchaseGroups}">
                 <c:set var="tour" value="${group.key}" />
                      
 	            <div class="col-md-12">
@@ -44,7 +44,7 @@
                                     <c:out value="${tour.price.doubleValue()}"/>
                                 </div>
                                 <div class="pull-right badge badge-success" style="line-height: 20px">
-                                    <c:out value="${group.value.size()}"/>
+                                    <c:out value="${group.elems.size()}"/>
                                     <fmt:message key="purchase.units" bundle="${rb}"/>
                                 </div>
 

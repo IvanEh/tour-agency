@@ -40,7 +40,7 @@
                     </div>
 
                     <span class="badge">$
-                        <c:out value="${tour.price}"/>
+                        <c:out value="${tour.price.doubleValue()}"/>
                     </span>
 
                     <c:set var="editLink" value="/agent/edit-tour.html?id=${tour.id}"/>

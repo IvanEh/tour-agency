@@ -3,9 +3,11 @@ package com.gmail.at.ivanehreshi.epam.touragency.service.impl;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
 import java.math.*;
 import java.util.*;
+import java.util.stream.*;
 
 public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
         implements PurchaseService {
@@ -70,7 +72,7 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
     }
 
     @Override
-    public Map<Tour, List<Purchase>> findByUserGroupByTour(Long userId) {
+    public List<Group<Tour, Purchase>> findByUserGroupByTourOrdered(Long userId) {
         List<Purchase> purchases = findByUser(userId);
         Map<Tour, List<Purchase>> grouped =
                 new TreeMap<>((t1, t2) -> (int) (t1.getId() - t2.getId()));
@@ -79,9 +81,18 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
             List<Purchase> group = grouped.getOrDefault(p.getTour(), new ArrayList<>());
             group.add(p);
             grouped.put(p.getTour(), group);
-        };
+        }
 
-        return grouped;
+        List<Group<Tour, Purchase>> sorted = grouped.entrySet().stream()
+                .map(e -> new Group<>(e.getKey(), e.getValue()))
+                .map(g -> new Tuple<>(g, Collections.max(g.getElems(),
+                        Comparator.comparing(Purchase::getDate))))
+                .sorted(Comparator.comparing(t -> t.getSecond().getDate()))
+                .map(Tuple::getFirst)
+                .collect(Collectors.toList());
+
+        Collections.reverse(sorted);
+        return sorted;
     }
 
     @Override

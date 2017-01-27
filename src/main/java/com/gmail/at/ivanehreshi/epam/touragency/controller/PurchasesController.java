@@ -17,8 +17,8 @@ public final class PurchasesController extends Controller {
     public void get(RequestService reqService) {
         User user = reqService.loadUser().orElse(null);
 
-        Map<Tour, List<Purchase>> purchases =
-                purchaseService.findByUserGroupByTour(user.getId());
+        List<Group<Tour, Purchase>> purchases =
+                purchaseService.findByUserGroupByTourOrdered(user.getId());
 
         reqService.putParameter("purchaseGroups", purchases);
     }

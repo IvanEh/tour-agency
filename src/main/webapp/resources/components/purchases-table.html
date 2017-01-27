@@ -13,7 +13,7 @@
     <c:forEach var="purchase" items="${purchases}">
         <tr>
             <td>${purchase.id}</td>
-            <td>$ ${purchase.price}</td>
+            <td>$ ${purchase.price.doubleValue()}</td>
             <td>${purchase.date}</td>
             <td>${purchase.status}</td>
         </tr>
