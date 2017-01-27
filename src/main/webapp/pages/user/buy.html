@@ -36,24 +36,11 @@
 
         <br/>
 
-        <div class="row">
-            <div class="col-md-3 form-control-sized">
-                <fmt:message key="purchase.price" bundle="${rb}"/>
-            </div>
-
-            <div class="col-offset-md-1 col-md-9">
-                <div class="form-control">
-                    <c:out value="${tour.description}"/>
-                </div>
-            </div>
-        </div>
-
-        <br/>
 
         <div class="row">
             <div class="col-md-3 form-control-sized">
                 <fmt:message key="purchase.price" bundle="${rb}"/>
-                (-${user.discount}%):
+                (-${user.discount.doubleValue()}%):
             </div>
 
             <div class="col-offset-md-1 col-md-9 has-success">
@@ -69,6 +56,16 @@
         <form method="post" action="/purchase">
             <input type="hidden" name="tourId" value="${tour.id}"/>
             <input type="hidden" name="userId" value="${user.id}"/>
+            <div class="row">
+                <div class="col-md-3 form-control-sized">
+                    Number
+                </div>
+
+                <div class="col-offset-md-1 col-md-9">
+                    <input class="form-control" type="number" name="units" value="1" min="1" max="99"/>
+                </div>
+            </div>
+            <br/>
             <input type="submit" class="btn btn-contrast pull-right" value="${buy}"/>
         </form>
 

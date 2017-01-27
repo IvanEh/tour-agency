@@ -27,9 +27,10 @@ public final class PurchasesController extends Controller {
     public void post(RequestService reqService) {
         Long tourId = reqService.getLong("tourId").orElse(null);
         Long userId = reqService.getUser().orElse(null).getId();
+        int number = reqService.getInt("units").get();
 
-        purchaseService.purchase(userId, tourId);
+        purchaseService.purchase(userId, tourId, number);
 
-        reqService.redirect("/user/purchases.html");
+        reqService.redirect("/user/purchase.html?tourId=" + tourId);
     }
 }

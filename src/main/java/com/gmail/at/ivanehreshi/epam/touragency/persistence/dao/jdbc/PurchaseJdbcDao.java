@@ -42,7 +42,9 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
     @Override
     public Long create(Purchase p) {
-        Integer status = p.getStatus() == null ? null : p.getStatus().ordinal();
+        Integer status = p.getStatus() == null ? PurchaseStatus.ACTIVE.ordinal()
+                : p.getStatus().ordinal();
+
         Long id = jdbcTemplate.insert(CREATE_SQL, p.getUser().getId(), p.getTour().getId()
                 , p.getDate(), p.getPrice(), status);
         return id;
@@ -83,7 +85,8 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
     @Override
     public void update(Purchase p) {
-        Integer status = p.getStatus() == null ? null : p.getStatus().ordinal();
+        Integer status = p.getStatus() == null ? PurchaseStatus.ACTIVE.ordinal()
+                : p.getStatus().ordinal();
         jdbcTemplate.update(UPDATE_SQL, p.getUser().getId(), p.getTour().getId(), p.getDate(),
                 p.getPrice(), status, p.getId());
     }

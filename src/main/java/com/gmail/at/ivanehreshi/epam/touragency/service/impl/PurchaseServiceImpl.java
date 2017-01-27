@@ -106,6 +106,13 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
     }
 
     @Override
+    public void purchase(Long userId, Long tourId, int number) {
+        for (int i = 0; i < number; i++) {
+            purchase(userId, tourId);
+        }
+    }
+
+    @Override
     public PurchaseDao getDao() {
         return purchaseDao;
     }
