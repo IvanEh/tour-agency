@@ -92,7 +92,7 @@ public enum WebApplication {
                 .addMapping("/register", new RegisterController())
                 .addMapping("/user/discount", HttpMethod.any(),
                         new UpdateDiscountController(), Role.TOUR_AGENT)
-                .addMapping("/purchase", HttpMethod.any(), new PurchaseController(),
+                .addMapping("/purchase", HttpMethod.any(), new PurchasesController(),
                         Role.CUSTOMER, Role.TOUR_AGENT)
                 .addMapping("/login", new LoginController())
                 .addMapping("/logout", new LogoutController())
@@ -104,9 +104,11 @@ public enum WebApplication {
                         new TourImagesController(), Role.TOUR_AGENT)
                 .addMapping("/login\\.html", HttpMethod.GET.single(), new LoginController())
                 .addMapping("/register\\.html", HttpMethod.GET.single(), new RegisterController())
-                .addMapping("/user/purchases\\.html", new PurchaseController())
+                .addMapping("/user/purchases\\.html", new PurchasesController())
+                .addMapping("/user/purchase\\.html", new PurchaseController())
                 .addMapping("/agent/new-tour\\.html", new AgentNewTourPageController())
                 .addMapping("/agent/edit-tour\\.html", new AgentEditTourController())
+                .addMapping("/agent/order\\.html", new AgentOrderController())
                 .addMapping("/(.*)\\.html", new JspController("/pages/", ".html", ".html"));
     }
 

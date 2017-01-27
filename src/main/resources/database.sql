@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `purchase` (
   `tour_id` INT(11) NOT NULL,
   `date` DATETIME NOT NULL,
   `price` DECIMAL(10,2) NOT NULL,
+  `status` INT(2) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_purchase_tour_id` (`tour_id` ASC),
   INDEX `fk_purchase_user_id` (`user_id` ASC),

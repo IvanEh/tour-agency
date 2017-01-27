@@ -10,8 +10,8 @@ import java.util.*;
 
 public class PurchaseJdbcDao implements PurchaseDao {
     private static final String CREATE_SQL =
-            "INSERT INTO `purchase` (`user_id`, `tour_id`, `date`, `price`) " +
-            "VALUES (?, ?, ?, ?)";
+            "INSERT INTO `purchase` (`user_id`, `tour_id`, `date`, `price`," +
+                    "`status`) VALUES (?, ?, ?, ?, ?)";
 
     private static final String FIND_ALL_SQL =
             "SELECT * FROM `purchase` ORDER BY id DESC";
@@ -23,7 +23,7 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
     private static final String UPDATE_SQL =
             "UPDATE `purchase` SET `user_id`=?, `tour_id`=?," +
-            " `date`=?, `price`=? WHERE `id`=?";
+            " `date`=?, `price`=?, `status`=? WHERE `id`=?";
 
     private static final String READ_TOUR_SQL = "SELECT * FROM tour WHERE id=?";
 
@@ -42,8 +42,9 @@ public class PurchaseJdbcDao implements PurchaseDao {
 
     @Override
     public Long create(Purchase p) {
-        Long id = jdbcTemplate.insert(CREATE_SQL, p.getUser().getId(), p.getTour().getId(), p.getDate(),
-                p.getPrice());
+        Integer status = p.getStatus() == null ? null : p.getStatus().ordinal();
+        Long id = jdbcTemplate.insert(CREATE_SQL, p.getUser().getId(), p.getTour().getId()
+                , p.getDate(), p.getPrice(), status);
         return id;
     }
 
@@ -75,9 +76,16 @@ public class PurchaseJdbcDao implements PurchaseDao {
     }
 
     @Override
+    public List<Purchase> findByUserTour(Long userId, Long tourId) {
+        return jdbcTemplate.queryObjects(PurchaseJdbcDao::fromResultSet, "SELECT * " +
+                "FROM `purchase` WHERE `user_id`=? AND `tour_id`=?", userId, tourId);
+    }
+
+    @Override
     public void update(Purchase p) {
+        Integer status = p.getStatus() == null ? null : p.getStatus().ordinal();
         jdbcTemplate.update(UPDATE_SQL, p.getUser().getId(), p.getTour().getId(), p.getDate(),
-                p.getPrice(), p.getId());
+                p.getPrice(), status, p.getId());
     }
 
     @Override
@@ -89,7 +97,6 @@ public class PurchaseJdbcDao implements PurchaseDao {
     public List<Purchase> findAll() {
         return jdbcTemplate.queryObjects(PurchaseJdbcDao::fromResultSet, FIND_ALL_SQL);
     }
-
 
     private static Purchase fromResultSet(ResultSet rs) throws SQLException {
         return PurchaseMapper.map(rs);

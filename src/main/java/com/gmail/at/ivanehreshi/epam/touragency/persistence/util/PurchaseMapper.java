@@ -1,11 +1,8 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.util;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Purchase;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.Tour;
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class PurchaseMapper {
     public static Purchase map(ResultSet rs) throws SQLException {
@@ -15,6 +12,7 @@ public class PurchaseMapper {
         purchase.setTour(new Tour(rs.getLong("tour_id")));
         purchase.setPrice(rs.getBigDecimal("price"));
         purchase.setDate(rs.getDate("date"));
+        purchase.setStatus(PurchaseStatus.values()[rs.getInt("status")]);
         return purchase;
     }
 }

@@ -9,6 +9,7 @@ public class Purchase {
     private Tour tour;
     private Date date;
     private BigDecimal price;
+    private PurchaseStatus status;
 
     public Purchase() {
     }
@@ -63,6 +64,14 @@ public class Purchase {
         this.price = price;
     }
 
+    public PurchaseStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PurchaseStatus status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -72,13 +81,14 @@ public class Purchase {
                 Objects.equals(user, purchase.user) &&
                 Objects.equals(tour, purchase.tour) &&
                 Objects.equals(date, purchase.date) &&
+                Objects.equals(status, purchase.status) &&
                 price == null ? purchase.price == null :
                     price.compareTo(purchase.price) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, tour, date, price);
+        return Objects.hash(id, user, tour, date, price, status);
     }
 
     @Override

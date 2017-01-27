@@ -136,7 +136,7 @@ $(function () {
 
   $('div[data-provide=markdown]').each(function() {
     var $this = $(this);
-    $this.html(marked($this.html().replace(/#/g, '').replace(/[\n\r]+/g, ' ')));
+    $this.html(marked($this.html().replace(/#/g, '').replace(/[\n\r]+/g, ' ').trim()));
   });
 
 });
