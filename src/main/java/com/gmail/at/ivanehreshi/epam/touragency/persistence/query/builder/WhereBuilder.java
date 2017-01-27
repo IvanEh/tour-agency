@@ -1,50 +1,35 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder;
 
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.SelectQuery;
-import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.condition.*;
 
-import java.util.List;
-
-/**
- * {@link QueryBuilder} that represent the <b>where</b> part of
- * the query. Could be used for composite where clause via #and method
- */
-public class WhereBuilder extends QueryBuilder {
-
-    public WhereBuilder(SelectQuery query) {
+public class WhereBuilder extends OrderByBuilder {
+    WhereBuilder(SelectQuery query) {
         super(query);
     }
 
-    public WhereBuilder and(String col, String cond) {
-        if(col == null || cond == null) {
-            return this;
-        }
-
-        if(query.getWhereClause() != null && query.getWhereClause().length > 0) {
-            return new WhereBuilder(query.addWhere("AND " + col + " " + cond));
-        }
-
-        return new WhereBuilder(query.addWhere(col + " " + cond));
+    public OrderByBuilder where(BoolCondition condition) {
+        return new OrderByBuilder(query.where(condition));
     }
 
-    public OrderByBuilder orderBy(String col, Ordering order) {
-        OrderByBuilder orderByBuilder = new OrderByBuilder(query);
-        return orderByBuilder.and(col, order);
-    }
-
-    public LimitBuilder limit(int count) {
-        return new LimitBuilder(query, count);
-    }
-
-    /**
-     * Helps to build up an IN condition
-     *
-     * Usage: <code>whereBuilder.and("col", inCond(Arrays.asList("a", "b"))</code>
-     */
-    public static String inCond(List<String> values) {
-        if(values.isEmpty()) {
-            return null;
+    public WhereBuilder and(BoolCondition condition) {
+        if(query.getWhereClause() == null) {
+            return new WhereBuilder(query.where(condition));
+        } else {
+            BoolCondition andCond = new AndCondition(query.getWhereClause(), condition);
+            return new WhereBuilder(query.where(andCond));
         }
-        return "IN (" + String.join(",", values) + ")";
+    }
+
+    public static RelationCondition rel(String col, Ordering ord, int value) {
+        return new RelationCondition(col, ord, value);
+    }
+
+    public static InCondition in(String col, boolean quote, String... vals) {
+        return new InCondition(col, quote, vals);
+    }
+
+    public static OrCondition or(Condition... conditions) {
+        return new OrCondition(conditions);
     }
 }

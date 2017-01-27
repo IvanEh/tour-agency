@@ -2,8 +2,8 @@ package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
@@ -16,63 +16,29 @@ public final class ToursController extends Controller {
 
     private TourService tourService = ServiceLocator.INSTANCE.get(TourService.class);
 
-    private static final int PAGE_SIZE = 10;
-
     private static final int MAX_DESC_LENGTH = 128;
+
+    private static final int FILTER_MAX_PRICE = 9999;
 
     @Override
     public void get(RequestService reqService) {
-        String priceOrdStr = reqService.getString("price");
-        String tourTypesStr = reqService.getString("type");
+        ToursDynamicFilter filter = prepareFilter(reqService);
 
-        ScrollDirection dir = reqService.getInt("direction")
-                .map(ScrollDirection::valueOf)
-                .orElse(ScrollDirection.DOWN);
-
-
-        Tour anchor = null;
-        boolean hasCurrId = reqService.getString("currId") != null;
-        if (hasCurrId && !reqService.getString("currId").isEmpty()) {
-            anchor = new Tour(reqService.getLong("currId").orElse(null));
-            anchor.setPrice(new BigDecimal(reqService.getString("currPrice")));
-        }
-
-        List<TourType> tourTypes = Stream.of(tourTypesStr.split(","))
+        TourType[] tourTypesArr  = Stream.of(reqService.getString("type").split(","))
                 .filter(s -> !s.isEmpty())
                 .map(String::toUpperCase)
                 .map(TourType::valueOf)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                .toArray(new TourType[]{});
+        filter.setTourTypes(tourTypesArr);
 
-        Ordering priceOrd = Ordering.NO;
-        if (priceOrdStr != null) {
-            try {
-                priceOrd = Ordering.valueOf(priceOrdStr.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                priceOrd = Ordering.NO;
-            }
-        }
+        List<Tour> tours = tourService.executeDynamicFilter(filter);
 
-        TourType[] tourTypesArr = tourTypes.toArray(new TourType[]{});
-        Slice<Tour> tours = tourDao.getToursSliceByCriteria(PAGE_SIZE, anchor,
-                        dir, priceOrd, tourTypesArr);
-
-        tours.getPayload().forEach(t -> t.setDescription(shrinkText(t.getDescription())));
-        reqService.putParameter("tours",  tours.getPayload());
+        reqService.putParameter("tours", tours);
+        reqService.putParameter("data", filter);
 
         for(TourType t: tourTypesArr) {
             reqService.putParameter(t.name(), true);
-        }
-
-        reqService.putParameter("ord", priceOrd.name());
-
-        if(tours.getBottomAnchor() != null) {
-            reqService.putParameter("nextId", tours.getBottomAnchor().getId());
-            reqService.putParameter("nextPrice", tours.getBottomAnchor().getPrice());
-        }
-
-        if(tours.getTopAnchor() != null) {
-            reqService.putParameter("prevId", tours.getTopAnchor().getId());
-            reqService.putParameter("prevPrice", tours.getTopAnchor().getPrice());
         }
     }
 
@@ -127,5 +93,30 @@ public final class ToursController extends Controller {
         }
 
         return WithStatus.ok(tour);
+    }
+
+    private ToursDynamicFilter prepareFilter(RequestService reqService) {
+        ToursDynamicFilter filter = new ToursDynamicFilter();
+
+        SortDir priceOrd = reqService.getParameter("price")
+                .map(String::toUpperCase)
+                .flatMap(s -> TryOptionalUtil.of(() -> SortDir.valueOf(s)))
+                .orElse(null);
+
+
+        String searchStr = UrlParamDecoder.decode(reqService.getParameter("search").orElse(null))
+                .orElse(null);
+
+        Integer priceLow = reqService.getInt("priceLow").filter(p -> p != 0)
+                .orElse(null);
+        Integer priceHigh = reqService.getInt("priceHigh").filter(p -> p != FILTER_MAX_PRICE)
+                .orElse(null);
+        Boolean hot = reqService.getParameter("hot").map(p -> p.equals("on"))
+                .orElse(null);
+
+        filter.setPriceSort(priceOrd).setSearchQuery(searchStr)
+                .setPriceLow(priceLow).setPriceHigh(priceHigh)
+                .setHot(hot);
+        return filter;
     }
 }

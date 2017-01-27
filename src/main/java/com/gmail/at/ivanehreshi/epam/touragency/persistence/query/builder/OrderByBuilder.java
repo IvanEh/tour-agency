@@ -1,30 +1,21 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder;
 
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.SelectQuery;
-import com.gmail.at.ivanehreshi.epam.touragency.util.Ordering;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.condition.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
-/**
- * QueryBuilder that represent OrderBy part of the query
- */
-public class OrderByBuilder extends QueryBuilder {
+import java.util.*;
 
-    public OrderByBuilder(SelectQuery query) {
+public class OrderByBuilder extends LimitBuilder {
+    OrderByBuilder(SelectQuery query) {
         super(query);
     }
 
-    public OrderByBuilder and(String col, Ordering ord) {
-        if (col == null || ord == null || ord == Ordering.NO) {
-            return this;
-        }
-
-        if(query.getOrderByClause() != null && query.getOrderByClause().length > 0) {
-            return new OrderByBuilder(query.addOrderBy(", " + col + " " + ord.name()));
-        }
-
-        return new OrderByBuilder(query.addOrderBy(col + " " + ord.name()));
+    public OrderByBuilder orderBy(OrderByCondition... conditions) {
+        return new OrderByBuilder(query.orderBy(Arrays.asList(conditions)));
     }
 
-    public LimitBuilder limit(Integer count) {
-        return new LimitBuilder(query, count);
+    public OrderByBuilder orderBy(String col, SortDir sortDir) {
+        return orderBy(new OrderByCondition(col, sortDir));
     }
 }

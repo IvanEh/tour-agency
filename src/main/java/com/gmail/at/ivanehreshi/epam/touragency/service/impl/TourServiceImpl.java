@@ -65,6 +65,11 @@ public class TourServiceImpl extends AbstractDaoService<Tour, Long>
     }
 
     @Override
+    public List<Tour> executeDynamicFilter(ToursDynamicFilter filter) {
+        return tourDao.executeDynamicFilter(filter);
+    }
+
+    @Override
     public TourDao getDao() {
         return tourDao;
     }

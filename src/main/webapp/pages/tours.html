@@ -10,6 +10,7 @@
     <c:import url="/resources/components/head.html"/>
     <link rel="stylesheet" href="/resources/css/tour.css"/>
     <link rel="stylesheet" href="/resources/bower_components/rateYo/src/jquery.rateyo.css"/>
+    <link rel="stylesheet" href="/resources/bower_components/nouislider/distribute/nouislider.css"/>
     <script src="/resources/bower_components/marked/lib/marked.js"></script>
     <script src="/resources/js/params.js"></script>
     <script src="/resources/js/tours.js"></script>
@@ -24,33 +25,97 @@
     </div>
 
     <div class="col-md-offset-3 col-md-8 content stretch">
-        <ul class="nav nav-pills toolbar">
+        <div style="background: #f8f9f6;">
+            <ul class="nav nav-pills toolbar">
+                <c:set var="ordCss" value="${data.priceSort eq null ? '' : 'active'}"/>
+                <c:set var="ordAsc" value="${data.priceSort.toString() eq 'DESC' ? '-alt' : ''}"/>
 
-            <c:set var="ordCss" value="${ord eq 'NO' ? '' : 'active'}"/>
-            <c:set var="ordAsc" value="${ord eq 'ASC' ? '-alt' : ''}"/>
-            <li><a class="btn btn-default ${ordCss}" onclick="sort()">
-                <fmt:message key="tour.price" bundle="${rb}"/>
-                <span class="glyphicon glyphicon-sort-by-order${ordAsc}"></span></a>
-            </li>
+                <li><a class="btn btn-default ${ordCss}" onclick="sort()">
+                    <fmt:message key="tour.price" bundle="${rb}"/>
+                    <span class="glyphicon glyphicon-sort-by-order${ordAsc}"></span></a>
+                </li>
 
-            <c:set var="recreationCss" value="${RECREATION ? 'active' : ''}"/>
-            <li><a class="btn btn-default ${recreationCss}" onclick="setTourType('RECREATION')">
+
+                <c:set var="recreationCss" value="${RECREATION ? 'active' : ''}"/>
+                <li><a class="btn btn-default ${recreationCss}" onclick="setTourType('RECREATION')">
                     <fmt:message key="tour.recreation" bundle="${rb}"/>
                 </a>
-            </li>
+                </li>
 
-            <c:set var="excursionCss" value="${EXCURSION ? 'active' : ''}"/>
-            <li><a class="btn btn-default ${excursionCss}" onclick="setTourType('EXCURSION')">
+                <c:set var="excursionCss" value="${EXCURSION ? 'active' : ''}"/>
+                <li><a class="btn btn-default ${excursionCss}" onclick="setTourType('EXCURSION')">
                     <fmt:message key="tour.excursion" bundle="${rb}"/>
                 </a>
-            </li>
+                </li>
 
-            <c:set var="shoppingCss" value="${SHOPPING ? 'active' : ''}"/>
-            <li><a class="btn btn-default ${shoppingCss}" onclick="setTourType('SHOPPING')">
+                <c:set var="shoppingCss" value="${SHOPPING ? 'active' : ''}"/>
+                <li><a class="btn btn-default ${shoppingCss}" onclick="setTourType('SHOPPING')">
                     <fmt:message key="tour.shopping" bundle="${rb}"/>
                 </a>
-            </li>
-        </ul>
+                </li>
+
+                <li>
+                    <a class="btn btn-contrast" id="show-search-form">
+                        <i class="glyphicon glyphicon-filter" style="line-height: 20px"></i>
+                    </a>
+                </li>
+            </ul>
+
+            <form class="hidden" id="search-form">
+                <input type="hidden" name="price" value="${priceOrd}"/>
+                <input type="hidden" name="type" value="${type}"/>
+
+                <div class="row top-buffer-sm">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label>
+                                <fmt:message key="search" bundle="${rb}"/>:
+                            </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="search" value="${data.searchQuery}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-md-12">
+                        <div class="col-md-4">
+                            <label>
+                                <fmt:message key="tour.price" bundle="${rb}"/>:
+                            </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="hidden" id="price-low" name="priceLow"/>
+                            <input type="hidden" id="price-high" name="priceHigh"/>
+                            <div id="price-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row top-buffer-sm">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label>
+                                <fmt:message key="hot" bundle="${rb}"/>
+                            </label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="checkbox" name="hot" ${data.hot ? "checked" : ""}/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn btn-contrast pull-right" value="<fmt:message key="search" bundle="${rb}"/>"/>
+                        <a href="/tours.html" class="btn btn-default pull-right">
+                            <fmt:message key="reset" bundle="${rb}"/>
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
 
         <c:if test="${empty tours}">
             <fmt:message key="tours.empty" bundle="${rb}"/>
@@ -96,31 +161,11 @@
             </c:forEach>
         </div>
 
-
-        <c:if test="${not empty nextId || empty tours}">
-            <form method="post" class="fix-footer-overlay pull-right">
-                <input type="hidden" name="__method" value="get"/>
-                <input type="hidden" name="direction" value="+1"/>
-                <input type="hidden" name="currId" value="${nextId}"/>
-                <input type="hidden" name="currPrice" value="${nextPrice}"/>
-                <a href="#" class="btn btn-default" onclick="this.parentNode.submit()"><i class="glyphicon glyphicon-menu-right"></i></a>
-            </form>
-        </c:if>
-
-        <c:if test="${not empty tours}">
-            <form method="post" class="fix-footer-overlay pull-right">
-                <input type="hidden" name="__method" value="get"/>
-                <input type="hidden" name="direction" value="-1"/>
-                <input type="hidden" name="currId" value="${prevId}"/>
-                <input type="hidden" name="currPrice" value="${prevPrice}"/>
-                <a href="#" class="btn btn-default" onclick="this.parentNode.submit()"><i class="glyphicon glyphicon-menu-left"></i></a>
-            </form>
-        </c:if>
-
     </div>
 </div>
 
 <script src="/resources/bower_components/rateYo/src/jquery.rateyo.js"></script>
+<script src="/resources/bower_components/nouislider/distribute/nouislider.js"></script>
 
 <script>
 $(function () {
@@ -137,6 +182,50 @@ $(function () {
   $('div[data-provide=markdown]').each(function() {
     var $this = $(this);
     $this.html(marked($this.html().replace(/#/g, '').replace(/[\n\r]+/g, ' ').trim()));
+  });
+
+
+
+  var html5Slider = document.getElementById('price-slider');
+  var $priceLow = $('#price-low');
+  var $priceHigh = $('#price-high');
+
+  noUiSlider.create(html5Slider, {
+      start: [ 0, 9999 ],
+      connect: true,
+      tooltips: true,
+      range: {
+          'min': ${data.priceLow eq null ? 0 : data.priceLow},
+          'max': ${data.priceHigh eq null ? 9999 : data.priceHigh}
+      },
+      format: {
+          to: function ( value ) {
+            return Math.round(value);
+          },
+          from: function ( value ) {
+            return Math.round(value);
+          }
+      }
+  });
+
+  $searchForm = $('#search-form');
+
+  $('#show-search-form').click(function() {
+    if($searchForm.hasClass('hidden')) {
+        $searchForm.removeClass('hidden');
+    } else {
+        $searchForm.addClass('hidden');
+    }
+  });
+
+  html5Slider.noUiSlider.on('update', function( values, handle ) {
+    var value = Math.round(values[handle]);
+
+    if ( handle === 0) {
+        $priceLow.val(value);
+    } else {
+        $priceHigh.val(value);
+    }
   });
 
 });

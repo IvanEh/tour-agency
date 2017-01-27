@@ -4,13 +4,13 @@ package com.gmail.at.ivanehreshi.epam.touragency.util;
  * Represent ordering relationship between elements
  * Used for specifying order by clause in various DAO methods
  */
-public enum  Ordering {
-    ASC("ASC", "<"), DESC("DESC", ">"), NO("", "=");
+public enum SortDir {
+    ASC("ASC", "<"), DESC("DESC", ">");
 
     private final String name;
     private final String rel;
 
-    Ordering(String name, String rel) {
+    SortDir(String name, String rel) {
         this.name = name;
         this.rel = rel;
     }

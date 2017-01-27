@@ -11,6 +11,14 @@ hr {
     border-top: 2px solid #003580;
 }
 
+.top-buffer {
+    padding-top: 32px;
+}
+
+.top-buffer-sm {
+    padding-top: 25px;
+}
+
 .navbar {
     background: #003580;
    	box-shadow: 0px 0px 3px 2px grey;

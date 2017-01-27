@@ -3,14 +3,11 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.builder.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.*;
-import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
 import java.math.*;
 import java.sql.*;
 import java.util.*;
-import java.util.stream.*;
 
 public class TourJdbcDao implements TourDao {
 
@@ -91,59 +88,8 @@ public class TourJdbcDao implements TourDao {
     }
 
     @Override
-    public Slice<Tour> getToursSliceByCriteria(int count, Tour anchor, ScrollDirection dir,
-                                               Ordering priceOrdering, TourType... types) {
-        List<String> typesList = Arrays.stream(types)
-                .map(TourType::ordinal)
-                .map(String::valueOf)
-                .collect(Collectors.toList());
-
-        if(anchor == null) {
-            BigDecimal priceAnchor = priceOrdering == Ordering.ASC ? BigDecimal.ZERO : LARGE_DECIMAL;
-            anchor = new Tour(Long.MAX_VALUE);
-            anchor.setPrice(priceAnchor);
-        }
-
-        WhereBuilder whereBuilder = QueryBuilder.select("tour").where("type", WhereBuilder.inCond(typesList))
-                .and("enabled", "=TRUE");
-
-        if (dir == ScrollDirection.DOWN) {
-            whereBuilder = whereBuilder.and("id", ScrollDirection.DOWN.getRel() + anchor.getId());
-        } else {
-            whereBuilder = whereBuilder.and("id", ScrollDirection.UP.getRel() + anchor.getId());
-        }
-
-        String rel;
-        switch (priceOrdering) {
-            case ASC:
-                rel = dir == ScrollDirection.DOWN ? ">" : "<";
-                whereBuilder = whereBuilder.and("price", rel + anchor.getPrice());
-                break;
-            case DESC:
-                rel = dir == ScrollDirection.DOWN ? "<" : ">";
-                whereBuilder = whereBuilder.and("price", rel + anchor.getPrice());
-                break;
-        }
-
-        String query = whereBuilder.orderBy("price", priceOrdering)
-                        .and("id", Ordering.DESC)
-                        .limit(count)
-                        .build();
-
-        List<Tour> tours = jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, query);
-
-        Tour first = null;
-        Tour last = null;
-
-        if(!tours.isEmpty()) {
-            first = tours.get(0);
-        }
-
-        if(tours.size() == count) {
-            last = tours.get(tours.size() - 1);
-        }
-
-        return new Slice<Tour>(tours, first, last);
+    public List<Tour> executeDynamicFilter(ToursDynamicFilter filter) {
+        return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, filter.getQuery());
     }
 
     private static Tour fromResultSet(ResultSet rs) throws SQLException {

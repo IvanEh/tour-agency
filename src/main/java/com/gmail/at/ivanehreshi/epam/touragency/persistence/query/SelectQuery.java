@@ -1,84 +1,102 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.query;
 
-import java.util.Arrays;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.query.condition.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
+
+import java.util.*;
+import java.util.stream.*;
 
 /**
  * Implementation of {@link Query} that encapsulates various parts
  * of a SQL selection query
  */
 public class SelectQuery implements Query {
-    private String columns;
+    private String[] columns;
+
     private String table;
-    private String[] whereClause;
-    private String[] orderByClause;
+
+    private BoolCondition whereClause;
+
+    private List<OrderByCondition> orderByClause;
+
     private Integer limit;
 
-    public SelectQuery(String columns, String table) {
-        this.columns = columns;
+    private String cachedSql;
+
+    public SelectQuery(String table, String... columns) {
         this.table = table;
+
+        if(columns.length == 0) {
+            this.columns = new String[]{"*"};
+        } else {
+            this.columns = columns;
+        }
     }
 
     public SelectQuery(String table) {
         this.table = table;
-        this.columns = "*";
+        this.columns = new String[]{"*"};
     }
 
     public SelectQuery(SelectQuery query) {
         this.columns = query.columns;
         this.table = query.table;
-        this.whereClause = copyOf(query.whereClause);
-        this.orderByClause = copyOf(query.orderByClause);
+        this.whereClause = query.whereClause;
+        this.orderByClause = query.orderByClause;
         this.limit = query.limit;
     }
 
     @Override
     public String getSQL() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ").append(columns)
-          .append(" FROM ").append(table);
-
-        if(whereClause != null && whereClause.length > 0) {
-            sb.append(" WHERE ");
-            for(String s: whereClause) {
-                sb.append(s).append(" ");
-            }
+        if(cachedSql != null) {
+            return cachedSql;
         }
 
-        if(orderByClause != null && orderByClause.length > 0) {
-            sb.append(" ORDER BY ");
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT ").append(String.join(",", columns))
+          .append(" FROM ").append(table);
 
-            for(String s: orderByClause) {
-                sb.append(s);
-            }
+        if(whereClause != null) {
+            sb.append(" WHERE ");
+            sb.append(whereClause.getSQL());
+        }
+
+        if(orderByClause != null) {
+            List<String> orderByClausesStr = orderByClause.stream()
+                      .map(OrderByCondition::getSQL)
+                      .collect(Collectors.toList());
+            sb.append(" ORDER BY ")
+              .append(String.join(", ", orderByClausesStr));
         }
 
         if(limit != null) {
             sb.append(" LIMIT ").append(limit);
         }
 
-        return sb.toString();
+        cachedSql = sb.toString();
+        return cachedSql;
     }
 
-    public SelectQuery setColumns(String cols) {
+    public SelectQuery setColumns(String... cols) {
         SelectQuery q = new SelectQuery(this);
         q.columns = cols;
         return q;
     }
 
     public SelectQuery setLimit(Integer limit) {
-        if(limit ==  null) {
-            return this;
-        }
-
         SelectQuery q = new SelectQuery(this);
         q.limit = limit;
         return q;
     }
 
-    public SelectQuery addOrderBy(String order) {
+    public SelectQuery orderBy(List<OrderByCondition> orderBy) {
         SelectQuery q = new SelectQuery(this);
-        q.orderByClause = append(this.orderByClause, order, String.class);
+        q.orderByClause = Immutable.cons(orderByClause, orderBy);
         return q;
+    }
+
+    public SelectQuery orderBy(OrderByCondition... conditions) {
+        return orderBy(Arrays.asList(conditions));
     }
 
     public SelectQuery setTable(String table) {
@@ -87,13 +105,13 @@ public class SelectQuery implements Query {
         return q;
     }
 
-    public SelectQuery addWhere(String wh) {
+    public SelectQuery where(BoolCondition cond) {
         SelectQuery q = new SelectQuery(this);
-        q.whereClause = append(this.whereClause, wh, String.class);
+        q.whereClause = cond;
         return q;
     }
 
-    public String getColumns() {
+    public String[] getColumns() {
         return columns;
     }
 
@@ -101,7 +119,7 @@ public class SelectQuery implements Query {
         return limit;
     }
 
-    public String[] getOrderByClause() {
+    public List<OrderByCondition> getOrderByClause() {
         return orderByClause;
     }
 
@@ -109,40 +127,7 @@ public class SelectQuery implements Query {
         return table;
     }
 
-    public String[] getWhereClause() {
+    public BoolCondition getWhereClause() {
         return whereClause;
     }
-
-    private static <T>  T[] copyOf(T[] t) {
-        if(t == null)
-            return null;
-
-        return Arrays.copyOf(t, t.length);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T[] append(T[] ts, T t, Class<T> clazz) {
-        if(t == null) {
-            return copyOf(ts);
-        }
-
-        if(ts == null) {
-            T[] res = newArr(ts, 1, clazz);
-            res[0] = t;
-            return res;
-        }
-
-        T[] res = newArr(ts, ts.length + 1, clazz);
-        for(int i = 0; i < ts.length; i++) {
-            res[i] = ts[i];
-        }
-
-        res[ts.length] = t;
-        return res;
-    }
-
-    private static <T> T[] newArr(T[] ts, int size, Class<T> clazz) {
-        return (T[])java.lang.reflect.Array.newInstance(clazz, size);
-    }
-
 }
