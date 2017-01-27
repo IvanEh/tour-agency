@@ -1,5 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.imageprovider;
 
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 import org.apache.logging.log4j.*;
 
 import javax.servlet.*;
@@ -7,10 +9,7 @@ import javax.servlet.annotation.*;
 import javax.servlet.http.*;
 import java.io.*;
 
-@WebServlet(urlPatterns = "/image-provider/*", initParams = {
-        @WebInitParam(name = "location", value="~/prov"),
-        @WebInitParam(name = "maxSize",value = "1")
-})
+@WebServlet(urlPatterns = "/image-provider/*")
 @MultipartConfig
 public class ImageProviderServlet extends HttpServlet{
     private static final Logger LOGGER = LogManager.getLogger(ImageProviderServlet.class);
@@ -19,25 +18,14 @@ public class ImageProviderServlet extends HttpServlet{
 
     private static final String PARAM_MAX_SIZE = "maxSize";
 
-    private static final String LINUX_HOME_DIR = "~";
-
-    private static final String SYS_PROP_USER_HOME = "user.home";
-
-    private static final int MEGABYTE = 1024*1024;
 
     private static final String FORM_IMAGES = "images[]";
 
-    private ImageService imageService;
+    private ImageService imageService = ServiceLocator.INSTANCE.get(ImageService.class);
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        String location = config.getInitParameter(PARAM_LOCATION).replace(LINUX_HOME_DIR,
-                System.getProperty(SYS_PROP_USER_HOME)) + File.separator;
-
-        long maxSize = Long.valueOf(config.getInitParameter(PARAM_MAX_SIZE))*MEGABYTE;
-
-        imageService = new ImageServiceImpl(location, maxSize);
     }
 
     @Override
@@ -46,7 +34,7 @@ public class ImageProviderServlet extends HttpServlet{
                 req.getServletPath().length() + 1;
         String filename = req.getRequestURI().substring(index);
 
-        if(!imageService.pipe(filename, resp.getOutputStream())) {
+        if(!imageService.load(filename, resp.getOutputStream())) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
             writeGetHeaders(resp, filename);
@@ -55,6 +43,11 @@ public class ImageProviderServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (!req.isUserInRole(Role.TOUR_AGENT.toString())) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         int filesCount = (int) req.getParts().stream()
                 .filter(p -> p.getName().equals(FORM_IMAGES))
                 .count();
@@ -82,15 +75,21 @@ public class ImageProviderServlet extends HttpServlet{
 
         String[] jsonArr = new String[names.length];
         for (int j = 0; j < jsonArr.length; j++) {
-            jsonArr[j] = jsonArray(quote(names[j]), quote(thumbnail(names[j])));
+            jsonArr[j] = jsonArray(quote(names[j]), quote(imageService.thumbnailName(names[j])));
         }
 
         resp.getOutputStream().print(jsonArray(jsonArr));
     }
 
-    private String thumbnail(String filename) {
-        int extIndex = filename.lastIndexOf('.');
-        return filename.substring(0, extIndex) + "-thumb.png";
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (!req.isUserInRole(Role.TOUR_AGENT.toString())) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        String filename = req.getParameter("file");
+        imageService.delete(filename);
     }
 
     private String jsonArray(String... values) {

@@ -22,9 +22,18 @@ public class ImageServiceImpl implements ImageService {
 
     private long maxSize;
 
+    private static final String LINUX_HOME_DIR = "~";
+
+    private static final String SYS_PROP_USER_HOME = "user.home";
+
+    private static final int MEGABYTE = 1024*1024;
+
+    private static final String THUMBNAIL_SUFFIX = "-thumb.png";
+
     public ImageServiceImpl(String location, long maxSize) {
-        this.location = location;
-        this.maxSize = maxSize;
+        this.location = location.replace(LINUX_HOME_DIR,
+                System.getProperty(SYS_PROP_USER_HOME)) + File.separator;
+        this.maxSize = maxSize *MEGABYTE;
     }
 
     @Override
@@ -72,7 +81,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public boolean pipe(String filename, OutputStream os) {
+    public boolean load(String filename, OutputStream os) {
         String path = location + filename;
         File file = new File(path);
 
@@ -90,5 +99,33 @@ public class ImageServiceImpl implements ImageService {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean delete(String filename) {
+        if (!checkFilename(filename)) {
+            return false;
+        }
+
+        File file = new File(location + filename);
+        if(!file.exists()) {
+            return false;
+        }
+        File thumb = new File(location + thumbnailName(filename));
+
+        return file.delete() && thumb.delete();
+    }
+
+    private boolean checkFilename(String filename) {
+        return filename.charAt(0) != '.' &&
+                filename.contains(".") &&
+                filename.indexOf(".") == filename.lastIndexOf(".") &&
+                !filename.contains("/") && !filename.contains("\\");
+    }
+
+    @Override
+    public String thumbnailName(String filename) {
+        int extIndex = filename.lastIndexOf('.');
+        return filename.substring(0, extIndex) + THUMBNAIL_SUFFIX;
     }
 }

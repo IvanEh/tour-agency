@@ -5,5 +5,9 @@ import java.io.*;
 public interface ImageService {
     String save(InputStream is, String ext);
 
-    boolean pipe(String filename, OutputStream os);
+    boolean load(String filename, OutputStream os);
+
+    boolean delete(String filename);
+
+    String thumbnailName(String filename);
 }

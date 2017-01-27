@@ -1,11 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 
 /**
  * Loads a resource file from the classpath. ResourceBundle is a better alternative
@@ -13,6 +11,10 @@ import java.net.URL;
 @Deprecated
 public class ResourcesUtil {
     private static Logger LOGGER = LogManager.getLogger(ResourcesUtil.class);
+
+    public static InputStream getResourceInputStream(String path) {
+        return ResourcesUtil.class.getClassLoader().getResourceAsStream(path);
+    }
 
     public static File getResourceFile(String path) {
         URL url = ResourcesUtil.class.getClassLoader().getResource(path);

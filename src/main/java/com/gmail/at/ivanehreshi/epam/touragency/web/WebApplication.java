@@ -4,6 +4,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.controller.*;
 import com.gmail.at.ivanehreshi.epam.touragency.controller.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.imageprovider.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.factory.*;
@@ -11,9 +12,13 @@ import com.gmail.at.ivanehreshi.epam.touragency.security.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.impl.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
+import org.apache.logging.log4j.*;
 
 import javax.servlet.*;
 import java.io.*;
+import java.util.*;
+
+import static com.gmail.at.ivanehreshi.epam.touragency.util.ResourcesUtil.*;
 
 /**
  * The web application itself. It has two goals:
@@ -23,6 +28,8 @@ import java.io.*;
 public enum WebApplication {
     INSTANCE;
 
+    private static final Logger LOGGER = LogManager.getLogger(WebApplication.class);
+
     private ServletContext servletContext;
 
     private ConnectionManager connectionManager;
@@ -31,12 +38,16 @@ public enum WebApplication {
 
     private DaoFactory daoFactory;
 
+    private Properties appProperties;
+
     WebApplication() {
         connectionManager = ConnectionManager.fromJndi("jdbc/tour_agency");
     }
 
     protected void init() {
         serviceLocator = ServiceLocator.INSTANCE;
+
+        readProperties();
 
         createDb();
 
@@ -55,6 +66,7 @@ public enum WebApplication {
                 daoFactory.getUserDao());
 
         TourImageService tourImageService = new TourImageServiceImpl(daoFactory.getTourImageDao());
+        ImageService imageService = getImageService();
 
         serviceLocator.publish(userService, UserService.class);
         serviceLocator.publish(tourService, TourService.class);
@@ -62,7 +74,9 @@ public enum WebApplication {
         serviceLocator.publish(authService, AuthService.class);
         serviceLocator.publish(reviewService, ReviewService.class);
         serviceLocator.publish(tourImageService, TourImageService.class);
+        serviceLocator.publish(imageService, ImageService.class);
         serviceLocator.publish(daoFactory.getTourDao(), TourDao.class);
+
 
         SecurityContext.INSTANCE.setUserDao(daoFactory.getUserDao());
 
@@ -71,6 +85,20 @@ public enum WebApplication {
         ControllerDispatcherServletBuilder servletBuilder = new ControllerDispatcherServletBuilder(servletContext);
         buildDispatcherServlet(servletBuilder)
                 .buildAndRegister("Command Dispatcher Servlet", "/app/*");
+    }
+
+    private void readProperties() {
+        appProperties = new Properties();
+        try(InputStream is = ResourcesUtil.getResourceInputStream("app.properties")) {
+            appProperties.load(is);
+        } catch (IOException e) {
+            LOGGER.error("Cannot read app.properties file from classpath");
+        }
+    }
+
+    private ImageService getImageService() {
+        return new ImageServiceImpl(appProperties.getProperty(AppProperties.IMAGE_PROVIDER_DIR),
+                Long.valueOf(appProperties.getProperty(AppProperties.IMAGE_PROVIDER_MAX_SIZE)));
     }
 
     private void configureSecurity(SecurityContext sc) {
@@ -113,7 +141,7 @@ public enum WebApplication {
     }
 
     private void createDb() {
-        File file = ResourcesUtil.getResourceFile("database.sql");
+        File file = getResourceFile("database.sql");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionManager);
         jdbcTemplate.executeSqlFile(file);
     }
