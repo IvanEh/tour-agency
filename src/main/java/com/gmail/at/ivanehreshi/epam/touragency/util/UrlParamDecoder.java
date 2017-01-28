@@ -1,6 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.persistence.util;
-
-import com.gmail.at.ivanehreshi.epam.touragency.util.*;
+package com.gmail.at.ivanehreshi.epam.touragency.util;
 
 import java.util.*;
 

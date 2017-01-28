@@ -6,9 +6,9 @@ import java.util.stream.*;
 public enum HttpMethod {
     GET(1), POST(2), DELETE(4), PUT(8);
 
-    public final int mask;
+    private final int mask;
 
-    public static final int ANY_METHOD_MASK;
+    private static final int ANY_METHOD_MASK;
 
     static {
         ANY_METHOD_MASK = Arrays.asList(HttpMethod.values()).stream()
@@ -26,10 +26,6 @@ public enum HttpMethod {
                 Stream.of(methods).map(m -> m.mask)
                       .reduce((r1, r2) -> r1 | r2)
                       .orElse(0));
-    }
-
-    public HttpMethodMask single() {
-        return new HttpMethodMask(mask);
     }
 
     public boolean matches(int mask) {

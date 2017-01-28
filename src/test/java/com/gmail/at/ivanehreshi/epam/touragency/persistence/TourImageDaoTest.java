@@ -85,6 +85,32 @@ public class TourImageDaoTest {
     }
 
     @Test
+    public void findByTour() {
+        TourImage tourImage1 = TestData.getTourImage(tour);
+        TourImage tourImage2 = TestData.getTourImage(tour);
+        Tour anotherTour = TestData.getExcursionTour();
+        Long id = tourDao.create(anotherTour);
+        anotherTour.setId(id);
+        TourImage tourImage3 = TestData.getTourImage(anotherTour);
+
+        id = tourImageDao.create(tourImage1);
+        assertNotNull(id);
+        tourImage1.setId(id);
+
+        id = tourImageDao.create(tourImage2);
+        assertNotNull(id);
+        tourImage2.setId(id);
+
+        id = tourImageDao.create(tourImage3);
+        assertNotNull(id);
+
+        List<TourImage> tours = tourImageDao.findByTour(tour.getId());
+        assertEquals(2, tours.size());
+        assertWeakEquals(tourImage1, tours.get(0));
+        assertWeakEquals(tourImage2, tours.get(1));
+    }
+
+    @Test
     public void testDelete() {
         TourImage tourImage = TestData.getTourImage(tour);
 

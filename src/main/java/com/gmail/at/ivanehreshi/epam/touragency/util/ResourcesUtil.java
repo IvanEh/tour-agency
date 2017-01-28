@@ -8,7 +8,6 @@ import java.net.*;
 /**
  * Loads a resource file from the classpath. ResourceBundle is a better alternative
  */
-@Deprecated
 public class ResourcesUtil {
     private static Logger LOGGER = LogManager.getLogger(ResourcesUtil.class);
 
