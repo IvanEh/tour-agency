@@ -39,17 +39,17 @@ public class SelectQueryTest {
     @Test
     public void testOrderBy() {
         SelectQuery query = new SelectQuery("test");
-        query = query.orderBy(new OrderByCondition("col1"));
-        assertEquals("SELECT * FROM test ORDER BY col1".toLowerCase(),
+        query = query.orderBy(new OrderByCondition("col1", ASC));
+        assertEquals("SELECT * FROM test ORDER BY col1 ASC".toLowerCase(),
                 query.getSQL().trim().toLowerCase());
     }
 
     @Test
     public void testMultipleOrderBy() {
         SelectQuery query = new SelectQuery("test");
-        query = query.orderBy(new OrderByCondition("col1"))
+        query = query.orderBy(new OrderByCondition("col1", DESC))
                      .orderBy(new OrderByCondition("col2", ASC));
-        assertEquals("SELECT * FROM test ORDER BY col1, col2 ASC".toLowerCase(),
+        assertEquals("SELECT * FROM test ORDER BY col1 DESC, col2 ASC".toLowerCase(),
                 query.getSQL().trim().toLowerCase());
     }
 
@@ -77,8 +77,8 @@ public class SelectQueryTest {
                      .where(new RelationCondition("id", EQ, 42))
                      .setColumns("username")
                      .setLimit(1)
-                     .orderBy(new OrderByCondition("username"));
-        assertEquals(("SELECT username FROM user WHERE id = 42 ORDER BY username LIMIT 1")
+                     .orderBy(new OrderByCondition("username", ASC));
+        assertEquals(("SELECT username FROM user WHERE id = 42 ORDER BY username ASC LIMIT 1")
                 .toLowerCase(), query.getSQL().replaceAll("\\s+", " ").toLowerCase());
     }
 

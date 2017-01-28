@@ -6,7 +6,6 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
 
 /**
  * Dispatches incoming request to mapped Controllers
@@ -16,6 +15,7 @@ public class ControllerDispatcherServlet extends HttpServlet {
 
     public static final String FLASH_SESSION_KEY = "__flash";
     public static final String REDIRECT_KEY = "__redirect";
+    public static final String PAGE_SUFFIX = ".html";
 
     private final List<MatcherEntry> httpMatchers;
 
@@ -30,12 +30,11 @@ public class ControllerDispatcherServlet extends HttpServlet {
     /**
      * Define a URL-Controller mapping
      *
-     * @param regex      - regular expression that is used for matching
-     * @param mask       - request method mask(e.g HttpMethod.GET.mask & HttpMethod.PUT.mask)
+     * @param url      - regular expression that is used for matching
      * @param controller
      */
-    public void addMapping(String regex, int mask, Controller controller) {
-        MatcherEntry matcherEntry = new MatcherEntry(regex, mask, controller);
+    public void addMapping(String url, Controller controller) {
+        MatcherEntry matcherEntry = new MatcherEntry(url, controller);
         addMapping(matcherEntry);
     }
 
@@ -73,10 +72,9 @@ public class ControllerDispatcherServlet extends HttpServlet {
         any |= dispatchLoop(req, resp, pathInfo, requestService, httpMatchers, true);
         any |= dispatchLoop(req, resp, pathInfo, requestService, httpServiceMatchers, false);
 
-
-        tryRedirect(resp, requestService);
-
-        tryRender(req, resp, requestService, any);
+        if(!tryRedirect(resp, requestService)) {
+            tryRender(req, resp, requestService, any);
+        }
 
         if(!requestService.isRedirect()) {
             requestService.clearFlash();
@@ -92,24 +90,29 @@ public class ControllerDispatcherServlet extends HttpServlet {
             } catch (ServletException | IOException e) {
                 LOGGER.warn("An exception happened at page rendering phase");
             }
-        } else if (!any) {
+        } else {
             try {
-                req.getRequestDispatcher("/pages/__error").forward(req, resp);
+                if (req.getMethod().equals("GET")) {
+                    req.getRequestDispatcher("/pages/" + withSuffix(req.getPathInfo()))
+                            .forward(req, resp);
+                }
             } catch (ServletException | IOException e) {
                 LOGGER.warn("An exception happened at page rendering phase");
             }
         }
     }
 
-    private void tryRedirect(HttpServletResponse resp, RequestService requestService) {
+    private boolean tryRedirect(HttpServletResponse resp, RequestService requestService) {
         if (requestService.getRedirectPath() != null) {
             try {
                 requestService.getRequest().getSession().setAttribute(REDIRECT_KEY, true);
                 resp.sendRedirect(requestService.getRedirectPath());
+                return true;
             } catch (IOException e) {
                 LOGGER.warn("An exception happened at redirecting");
             }
         }
+        return false;
     }
 
     private boolean dispatchLoop(HttpServletRequest req, HttpServletResponse resp, String pathInfo,
@@ -119,13 +122,8 @@ public class ControllerDispatcherServlet extends HttpServlet {
         HttpMethod method = requestService.getMethod();
 
         for (MatcherEntry matcherEntry : httpMatchers) {
-            matcherEntry.matcher.reset(pathInfo);
 
-            if ((matcherEntry.mask & method.mask) == 0) {
-                continue;
-            }
-
-            if (matcherEntry.matcher.matches()) {
+            if (matcherEntry.matches(pathInfo)) {
                 resp.setStatus(HttpServletResponse.SC_OK);
 
                 any = true;
@@ -141,22 +139,36 @@ public class ControllerDispatcherServlet extends HttpServlet {
         return any;
     }
 
+    private boolean hasPageSuffix(String pathInfo) {
+        int index = pathInfo.lastIndexOf(PAGE_SUFFIX);
+        return index + PAGE_SUFFIX.length() == pathInfo.length();
+    }
+
+    private String withSuffix(String pathInfo) {
+        if (!hasPageSuffix(pathInfo))
+            return pathInfo + PAGE_SUFFIX;
+        return pathInfo;
+    }
 
     /**
      * This class represent a URL pattern - Controller pair
      */
     static class MatcherEntry {
-        private final Matcher matcher;
-
-        private int mask;
+        private String url;
 
         private final Controller controller;
 
-        public MatcherEntry(String regex, int mask, Controller controller) {
-            Pattern p = Pattern.compile("^" + regex + "$");
-            matcher = p.matcher("");
+        public MatcherEntry(String url, Controller controller) {
             this.controller = controller;
-            this.mask = mask;
+            this.url = url;
+        }
+
+        public boolean matches(String pathInfo) {
+            int index = pathInfo.lastIndexOf(PAGE_SUFFIX);
+            if (index + PAGE_SUFFIX.length() == pathInfo.length()) {
+                pathInfo = pathInfo.substring(0, index);
+            }
+            return url.equalsIgnoreCase(pathInfo);
         }
 
         public void call(RequestService requestService) {

@@ -53,7 +53,7 @@
         <br/>
 
         <fmt:message key="buy.buy" var="buy" bundle="${rb}"/>
-        <form method="post" action="/purchase">
+        <form method="post" action="/user/purchases">
             <input type="hidden" name="tourId" value="${tour.id}"/>
             <input type="hidden" name="userId" value="${user.id}"/>
             <div class="row">

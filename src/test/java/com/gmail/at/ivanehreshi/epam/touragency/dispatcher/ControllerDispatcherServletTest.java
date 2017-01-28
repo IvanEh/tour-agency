@@ -47,7 +47,7 @@ public class ControllerDispatcherServletTest {
         given(request.getPathInfo()).willReturn("/path1/path2");
         given(request.getMethod()).willReturn("GET");
 
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask, controller);
+        dispatcher.addMapping("/path1/path2", controller);
         dispatcher.service(request, response);
 
         verify(controller, times(1)).get(any());
@@ -61,8 +61,8 @@ public class ControllerDispatcherServletTest {
 
         Controller serviceController = spy(Controller.class);
 
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask, controller);
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask, serviceController);
+        dispatcher.addMapping("/path1/path2", controller);
+        dispatcher.addMapping("/path1/path2", serviceController);
 
         dispatcher.service(request, response);
 
@@ -82,8 +82,8 @@ public class ControllerDispatcherServletTest {
             }
         });
 
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask, controller);
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask, serviceController);
+        dispatcher.addMapping("/path1/path2", controller);
+        dispatcher.addMapping("/path1/path2", serviceController);
 
         dispatcher.service(request, response);
 
@@ -96,7 +96,7 @@ public class ControllerDispatcherServletTest {
         given(request.getPathInfo()).willReturn("/path1/path");
         given(request.getMethod()).willReturn("GET");
 
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask, controller);
+        dispatcher.addMapping("/path1/path2", controller);
         dispatcher.service(request, response);
 
         verify(controller, never()).get(any());
@@ -108,7 +108,7 @@ public class ControllerDispatcherServletTest {
         given(request.getPathInfo()).willReturn("/path1/path2", "/path1/path2");
         given(request.getMethod()).willReturn("GET");
 
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask | HttpMethod.POST.mask, controller);
+        dispatcher.addMapping("/path1/path2", controller);
 
         dispatcher.service(request, response);
         verify(controller, times(1)).get(any());
@@ -128,7 +128,7 @@ public class ControllerDispatcherServletTest {
         given(request.getPathInfo()).willReturn("/path1/path2", "/path1/path2");
         given(request.getMethod()).willReturn("GET");
 
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask, new Controller() {
+        dispatcher.addMapping("/path1/path2", new Controller() {
             @Override
             public void get(RequestService reqService) {
                 reqService.renderPage("/index.html");
@@ -147,7 +147,7 @@ public class ControllerDispatcherServletTest {
         given(request.getPathInfo()).willReturn("/path1/path2", "/path1/path2");
         given(request.getMethod()).willReturn("GET");
 
-        dispatcher.addMapping("/path1/path2", HttpMethod.GET.mask, new Controller() {
+        dispatcher.addMapping("/path1/path2", new Controller() {
             @Override
             public void get(RequestService reqService) {
                 reqService.redirect("/index.html");

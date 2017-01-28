@@ -1,7 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.web;
 
 import com.gmail.at.ivanehreshi.epam.touragency.controller.*;
-import com.gmail.at.ivanehreshi.epam.touragency.controller.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.imageprovider.*;
@@ -46,13 +45,23 @@ public enum WebApplication {
 
     protected void init() {
         serviceLocator = ServiceLocator.INSTANCE;
-
-        readProperties();
-
-        createDb();
-
         daoFactory = new JdbcDaoFactory(connectionManager);
 
+        readProperties();
+        createDb();
+        prepareServices();
+
+        SecurityContext.INSTANCE.setUserDao(daoFactory.getUserDao());
+
+        configureSecurity(SecurityContext.INSTANCE);
+
+        ControllerDispatcherServletBuilder servletBuilder = new ControllerDispatcherServletBuilder(servletContext);
+
+        buildDispatcherServlet(servletBuilder)
+                .buildAndRegister("Command Dispatcher Servlet", "/app/*");
+    }
+
+    private void prepareServices() {
         UserService userService = new UserServiceImpl(daoFactory.getUserDao());
 
         TourService tourService = new TourServiceImpl(daoFactory.getTourDao());
@@ -76,15 +85,6 @@ public enum WebApplication {
         serviceLocator.publish(tourImageService, TourImageService.class);
         serviceLocator.publish(imageService, ImageService.class);
         serviceLocator.publish(daoFactory.getTourDao(), TourDao.class);
-
-
-        SecurityContext.INSTANCE.setUserDao(daoFactory.getUserDao());
-
-        configureSecurity(SecurityContext.INSTANCE);
-
-        ControllerDispatcherServletBuilder servletBuilder = new ControllerDispatcherServletBuilder(servletContext);
-        buildDispatcherServlet(servletBuilder)
-                .buildAndRegister("Command Dispatcher Servlet", "/app/*");
     }
 
     private void readProperties() {
@@ -108,36 +108,29 @@ public enum WebApplication {
 
     private ControllerDispatcherServletBuilder buildDispatcherServlet(ControllerDispatcherServletBuilder servletBuilder) {
         return servletBuilder
-                .addMapping("/", new RedirectController("/index.html"))
-                .addMapping("/tours", HttpMethod.GET.single(), new ToursController())
-                .addMapping("/tours", HttpMethod.modifying(), new ToursController())
-                .addMapping("/tours\\.html", HttpMethod.GET.single(), new ToursController())
-                .addMapping("/tour\\.html", new TourController())
-                .addMapping("/user/buy\\.html", new BuyController())
-                .addMapping("/agent/tours\\.html", new AgentToursPageController())
-                .addMapping("/agent/users\\.html", new AgentUsersPageController())
-                .addMapping("/index\\.html", new RandomHotTourController())
-                .addMapping("/register", new RegisterController())
-                .addMapping("/user/discount", HttpMethod.any(),
-                        new UpdateDiscountController(), Role.TOUR_AGENT)
-                .addMapping("/purchase", HttpMethod.any(), new PurchasesController(),
-                        Role.CUSTOMER, Role.TOUR_AGENT)
+                .addMapping("/", new RedirectController("/index"))
+                .addMapping("/index", new RandomHotTourController())
                 .addMapping("/login", new LoginController())
                 .addMapping("/logout", new LogoutController())
-                .addMapping("/review", new ReviewController())
+                .addMapping("/register", new RegisterController())
                 .addMapping("/lang", new LocaleController())
+                .addMapping("/tour", new TourController())
+                .withSecurity("/tours", new ToursController())
+                    .authorized().modifying()
+                .addMapping("/user/buy", new BuyController())
+                .addMapping("/user/purchase", new PurchaseController())
+                .addMapping("/user/purchases", new PurchasesController())
+                .addMapping("/review", new ReviewController())
+                .addMapping("/agent/tours", new AgentToursPageController())
+                .addMapping("/agent/users", new AgentUsersPageController())
+                .withSecurity("/user/discount",new UpdateDiscountController())
+                    .roles(Role.TOUR_AGENT).permitAll()
                 .addMapping("/agent/setadmin", new AgentSetAdminController())
-                .addMapping("/tour-images", HttpMethod.GET.single() ,new TourImagesController())
-                .addMapping("/tour-images", HttpMethod.modifying(),
-                        new TourImagesController(), Role.TOUR_AGENT)
-                .addMapping("/login\\.html", HttpMethod.GET.single(), new LoginController())
-                .addMapping("/register\\.html", HttpMethod.GET.single(), new RegisterController())
-                .addMapping("/user/purchases\\.html", new PurchasesController())
-                .addMapping("/user/purchase\\.html", new PurchaseController())
-                .addMapping("/agent/new-tour\\.html", new AgentNewTourPageController())
-                .addMapping("/agent/edit-tour\\.html", new AgentEditTourController())
-                .addMapping("/agent/order\\.html", new AgentOrderController())
-                .addMapping("/(.*)\\.html", new JspController("/pages/", ".html", ".html"));
+                .withSecurity("/tour-images", new TourImagesController())
+                    .roles(Role.TOUR_AGENT).modifying()
+                .addMapping("/agent/new-tour", new AgentNewTourPageController())
+                .addMapping("/agent/edit-tour", new AgentEditTourController())
+                .addMapping("/agent/order", new AgentOrderController());
     }
 
     private void createDb() {

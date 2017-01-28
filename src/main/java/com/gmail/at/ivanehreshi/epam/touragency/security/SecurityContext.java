@@ -113,6 +113,7 @@ public enum SecurityContext {
         setUserDao(null);
     }
 
+
     /**
      * Represents a pair of regular expression and roles allowed to access the
      * set of pages(denoted by the expression)

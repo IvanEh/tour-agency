@@ -20,23 +20,22 @@ public class ControllerDispatcherServletBuilder {
         this.servletContext = sc;
     }
 
-    public ControllerDispatcherServletBuilder addMapping(String regex,
-                  HttpMethod.HttpMethodMask mask, Controller controller, Role... roles) {
-
+    public SecurityRoleConfigurer withSecurity(String url, Controller controller) {
         ControllerDispatcherServlet.MatcherEntry matcherEntry =
-                new ControllerDispatcherServlet.MatcherEntry(regex, mask.getMask(), controller);
+                new ControllerDispatcherServlet.MatcherEntry(url, controller);
 
-        if(roles.length != 0) {
-            SecurityContext.INSTANCE.addSecurityConstraint(regex, mask, roles);
-        }
+        matchers.add(matcherEntry);
+
+        return new SecurityRoleConfigurer(url);
+    }
+
+    public ControllerDispatcherServletBuilder addMapping(String url, Controller controller) {
+        ControllerDispatcherServlet.MatcherEntry matcherEntry =
+                new ControllerDispatcherServlet.MatcherEntry(url, controller);
 
         matchers.add(matcherEntry);
 
         return this;
-    }
-
-    public ControllerDispatcherServletBuilder addMapping(String regex, Controller controller) {
-        return addMapping(regex, HttpMethod.any(), controller);
     }
 
     public ControllerDispatcherServletBuilder reset() {
@@ -70,6 +69,48 @@ public class ControllerDispatcherServletBuilder {
         filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD), true, "/*");
 
         return servlet;
+    }
+
+    public class SecurityRoleConfigurer {
+        private String path;
+
+        private SecurityRoleConfigurer(String path) {
+            this.path = path;
+        }
+
+        public SecurityMethodConfigurer roles(Role... role) {
+            return new SecurityMethodConfigurer(role, path);
+        }
+
+        public SecurityMethodConfigurer authorized() {
+            return new SecurityMethodConfigurer(new Role[]{}, path);
+        }
+    }
+
+    public class SecurityMethodConfigurer {
+        private Role[] roles;
+        private String path;
+
+        private SecurityMethodConfigurer(Role[] roles, String path) {
+            this.roles = roles;
+            this.path = path;
+        }
+
+        public ControllerDispatcherServletBuilder allow(HttpMethod... methods) {
+            SecurityContext.INSTANCE.addSecurityConstraint(path,
+                    HttpMethod.combine(methods), roles);
+            return ControllerDispatcherServletBuilder.this;
+        }
+
+        public ControllerDispatcherServletBuilder modifying() {
+            return allow(HttpMethod.DELETE, HttpMethod.POST, HttpMethod.PUT);
+        }
+
+        public ControllerDispatcherServletBuilder permitAll() {
+            SecurityContext.INSTANCE.addSecurityConstraint(path,
+                    HttpMethod.any(), roles);
+            return ControllerDispatcherServletBuilder.this;
+        }
     }
 
 }
