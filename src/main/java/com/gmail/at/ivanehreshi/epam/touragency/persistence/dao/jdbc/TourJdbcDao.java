@@ -25,10 +25,11 @@ public class TourJdbcDao implements TourDao {
     @Override
     public Long create(Tour t) {
         return jdbcTemplate.insert("INSERT INTO `tour` (`title`, `description`, `type`," +
-                        " `hot`, `price`, `enabled`, `avg_rating`, `votes_count`) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", t.getTitle(), t.getDescription(),
-                t.getType().ordinal(), t.isHot(), t.getPrice(), t.isEnabled(),
-                t.getAvgRating(), t.getVotesCount());
+                " `hot`, `price`, `enabled`, `avg_rating`, `votes_count`, `discount`, " +
+                "`destination`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                t.getTitle(), t.getDescription(), t.getType().ordinal(), t.isHot(),
+                t.getPrice(), t.isEnabled(), t.getAvgRating(), t.getVotesCount(),
+                t.getDiscount(), t.getDestination());
     }
 
     @Override
@@ -41,9 +42,10 @@ public class TourJdbcDao implements TourDao {
     public void update(Tour t) {
         jdbcTemplate.update("UPDATE `tour` SET `title`=?, " +
                 "`description`=?, `type`=?, `hot`=?, `price`=?, `enabled`=?,`avg_rating`=?," +
-                "`votes_count`=? WHERE `id`=?", t.getTitle(), t.getDescription(),
-                t.getType().ordinal(), t.isHot(), t.getPrice(), t.isEnabled(),
-                t.getAvgRating(), t.getVotesCount(), t.getId());
+                "`votes_count`=?, `discount`=?, `destination`=? WHERE `id`=?",
+                t.getTitle(), t.getDescription(), t.getType().ordinal(), t.isHot(),
+                t.getPrice(), t.isEnabled(), t.getAvgRating(), t.getVotesCount(),
+                t.getDiscount(), t.getDestination(), t.getId());
     }
 
     @Override
@@ -59,8 +61,9 @@ public class TourJdbcDao implements TourDao {
 
     @Override
     public BigDecimal computePrice(Long tourId, Long userId) {
-        return jdbcTemplate.queryObjects("SELECT tour.price*cast((100 - discount)/100 " +
-                "as DECIMAL(10,2)) FROM  `user`, tour WHERE `user`.id =? AND tour.id=?",
+        return jdbcTemplate.queryObjects("SELECT price*cast(" +
+                  "(100 - GREATEST(user.discount, tour.discount))/100 as DECIMAL(10,2)" +
+                ") FROM  `user`, tour WHERE `user`.id =? AND tour.id=?",
                 (rs) -> rs.getBigDecimal(1), userId, tourId).get(0);
     }
 

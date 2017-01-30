@@ -38,6 +38,10 @@
         <c:if test="${purchase != null}">
             <div>
                 <h3>${purchase.user.firstName} ${purchase.user.lastName}</h3>
+                <h4>
+                    <fmt:message key="register.telephone" bundle="${rb}"/>:
+                    ${purchase.user.telephone}
+                </h4>
                 <h4><fmt:message key="username" bundle="${rb}"/>
                     : ${purchase.user.username}</h4>
                 <h4><fmt:message key="tour" bundle="${rb}"/>:

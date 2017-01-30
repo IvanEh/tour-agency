@@ -1,9 +1,8 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.util;
 
-import com.gmail.at.ivanehreshi.epam.touragency.domain.User;
+import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UserMapper {
     public static User map(ResultSet rs) throws SQLException {
@@ -14,6 +13,7 @@ public class UserMapper {
         user.setLastName(rs.getString("lastName"));
         user.setPassword(rs.getString("password"));
         user.setDiscount(rs.getInt("discount"));
+        user.setTelephone(rs.getString("telephone"));
         return user;
     }
 }

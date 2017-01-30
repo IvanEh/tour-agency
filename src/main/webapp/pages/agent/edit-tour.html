@@ -48,6 +48,19 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-md-4 control-label" for="destination">
+                        <fmt:message key="tour.destination" bundle="${rb}"/>
+                    </label>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input id="destination" name="destination" class="form-control" placeholder="Ukraine, Kyiv"
+                                   required="" type="text" value="${tour.destination}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="col-md-4 control-label" for="price">
                         <fmt:message key="tour.price" bundle="${rb}"/>
                     </label>
@@ -58,6 +71,20 @@
                             <span class="input-group-addon">$</span>
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="discount">
+                        <fmt:message key="discount" bundle="${rb}"/>
+                    </label>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input id="discount" name="discount" class="form-control" placeholder="100"
+                                   required="" type="number" min="0" max="100" value="${tour.discount}">
+                            <span class="input-group-addon">%</span>
+                        </div>
                     </div>
                 </div>
 

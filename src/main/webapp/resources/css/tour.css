@@ -56,3 +56,8 @@
     right: 5px;
 	top: 3px;
 }
+
+.dest-label {
+    margin-left: 10px;
+    line-height: 20pt;
+}

@@ -16,6 +16,8 @@ public class User {
 
     private int discount;
 
+    private String telephone;
+
     private List<Role> roles = new ArrayList<>();
 
     public User() {
@@ -81,6 +83,14 @@ public class User {
         this.discount = discount;
     }
 
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -92,24 +102,12 @@ public class User {
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
+                Objects.equals(telephone, user.telephone) &&
                 Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, username, password, discount, roles);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "discount=" + discount +
-                ", id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
+        return Objects.hash(id, firstName, lastName, username, password, discount, telephone, roles);
     }
 }

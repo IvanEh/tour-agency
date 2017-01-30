@@ -40,7 +40,20 @@
 
                     <div class="col-md-4">
                         <input  name="title" placeholder="Тур" class="form-control input-md" required=""
-                                type="text" value="${tour.title}">
+                                type="text" value="${tour.title}" size="5" maxlength="25">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="destination">
+                        <fmt:message key="tour.destination" bundle="${rb}"/>
+                    </label>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input id="destination" name="destination" class="form-control" placeholder="Ukraine, Kyiv"
+                                   required="" type="text" value="${tour.destination}" size="3" maxlength="30">
+                        </div>
                     </div>
                 </div>
 
@@ -57,6 +70,20 @@
                             <span class="input-group-addon">$</span>
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="discount">
+                        <fmt:message key="discount" bundle="${rb}"/>
+                    </label>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input id="discount" name="discount" class="form-control" placeholder="100"
+                                   required="" type="number" min="0" max="100" value="${tour.discount}">
+                            <span class="input-group-addon">%</span>
+                        </div>
                     </div>
                 </div>
 

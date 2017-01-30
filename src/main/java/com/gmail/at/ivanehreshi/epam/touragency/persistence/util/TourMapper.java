@@ -21,6 +21,8 @@ public class TourMapper {
                .map(BigDecimal::doubleValue)
                .orElse(null));
        tour.setVotesCount(rs.getInt("votes_count"));
+       tour.setDiscount(rs.getInt("discount"));
+       tour.setDestination(rs.getString("destination"));
 
        return tour;
    }

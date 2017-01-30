@@ -87,17 +87,17 @@ public class TourServiceImpl extends AbstractDaoService<Tour, Long>
             throw new IllegalStateException("Tour price should be positive");
         }
 
-        if (tour.getVotesCount() == 0) {
-            if (tour.getAvgRating() != null || tour.getAvgRating() == 0) {
-                throw new IllegalStateException("Rating should be null if there are" +
-                        "no votes");
-            }
-        } else if (tour.getVotesCount() > 0) {
+        if (tour.getDiscount() < 0 || tour.getDiscount() >= 100) {
+            throw new IllegalStateException("Discount should be positive and " +
+                    "not exceeding 100%");
+        }
+
+         if (tour.getVotesCount() > 0) {
             if (tour.getAvgRating() < 1 || tour.getAvgRating() > 5) {
                 throw new IllegalStateException("Average rating should be in range [1; 5] ");
             }
-        } else {
-                throw new IllegalStateException("Votes count should be positve");
+        } else if (tour.getVotesCount() < 0){
+                throw new IllegalStateException("Votes count should be positive");
         }
 
     }

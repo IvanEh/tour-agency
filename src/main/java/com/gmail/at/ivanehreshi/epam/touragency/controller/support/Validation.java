@@ -32,6 +32,11 @@ public class Validation {
             return Optional.of("validation.user.password_len");
         }
 
+        String tel = user.getTelephone();
+        if (!tel.matches("^\\+[0-9]{10,}$")) {
+            return Optional.of("validation.user.telephone");
+        }
+
         return Optional.empty();
     }
 }

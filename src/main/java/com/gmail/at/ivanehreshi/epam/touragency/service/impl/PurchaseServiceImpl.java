@@ -49,7 +49,8 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
         Tour tour = tourDao.read(tourId);
         User user = userDao.read(userId);
 
-        double discountDouble = (HUNDR_PERCENT - user.getDiscount()) / HUNDR_PERCENT;
+        int maxDiscount = Math.max(tour.getDiscount(), user.getDiscount());
+        double discountDouble = (HUNDR_PERCENT - maxDiscount) / HUNDR_PERCENT;
         BigDecimal discount = new BigDecimal(discountDouble);
         BigDecimal price = tour.getPrice().multiply(discount);
 

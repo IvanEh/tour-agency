@@ -11,6 +11,8 @@ public class Tour {
 
     private String description;
 
+    private String destination;
+
     private TourType type;
 
     boolean hot;
@@ -22,6 +24,9 @@ public class Tour {
     private Double avgRating;
 
     private int votesCount;
+
+    private int discount;
+
 
     public Tour() {
     }
@@ -102,34 +107,43 @@ public class Tour {
         this.votesCount = votesCount;
     }
 
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tour tour = (Tour) o;
-        return hot == tour.hot &&
+        return Objects.equals(id, tour.id) &&
+                hot == tour.hot &&
                 enabled == tour.enabled &&
-                Objects.equals(id, tour.id) &&
+                votesCount == tour.votesCount &&
+                discount == tour.discount &&
                 Objects.equals(title, tour.title) &&
                 Objects.equals(description, tour.description) &&
+                Objects.equals(destination, tour.destination) &&
                 type == tour.type &&
-                price == null ? tour.price == null : price.compareTo(tour.getPrice()) == 0;
+                price == null ? tour.price == null : price.compareTo(tour.getPrice()) == 0 &&
+                Objects.equals(avgRating, tour.avgRating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, type, hot, price, enabled);
-    }
-
-    @Override
-    public String toString() {
-        return "Tour{" +
-                "description='" + description + '\'' +
-                ", id=" + id +
-                ", title='" + title + '\'' +
-                ", type=" + type +
-                ", hot=" + hot +
-                ", price=" + price +
-                '}';
+        return Objects.hash(id, title, description, destination, type, hot,
+                price, enabled, avgRating, votesCount, discount);
     }
 }

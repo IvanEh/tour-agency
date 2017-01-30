@@ -99,7 +99,8 @@ public class ToursDynamicFilter {
             LikeCondition[] conds = keywords.stream()
                     .map(s -> "%" + s + "%")
                     .flatMap(s -> Stream.of(new LikeCondition("title", s),
-                            new LikeCondition("description", s)))
+                            new LikeCondition("description", s),
+                            new LikeCondition("destination", s)))
                     .collect(Collectors.toList())
                     .toArray(new LikeCondition[]{});
 

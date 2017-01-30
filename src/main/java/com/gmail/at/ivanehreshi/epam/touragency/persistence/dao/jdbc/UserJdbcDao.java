@@ -21,9 +21,9 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Long create(User u) {
         Long id = jdbcTemplate.insert("INSERT INTO `user` (`username`, `firstName`, " +
-                        "`lastName`, `password`, `discount`) VALUES (?, ?, ?, ?, ?)",
-                u.getUsername(), u.getFirstName(), u.getLastName(),
-                u.getPassword(), u.getDiscount());
+                "`lastName`, `password`, `discount`, `telephone`)" +
+                " VALUES (?, ?, ?, ?, ?, ?)", u.getUsername(), u.getFirstName(),
+                u.getLastName(), u.getPassword(), u.getDiscount(), u.getTelephone());
 
         addRoles(id, u.getRoles());
         return id;
@@ -55,9 +55,9 @@ public class UserJdbcDao implements UserDao {
     @Override
     public void update(User u) {
         jdbcTemplate.update("UPDATE `user` SET `username`=?, `firstName`=?," +
-                " `lastName`=?, `password`=?, `discount`=? WHERE `id`=?",
+                " `lastName`=?, `password`=?, `discount`=?, `telephone`=? WHERE `id`=?",
                 u.getUsername(), u.getFirstName(), u.getLastName(),
-                u.getPassword(), u.getDiscount(), u.getId());
+                u.getPassword(), u.getDiscount(), u.getTelephone(), u.getId());
 
         updateRoles(u.getId(), u.getRoles());
     }

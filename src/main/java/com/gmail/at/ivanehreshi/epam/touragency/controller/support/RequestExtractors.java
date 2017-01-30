@@ -26,6 +26,7 @@ public class RequestExtractors {
         user.setFirstName(reqService.getString("firstName"));
         user.setLastName(reqService.getString("lastName"));
         user.setPassword(reqService.getString("password"));
+        user.setTelephone(reqService.getString("telephone").replaceAll(" ", ""));
 
         return user;
     }
@@ -36,9 +37,11 @@ public class RequestExtractors {
         tour.setId(reqService.getLong("id").orElse(null));
         tour.setTitle(reqService.getString("title"));
         tour.setDescription(reqService.getString("description"));
+        tour.setDestination(reqService.getString("destination"));
         tour.setType(TourType.values()[reqService.getInt("type").get()]);
         tour.setHot(reqService.getBool("hot").orElse(false));
         tour.setEnabled(reqService.getBool("enabled").orElse(true));
+        tour.setDiscount(reqService.getInt("discount").orElse(0));
 
         try {
             tour.setPrice(new BigDecimal(reqService.getString("price")));

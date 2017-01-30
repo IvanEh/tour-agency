@@ -34,9 +34,9 @@ public class TourController extends Controller {
         reqService.putParameter("agent",
                 reqService.getRequest().isUserInRole(Role.TOUR_AGENT.name()));
 
-        reqService.putParameter("discount", reqService.loadUser()
+        reqService.putParameter("discount", Math.max(reqService.loadUser()
                 .map(User::getDiscount)
-                .orElse(0));
+                .orElse(0), tour.getDiscount()));
 
         reqService.putParameter("canVote", reviewService.canVote(reqService.getUser()
                 .map(User::getId).orElse(null), id));
