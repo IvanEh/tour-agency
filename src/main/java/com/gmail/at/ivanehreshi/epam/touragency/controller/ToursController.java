@@ -82,6 +82,13 @@ public final class ToursController extends Controller {
     private ToursDynamicFilter prepareFilter(RequestService reqService) {
         ToursDynamicFilter filter = new ToursDynamicFilter();
 
+        SortDir ratingOrd = getSortOrder(reqService, "rating");
+
+        SortDir votesOrd = reqService.getParameter("votes")
+                .map(String::toUpperCase)
+                .flatMap(s -> TryOptionalUtil.of(() -> SortDir.valueOf(s)))
+                .orElse(null);
+
         SortDir priceOrd = reqService.getParameter("price")
                 .map(String::toUpperCase)
                 .flatMap(s -> TryOptionalUtil.of(() -> SortDir.valueOf(s)))
@@ -95,12 +102,19 @@ public final class ToursController extends Controller {
                 .orElse(null);
         Integer priceHigh = reqService.getInt("priceHigh").filter(p -> p != FILTER_MAX_PRICE)
                 .orElse(null);
-        Boolean hot = reqService.getParameter("hot").map(p -> p.equals("on"))
-                .orElse(null);
+        boolean hot = !reqService.getString("hotFirst").equals("0");
 
-        filter.setPriceSort(priceOrd).setSearchQuery(searchStr)
-                .setPriceLow(priceLow).setPriceHigh(priceHigh)
-                .setHot(hot);
+        filter.setRatingSort(ratingOrd).setVotesSort(votesOrd).setPriceSort(priceOrd)
+              .setSearchQuery(searchStr).setPriceLow(priceLow).setPriceHigh(priceHigh)
+              .setHotFirst(hot);
+
         return filter;
+    }
+
+    private SortDir getSortOrder(RequestService reqService, String param) {
+        return reqService.getParameter(param)
+                .map(String::toUpperCase)
+                .flatMap(s -> TryOptionalUtil.of(() -> SortDir.valueOf(s)))
+                .orElse(null);
     }
 }

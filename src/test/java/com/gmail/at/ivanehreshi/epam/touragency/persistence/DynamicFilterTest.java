@@ -51,7 +51,7 @@ public class DynamicFilterTest {
 
     @Test
     public void testFilterHot() {
-        filter.setHot(true);
+        filter.setHotFirst(true);
         List<Tour> tours = tourDao.executeDynamicFilter(filter);
         assertEquals(1, tours.size());
         assertEquals(tour1, tours.get(0));

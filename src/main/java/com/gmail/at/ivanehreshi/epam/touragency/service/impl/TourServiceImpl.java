@@ -74,8 +74,6 @@ public class TourServiceImpl extends AbstractDaoService<Tour, Long>
     @Override
     public List<Tour> executeDynamicFilter(ToursDynamicFilter filter) {
         List<Tour> tours = tourDao.executeDynamicFilter(filter);
-        Collections.reverse(tours);
-        tours.sort(TourServiceImpl::compareHot);
         return tours;
     }
 
@@ -102,9 +100,5 @@ public class TourServiceImpl extends AbstractDaoService<Tour, Long>
                 throw new IllegalStateException("Votes count should be positve");
         }
 
-    }
-
-    private static int compareHot(Tour tour1, Tour tour2) {
-        return (tour2.isHot() ? 1 : 0) - (tour1.isHot() ? 1 : 0);
     }
 }

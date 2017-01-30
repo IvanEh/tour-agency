@@ -20,7 +20,11 @@ public class ToursDynamicFilter {
 
     private EnumSet<TourType> tourTypes;
 
-    private Boolean hot;
+    private boolean hotFirst;
+
+    private SortDir votesSort;
+
+    private SortDir ratingSort;
 
     private SortDir priceSort;
 
@@ -46,6 +50,16 @@ public class ToursDynamicFilter {
         return this;
     }
 
+    public ToursDynamicFilter setRatingSort(SortDir ratingSort) {
+        this.ratingSort = ratingSort;
+        return this;
+    }
+
+    public ToursDynamicFilter setVotesSort(SortDir votesSort) {
+        this.votesSort = votesSort;
+        return this;
+    }
+
     public ToursDynamicFilter setPriceSort(SortDir priceSort) {
         this.priceSort = priceSort;
         return this;
@@ -61,8 +75,8 @@ public class ToursDynamicFilter {
         return this;
     }
 
-    public ToursDynamicFilter setHot(Boolean hot) {
-        this.hot = hot;
+    public ToursDynamicFilter setHotFirst(boolean hotFirst) {
+        this.hotFirst = hotFirst;
         return this;
     }
 
@@ -72,7 +86,6 @@ public class ToursDynamicFilter {
         where = buildPriceLow(where);
         where = buildPriceHigh(where);
         where = buildTourTypes(where);
-        where = buildHot(where);
         where = buildSearch(where);
         OrderByBuilder orderBy = buildSortDir(where);
 
@@ -96,17 +109,24 @@ public class ToursDynamicFilter {
     }
 
     private OrderByBuilder buildSortDir(WhereBuilder where) {
-        if (priceSort != null) {
-            return where.orderBy("price", priceSort);
-        }
-        return where;
-    }
+        OrderByBuilder orderBy = where;
 
-    private WhereBuilder buildHot(WhereBuilder where) {
-        if (hot != null) {
-            return where.and(rel("hot", EQ, hot ? 1 : 0));
+        if (hotFirst) {
+            orderBy = orderBy.orderBy("hot", SortDir.DESC);
         }
-        return where;
+
+        if (votesSort != null) {
+            orderBy = orderBy.orderBy("votes_count", votesSort);
+        }
+
+        if (ratingSort != null) {
+            orderBy = orderBy.orderBy("avg_rating", ratingSort);
+        }
+
+        if (priceSort != null) {
+            orderBy = orderBy.orderBy("price", priceSort);
+        }
+        return orderBy;
     }
 
     private WhereBuilder buildTourTypes(WhereBuilder where) {
@@ -135,8 +155,8 @@ public class ToursDynamicFilter {
         return where;
     }
 
-    public Boolean getHot() {
-        return hot;
+    public Boolean getHotFirst() {
+        return hotFirst;
     }
 
     public Integer getPriceHigh() {
@@ -157,5 +177,13 @@ public class ToursDynamicFilter {
 
     public EnumSet<TourType> getTourTypes() {
         return tourTypes;
+    }
+
+    public SortDir getRatingSort() {
+        return ratingSort;
+    }
+
+    public SortDir getVotesSort() {
+        return votesSort;
     }
 }
