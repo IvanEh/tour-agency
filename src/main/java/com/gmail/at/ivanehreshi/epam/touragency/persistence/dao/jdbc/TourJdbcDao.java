@@ -6,36 +6,10 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.*;
 
 import java.math.*;
-import java.sql.*;
 import java.util.*;
 
 public class TourJdbcDao implements TourDao {
 
-    private static final String CREATE_SQL =
-            "INSERT INTO `tour` (`title`, `description`, `type`," +
-                    " `hot`, `price`, `enabled`, `avg_rating`, `votes_count`) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-    private static final String FIND_ALL_SQL = "SELECT * FROM tour";
-
-    private static final String FIND_ALL_ORDERED_SQL =
-            FIND_ALL_SQL + " ORDER BY hot DESC, id DESC";
-
-    private static final String READ_SQL = "SELECT * FROM tour WHERE id=?";
-
-    private static final String UPDATE_SQL = "UPDATE `tour` SET `title`=?, " +
-            "`description`=?, `type`=?, `hot`=?, `price`=?, `enabled`=?,`avg_rating`=?," +
-            "`votes_count`=? WHERE `id`=?";
-
-    private static final String DELETE_SQL = "DELETE FROM tour WHERE id=?";
-
-    private static final String COMPUTE_PRICE_SQL =
-            "SELECT tour.price * cast((100 - discount)/100 as DECIMAL(10,2)) " +
-            "FROM  `user`, tour WHERE `user`.id =? AND tour.id=?";
-
-    private static final String RANDOM_HOT_SQL = "SELECT * FROM tour " +
-            " WHERE id >= FLOOR(RAND()*(SELECT MAX(id) FROM tour)) " +
-            " AND `hot`='1' LIMIT 1 ";
 
     private static final BigDecimal LARGE_DECIMAL = new BigDecimal(Long.MAX_VALUE);
 
@@ -50,49 +24,55 @@ public class TourJdbcDao implements TourDao {
 
     @Override
     public Long create(Tour t) {
-        return jdbcTemplate.insert(CREATE_SQL, t.getTitle(), t.getDescription(),
+        return jdbcTemplate.insert("INSERT INTO `tour` (`title`, `description`, `type`," +
+                        " `hot`, `price`, `enabled`, `avg_rating`, `votes_count`) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", t.getTitle(), t.getDescription(),
                 t.getType().ordinal(), t.isHot(), t.getPrice(), t.isEnabled(),
                 t.getAvgRating(), t.getVotesCount());
     }
 
     @Override
     public Tour read(Long id) {
-        return jdbcTemplate.queryObject(TourJdbcDao::fromResultSet, READ_SQL, id);
+        return jdbcTemplate.queryObject("SELECT * FROM tour WHERE id=?",
+                TourMapper::map, id);
     }
 
     @Override
     public void update(Tour t) {
-        jdbcTemplate.update(UPDATE_SQL, t.getTitle(), t.getDescription(),
+        jdbcTemplate.update("UPDATE `tour` SET `title`=?, " +
+                "`description`=?, `type`=?, `hot`=?, `price`=?, `enabled`=?,`avg_rating`=?," +
+                "`votes_count`=? WHERE `id`=?", t.getTitle(), t.getDescription(),
                 t.getType().ordinal(), t.isHot(), t.getPrice(), t.isEnabled(),
                 t.getAvgRating(), t.getVotesCount(), t.getId());
     }
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.update(DELETE_SQL, id);
+        jdbcTemplate.update("DELETE FROM tour WHERE id=?", id);
     }
 
     @Override
     public List<Tour> findAll() {
-        return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, FIND_ALL_ORDERED_SQL);
+        return jdbcTemplate.queryObjects("SELECT * FROM tour ORDER BY hot DESC, id DESC",
+                TourMapper::map);
     }
 
     @Override
     public BigDecimal computePrice(Long tourId, Long userId) {
-        return jdbcTemplate.queryObjects((rs) -> rs.getBigDecimal(1), COMPUTE_PRICE_SQL, userId, tourId).get(0);
+        return jdbcTemplate.queryObjects("SELECT tour.price*cast((100 - discount)/100 " +
+                "as DECIMAL(10,2)) FROM  `user`, tour WHERE `user`.id =? AND tour.id=?",
+                (rs) -> rs.getBigDecimal(1), userId, tourId).get(0);
     }
 
     @Override
     public Tour findRandomHot() {
-        return jdbcTemplate.queryObject(TourJdbcDao::fromResultSet, RANDOM_HOT_SQL);
+        return jdbcTemplate.queryObject("SELECT * FROM tour WHERE id >= " +
+                "FLOOR(RAND()*(SELECT MAX(id) FROM tour)) " +
+                " AND `hot`='1' LIMIT 1 ", TourMapper::map);
     }
 
     @Override
     public List<Tour> executeDynamicFilter(ToursDynamicFilter filter) {
-        return jdbcTemplate.queryObjects(TourJdbcDao::fromResultSet, filter.getQuery());
-    }
-
-    private static Tour fromResultSet(ResultSet rs) throws SQLException {
-        return TourMapper.map(rs);
+        return jdbcTemplate.queryObjects(filter.getQuery(), TourMapper::map);
     }
 }

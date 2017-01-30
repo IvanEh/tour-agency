@@ -1,4 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.web;
+package com.gmail.at.ivanehreshi.epam.touragency.app;
 
 public interface AppProperties {
     String IMAGE_PROVIDER_DIR="imageprovider.dir";

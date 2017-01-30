@@ -1,12 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
+import com.gmail.at.ivanehreshi.epam.touragency.controller.support.*;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
-import java.math.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -51,7 +51,8 @@ public final class ToursController extends Controller {
 
     @Override
     public void post(RequestService reqService) {
-        WithStatus<Tour> tourWithStatus = extractTour(reqService);
+        WithStatus<Tour> tourWithStatus =
+                RequestExtractors.extractTourWithStatus(reqService);
 
         if (tourWithStatus.isOk()) {
             tourService.create(tourWithStatus.getPayload());
@@ -64,7 +65,9 @@ public final class ToursController extends Controller {
 
     @Override
     public void put(RequestService reqService) {
-        WithStatus<Tour> tourWithStatus = extractTour(reqService);
+        WithStatus<Tour> tourWithStatus =
+                RequestExtractors.extractTourWithStatus(reqService);
+
         Long id = tourWithStatus.getPayload().getId();
 
         if (tourWithStatus.isOk()) {
@@ -75,24 +78,6 @@ public final class ToursController extends Controller {
         }
     }
 
-    private WithStatus<Tour> extractTour(RequestService reqService) {
-        Tour tour = new Tour();
-
-        tour.setId(reqService.getLong("id").orElse(null));
-        tour.setTitle(reqService.getString("title"));
-        tour.setDescription(reqService.getString("description"));
-        tour.setType(TourType.values()[reqService.getInt("type").get()]);
-        tour.setHot(reqService.getBool("hot").orElse(false));
-        tour.setEnabled(reqService.getBool("enabled").orElse(true));
-
-        try {
-            tour.setPrice(new BigDecimal(reqService.getString("price")));
-        } catch (NumberFormatException e) {
-            return WithStatus.bad(tour);
-        }
-
-        return WithStatus.ok(tour);
-    }
 
     private ToursDynamicFilter prepareFilter(RequestService reqService) {
         ToursDynamicFilter filter = new ToursDynamicFilter();

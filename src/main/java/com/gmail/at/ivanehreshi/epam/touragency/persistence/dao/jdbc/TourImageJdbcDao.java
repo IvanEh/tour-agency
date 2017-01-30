@@ -29,8 +29,8 @@ public class TourImageJdbcDao implements TourImageDao {
 
     @Override
     public TourImage read(Long id) {
-        return jdbcTemplate.queryObject(TourImageMapper::map, "SELECT * " +
-                "FROM `tour_image` WHERE id=?", id);
+        return jdbcTemplate.queryObject("SELECT * FROM `tour_image` WHERE id=?",
+                TourImageMapper::map, id);
     }
 
     @Override
@@ -49,13 +49,13 @@ public class TourImageJdbcDao implements TourImageDao {
 
     @Override
     public List<TourImage> findAll() {
-        return jdbcTemplate.queryObjects(TourImageMapper::map, "SELECT * " +
-                "FROM `tour_image`");
+        return jdbcTemplate.queryObjects("SELECT * " +
+                "FROM `tour_image`", TourImageMapper::map);
     }
 
     @Override
     public List<TourImage> findByTour(Long tourId) {
-        return jdbcTemplate.queryObjects(TourImageMapper::map, "SELECT * " +
-               "FROM `tour_image` WHERE tour_id=?", tourId);
+        return jdbcTemplate.queryObjects("SELECT * FROM `tour_image` WHERE tour_id=?",
+                TourImageMapper::map, tourId);
     }
 }

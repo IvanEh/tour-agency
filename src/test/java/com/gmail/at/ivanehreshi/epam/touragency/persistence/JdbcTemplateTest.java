@@ -22,26 +22,26 @@ public class JdbcTemplateTest {
 
     @Test
     public void testQuery() {
-        jdbcTemplate.query(rs -> {
+        jdbcTemplate.query(SQL_SELECT_ALL, rs -> {
             rs.next();
             assertEquals("x", rs.getString("col"));
             rs.next();
             assertEquals("y", rs.getString("col"));
             rs.next();
             assertEquals("z", rs.getString("col"));
-        }, SQL_SELECT_ALL);
+        });
     }
 
     @Test
     public void testQueryObject() {
-        String s = jdbcTemplate.queryObject(rs -> rs.getString("col"), SQL_SELECT_ALL);
+        String s = jdbcTemplate.queryObject(SQL_SELECT_ALL, rs -> rs.getString("col"));
         assertEquals("x", s);
     }
 
     @Test
     public void testQueryObjects() {
-        List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
-                SQL_SELECT_ALL);
+        List<String> cols = jdbcTemplate.queryObjects(SQL_SELECT_ALL, rs -> rs.getString("col")
+        );
 
         assertEquals(Arrays.asList("x", "y", "z"), cols);
     }
@@ -49,8 +49,8 @@ public class JdbcTemplateTest {
     @Test
     public void testUpdate() {
         int count = jdbcTemplate.update("DELETE FROM test WHERE id >= 2 ");
-        List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
-                SQL_SELECT_ALL);
+        List<String> cols = jdbcTemplate.queryObjects(SQL_SELECT_ALL, rs -> rs.getString("col")
+        );
 
         assertEquals(Arrays.asList("x"), cols);
         assertEquals(2, count);
@@ -59,7 +59,7 @@ public class JdbcTemplateTest {
     @Test
     public void testInsert() {
         Long id = jdbcTemplate.insert("INSERT INTO test(col) VALUES(?)", "alpha");
-        List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"), SQL_SELECT_ALL);
+        List<String> cols = jdbcTemplate.queryObjects(SQL_SELECT_ALL, rs -> rs.getString("col"));
 
         assertEquals(Long.valueOf(4), id);
         assertEquals(Arrays.asList("x", "y", "z", "alpha"), cols);
@@ -78,8 +78,8 @@ public class JdbcTemplateTest {
         assertEquals(Long.valueOf(4), id1);
         assertNull(id2);
 
-        List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
-                SQL_SELECT_ALL);
+        List<String> cols = jdbcTemplate.queryObjects(SQL_SELECT_ALL, rs -> rs.getString("col")
+        );
         assertEquals(Arrays.asList("x", "y", "z"), cols);
         verify(connectionManager, times(2)).getConnection();
     }
@@ -97,8 +97,8 @@ public class JdbcTemplateTest {
         assertNull(id1);
         assertNull(id2);
 
-        List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
-                SQL_SELECT_ALL);
+        List<String> cols = jdbcTemplate.queryObjects(SQL_SELECT_ALL, rs -> rs.getString("col")
+        );
         assertEquals(Arrays.asList("x", "y", "z"), cols);
 
         verify(connectionManager, times(2)).getConnection();
@@ -118,8 +118,8 @@ public class JdbcTemplateTest {
 
         assertEquals(Long.valueOf(4), id1);
 
-        List<String> cols = jdbcTemplate.queryObjects(rs -> rs.getString("col"),
-                SQL_SELECT_ALL);
+        List<String> cols = jdbcTemplate.queryObjects(SQL_SELECT_ALL, rs -> rs.getString("col")
+        );
         assertEquals(Arrays.asList("x", "y", "z"), cols);
 
         verify(connectionManager, times(2)).getConnection();

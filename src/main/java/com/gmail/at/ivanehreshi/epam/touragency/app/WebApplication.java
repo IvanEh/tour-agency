@@ -1,4 +1,4 @@
-package com.gmail.at.ivanehreshi.epam.touragency.web;
+package com.gmail.at.ivanehreshi.epam.touragency.app;
 
 import com.gmail.at.ivanehreshi.epam.touragency.controller.*;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;

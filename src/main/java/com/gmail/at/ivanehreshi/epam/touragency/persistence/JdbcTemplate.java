@@ -86,7 +86,7 @@ public class JdbcTemplate {
             LOGGER.error("no transactions");
         }
     }
-    public void query(ResultSetFunction fn, String query, Object... params) {
+    public void query(String query, ResultSetFunction fn, Object... params) {
         Connection conn = getConnection();
 
         if(conn == null)
@@ -107,25 +107,25 @@ public class JdbcTemplate {
         }
     }
 
-    public <R> List<R> queryObjects(EntityExtractor<R> producer, String query, Object... params) {
+    public <R> List<R> queryObjects(String query, EntityExtractor<R> producer, Object... params) {
         List<R> entities = new ArrayList<>();
 
-        query(rs -> {
+        query(query, rs -> {
             while (rs.next()) {
                 entities.add(producer.apply(rs));
             }
-        }, query, params);
+        }, params);
 
         return entities;
     }
 
-    public <R> R queryObject(EntityExtractor<R> producer, String query, Object... params) {
+    public <R> R queryObject(String query, EntityExtractor<R> producer, Object... params) {
         Object[] r = new Object[]{null};
-        query((rs) -> {
+        query(query, (rs) -> {
             if (rs.next()) {
                 r[0] = producer.apply(rs);
             }
-        }, query, params);
+        }, params);
 
         return (R) r[0];
     }

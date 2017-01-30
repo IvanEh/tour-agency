@@ -1,11 +1,9 @@
-package com.gmail.at.ivanehreshi.epam.touragency.web;
+package com.gmail.at.ivanehreshi.epam.touragency.app;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import javax.servlet.*;
+import javax.servlet.annotation.*;
 
 /**
  * Entry point of the web application
