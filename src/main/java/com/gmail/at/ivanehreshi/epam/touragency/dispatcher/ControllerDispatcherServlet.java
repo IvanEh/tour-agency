@@ -16,6 +16,7 @@ public class ControllerDispatcherServlet extends HttpServlet {
     public static final String FLASH_SESSION_KEY = "__flash";
     public static final String REDIRECT_KEY = "__redirect";
     public static final String PAGE_SUFFIX = ".html";
+    public static final String HEADER_REFERRER = "Referer";
 
     private final List<MatcherEntry> httpMatchers;
 
@@ -95,6 +96,8 @@ public class ControllerDispatcherServlet extends HttpServlet {
                 if (req.getMethod().equals("GET")) {
                     req.getRequestDispatcher("/pages/" + withSuffix(req.getPathInfo()))
                             .forward(req, resp);
+                } else if (req.getHeader(HEADER_REFERRER) != null) {
+                    resp.sendRedirect(req.getHeader(HEADER_REFERRER));
                 }
             } catch (ServletException | IOException e) {
                 LOGGER.warn("An exception happened at page rendering phase");
@@ -119,7 +122,6 @@ public class ControllerDispatcherServlet extends HttpServlet {
                                  RequestService requestService,
                                  List<MatcherEntry> httpMatchers, boolean matchFirst) {
         boolean any = false;
-        HttpMethod method = requestService.getMethod();
 
         for (MatcherEntry matcherEntry : httpMatchers) {
 

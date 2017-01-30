@@ -15,16 +15,12 @@ public class ReviewController extends Controller {
     public void post(RequestService reqService) {
         Review review = RequestExtractors.extractReview(reqService);
         reviewService.create(review);
-
-        reqService.redirect(reqService.getRequest().getHeader("Referer"));
     }
 
     @Override
     public void put(RequestService reqService) {
         Review review = RequestExtractors.extractReview(reqService);
         reviewService.update(review);
-
-        reqService.redirect(reqService.getRequest().getHeader("Referer"));
     }
 
     @Override
@@ -40,6 +36,5 @@ public class ReviewController extends Controller {
         }
 
         reviewService.delete(id);
-        reqService.redirect(reqService.getRequest().getHeader("Referer"));
     }
 }
