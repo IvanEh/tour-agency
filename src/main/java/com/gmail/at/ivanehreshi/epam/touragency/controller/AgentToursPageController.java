@@ -17,6 +17,7 @@ public final class AgentToursPageController extends Controller {
     @Override
     public void get(RequestService reqService) {
         List<Tour> tours = tourService.findAll();
+        Collections.reverse(tours);
         reqService.putParameter("tours", tours);
     }
 

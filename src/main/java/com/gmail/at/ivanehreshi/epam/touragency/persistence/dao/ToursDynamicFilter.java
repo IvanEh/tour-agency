@@ -83,13 +83,23 @@ public class ToursDynamicFilter {
     public String getQuery() {
         WhereBuilder where = QueryBuilder.select("tour", "*");
 
+        where = buildPrecondition(where);
         where = buildPriceLow(where);
         where = buildPriceHigh(where);
         where = buildTourTypes(where);
         where = buildSearch(where);
         OrderByBuilder orderBy = buildSortDir(where);
+        orderBy = buildPostSort(orderBy);
 
         return orderBy.build();
+    }
+
+    private OrderByBuilder buildPostSort(OrderByBuilder orderBy) {
+        return orderBy.orderBy("id", SortDir.DESC);
+    }
+
+    private WhereBuilder buildPrecondition(WhereBuilder where) {
+        return where.and(rel("enabled", EQ, true));
     }
 
     private WhereBuilder buildSearch(WhereBuilder where) {

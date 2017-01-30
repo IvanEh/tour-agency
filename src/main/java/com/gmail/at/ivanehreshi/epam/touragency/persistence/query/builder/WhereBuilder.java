@@ -21,7 +21,7 @@ public class WhereBuilder extends OrderByBuilder {
         }
     }
 
-    public static RelationCondition rel(String col, Ordering ord, int value) {
+    public static RelationCondition rel(String col, Ordering ord, Object value) {
         return new RelationCondition(col, ord, value);
     }
 

@@ -55,7 +55,7 @@ public class TourJdbcDao implements TourDao {
 
     @Override
     public List<Tour> findAll() {
-        return jdbcTemplate.queryObjects("SELECT * FROM tour ORDER BY hot DESC, id DESC",
+        return jdbcTemplate.queryObjects("SELECT * FROM tour",
                 TourMapper::map);
     }
 
