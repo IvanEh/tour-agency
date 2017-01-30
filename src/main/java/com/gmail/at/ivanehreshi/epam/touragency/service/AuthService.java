@@ -7,5 +7,5 @@ import javax.servlet.http.*;
 public interface AuthService {
     boolean login(HttpServletRequest request, String user, String password);
     void logout(HttpServletRequest request);
-    boolean register(User user,String plainPassw);
+    boolean register(User user);
 }

@@ -19,6 +19,17 @@ public class RequestExtractors {
         return review;
     }
 
+    public static User extractUser(RequestService reqService) {
+        User user = new User();
+
+        user.setUsername(reqService.getString("username"));
+        user.setFirstName(reqService.getString("firstName"));
+        user.setLastName(reqService.getString("lastName"));
+        user.setPassword(reqService.getString("password"));
+
+        return user;
+    }
+
     public static WithStatus<Tour> extractTourWithStatus(RequestService reqService) {
         Tour tour = new Tour();
 

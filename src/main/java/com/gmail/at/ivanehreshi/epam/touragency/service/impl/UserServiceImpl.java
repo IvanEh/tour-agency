@@ -18,8 +18,15 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
 
     @Override
     public void create(User user) {
+        checkConstraints(user);
         Long id = userDao.create(user);
         user.setId(id);
+    }
+
+    private void checkConstraints(User user) {
+        if (user.getDiscount() < 0) {
+            throw new IllegalStateException("Discount should be positive");
+        }
     }
 
     @Override

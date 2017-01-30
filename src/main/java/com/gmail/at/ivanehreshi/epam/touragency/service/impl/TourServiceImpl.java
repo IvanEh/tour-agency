@@ -23,8 +23,15 @@ public class TourServiceImpl extends AbstractDaoService<Tour, Long>
 
     @Override
     public void create(Tour tour) {
+        checkConstraintsOrThrow(tour);
         Long id = tourDao.create(tour);
         tour.setId(id);
+    }
+
+    @Override
+    public void update(Tour tour) {
+        checkConstraintsOrThrow(tour);
+        super.update(tour);
     }
 
     @Override
@@ -72,5 +79,25 @@ public class TourServiceImpl extends AbstractDaoService<Tour, Long>
     @Override
     public TourDao getDao() {
         return tourDao;
+    }
+
+    private void checkConstraintsOrThrow(Tour tour) {
+        if (tour.getPrice() != null && tour.getPrice().signum() <= 0) {
+            throw new IllegalStateException("Tour price should be positive");
+        }
+
+        if (tour.getVotesCount() == 0) {
+            if (tour.getAvgRating() != null || tour.getAvgRating() == 0) {
+                throw new IllegalStateException("Rating should be null if there are" +
+                        "no votes");
+            }
+        } else if (tour.getVotesCount() > 0) {
+            if (tour.getAvgRating() < 1 || tour.getAvgRating() > 5) {
+                throw new IllegalStateException("Average rating should be in range [1; 5] ");
+            }
+        } else {
+                throw new IllegalStateException("Votes count should be positve");
+        }
+
     }
 }

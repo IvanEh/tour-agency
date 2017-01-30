@@ -1,9 +1,12 @@
 package com.gmail.at.ivanehreshi.epam.touragency.controller;
 
+import com.gmail.at.ivanehreshi.epam.touragency.controller.support.*;
 import com.gmail.at.ivanehreshi.epam.touragency.dispatcher.*;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
+
+import java.util.*;
 
 public final class RegisterController extends Controller {
 
@@ -18,24 +21,19 @@ public final class RegisterController extends Controller {
 
     @Override
     public void post(RequestService reqService) {
-        User user = new User();
+        User user = RequestExtractors.extractUser(reqService);
 
-        user.setUsername(reqService.getString("username"));
-        user.setFirstName(reqService.getString("firstName"));
-        user.setLastName(reqService.getString("lastName"));
-
-        String pass = reqService.getString("password");
-
-        if (pass.length() < 7) {
+        Optional<String> invalid = Validation.check(user);
+        if (invalid.isPresent()) {
             user.setPassword(null);
             reqService.putFlashParameter("user", user);
-            reqService.putFlashParameter("error", "register.error.password");
+            reqService.putFlashParameter("error", invalid.get());
 
             reqService.redirect("/register.html");
             return;
         }
 
-        if(!authService.register(user, pass)) {
+        if(!authService.register(user)) {
             reqService.putFlashParameter("error", "register.error.username");
 
             reqService.redirect("/register.html");

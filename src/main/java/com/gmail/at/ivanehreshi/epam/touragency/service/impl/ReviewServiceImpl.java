@@ -19,6 +19,7 @@ public class ReviewServiceImpl extends AbstractDaoService<Review, Long>
 
     @Override
     public void create(Review review) {
+        checkConstraintsOrThrow(review);
         if(reviewDao.canVote(review.getAuthor().getId(), review.getTour().getId())) {
             review.setDate(new Date());
             Long id = reviewDao.create(review);
@@ -28,6 +29,7 @@ public class ReviewServiceImpl extends AbstractDaoService<Review, Long>
 
     @Override
     public void update(Review review) {
+        checkConstraintsOrThrow(review);
         review.setDate(new Date());
         super.update(review);
     }
@@ -60,4 +62,10 @@ public class ReviewServiceImpl extends AbstractDaoService<Review, Long>
         return reviewDao;
     }
 
+    private void checkConstraintsOrThrow(Review review) {
+        boolean ratingOk = review.getRating() > 0 && review.getRating() <= 5;
+        if (!ratingOk) {
+            throw new IllegalStateException("Rating should be > 0 and <= 5");
+        }
+    }
 }

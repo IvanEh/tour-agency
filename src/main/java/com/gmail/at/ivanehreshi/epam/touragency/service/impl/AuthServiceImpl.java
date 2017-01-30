@@ -39,8 +39,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean register(User user, String plainPassw) {
-        user.setPassword(PasswordEncoder.encodePassword(plainPassw));
+    public boolean register(User user) {
+        user.setPassword(PasswordEncoder.encodePassword(user.getPassword()));
         user.setRoles(Collections.singletonList(Role.CUSTOMER));
         userService.create(user);
         return user.getId() != null;
