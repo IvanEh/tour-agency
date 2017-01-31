@@ -138,6 +138,7 @@ public enum WebApplication {
         File file = getResourceFile("database.sql");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionManager);
         jdbcTemplate.executeSqlFile(file);
+        serviceLocator.publish(connectionManager, ConnectionManager.class);
     }
 
     public ConnectionManager getConnectionManager() {

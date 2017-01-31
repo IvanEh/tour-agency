@@ -1,5 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import org.apache.logging.log4j.*;
 
 import java.io.*;
@@ -17,77 +18,80 @@ public class JdbcTemplate {
 
     private ConnectionManager connectionManager;
 
-    /**
-     * The ongoing transaction's connection. Normally this field is null
-     * and a connection from connectionManager directly used and disposed
-     */
-    private Connection txConnection;
-
-    private boolean isRollback = false;
-
     public JdbcTemplate(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
-    public Connection getConnection() {
-        if (isTransactionMode()) {
-            if(isRollback) {
-                return null;
-            } else {
-                return txConnection;
-            }
-        }
-
-        return this.connectionManager.getConnection();
-    }
-
+    /**
+     * Starts a transaction by switching connection's auto commit status to false and
+     *  and setting transaction isolation level
+     *
+     * Note, this method should be called only when the DataSource supports single thread
+     * transaction spanning(e.g. DataSourceTxProxy)
+     *
+     * @param txIsolationLevel database transaction isolation level
+     */
     public void startTransaction(int txIsolationLevel) {
-        txConnection = getConnection();
+        Connection txConnection = connectionManager.getConnection();
 
         try {
             txConnection.setAutoCommit(false);
             txConnection.setTransactionIsolation(txIsolationLevel);
-            isRollback = false;
         } catch (SQLException e) {
             LOGGER.error("Cannot start transaction. Your application may be data inconsistent", e);
+            throw new RuntimeSqlException(e);
+        } finally {
+            tryClose(txConnection);
         }
     }
 
+    /**
+     * calls {@link #startTransaction(int)} with txIsolationLevel set to
+     * Connection.TRANSACTION_READ_COMMITTED
+     */
     public void startTransaction() {
         startTransaction(Connection.TRANSACTION_READ_COMMITTED);
     }
 
+    /**
+     * Commits the changes made by the underlying connection
+     *
+     * Note, this method should be called only when the DataSource supports single thread
+     * transaction spanning(e.g. DataSourceTxProxy)
+     */
     public void commit() {
-        if(!isTransactionMode()) {
-            LOGGER.error("Tried to commit transaction before starting one");
-            return;
-        }
-
+        Connection conn = connectionManager.getConnection();
         try {
-            if(!isRollback) {
-                txConnection.commit();
-                tryCloseTxConnection();
-            }
+            conn.commit();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
             LOGGER.error("Cannot commit");
+            throw new RuntimeSqlException(e);
+        } finally {
+            tryClose(conn);
         }
     }
 
+    /**
+     * Rollbacks the changes made by the underlying connection
+     *
+     * Note, this method should be called only when the DataSource supports single thread
+     * transaction spanning(e.g. DataSourceTxProxy)
+     */
     public void rollback() {
-        if(isTransactionMode()) {
-            try {
-                isRollback = true;
-                txConnection.rollback();
-                tryCloseTxConnection();
-            } catch (SQLException e) {
-                LOGGER.error("Cannot call rollback", e);
-            }
-        } else {
-            LOGGER.error("no transactions");
+        Connection conn = connectionManager.getConnection();
+        try {
+            conn.rollback();
+        } catch (SQLException e) {
+            LOGGER.error("Cannot call rollback", e);
+            throw new RuntimeSqlException(e);
+        } finally {
+            tryClose(conn);
         }
     }
+
     public void query(String query, ResultSetFunction fn, Object... params) {
-        Connection conn = getConnection();
+        Connection conn = connectionManager.getConnection();
 
         if(conn == null)
             return;
@@ -100,8 +104,8 @@ public class JdbcTemplate {
             ResultSet rs = stmt.executeQuery();
             withRs(rs, fn);
         } catch (SQLException e) {
-            rollback();
             LOGGER.warn("Error creating prepared statement. Query: " + query, e);
+            throw new RuntimeSqlException(e);
         } finally {
             tryClose(conn);
         }
@@ -131,7 +135,7 @@ public class JdbcTemplate {
     }
 
     public int update(String updQuery, Object... params) {
-        Connection conn = getConnection();
+        Connection conn = connectionManager.getConnection();
 
         if (conn == null)
             return 0;
@@ -144,17 +148,15 @@ public class JdbcTemplate {
 
             return stmt.executeUpdate();
         } catch (SQLException e) {
-            rollback();
             LOGGER.error("Cannot execute update query", e);
+            throw new RuntimeSqlException(e);
         } finally {
             tryClose(conn);
         }
-
-        return 0;
     }
 
     public Long insert(String updQuery, Object... params) {
-        Connection conn = getConnection();
+        Connection conn = connectionManager.getConnection();
 
         if (conn == null)
             return null;
@@ -176,27 +178,25 @@ public class JdbcTemplate {
             return null;
 
         } catch (SQLException e) {
-            rollback();
             LOGGER.error("Cannot insert values into DB", e);
+            throw new RuntimeSqlException(e);
         } finally {
             tryClose(conn);
         }
-
-        return null;
     }
 
     public void withRs(ResultSet rs, ResultSetFunction fn) {
         try {
             fn.apply(rs);
         } catch (Exception e) {
-            rollback();
             LOGGER.info("ResultSetFunctions has thrown an exception", e);
+            throw new RuntimeSqlException(e);
         } finally {
             try {
                 rs.close();
             } catch (SQLException e) {
-                rollback();
                 LOGGER.error("Cannot tryClose ResultSet", e);
+                throw new RuntimeSqlException(e);
             }
         }
     }
@@ -212,7 +212,7 @@ public class JdbcTemplate {
                         .filter(s -> !s.isEmpty())
                         .collect(Collectors.toList());
 
-                Connection conn = getConnection();
+                Connection conn = connectionManager.getConnection();
 
                 try {
                     for (String query : queries) {
@@ -242,34 +242,18 @@ public class JdbcTemplate {
         return false;
     }
 
-    public boolean isTransactionMode() {
-        return txConnection != null || isRollback ;
-    }
-
-
-    // TODO: make private
     /**
      *
      * @param connection
      */
     private void tryClose(Connection connection) {
         try {
-            if(connection != txConnection) {
-                connection.close();
-            }
+            connection.close();
         } catch (SQLException e) {
-            LOGGER.error("Cannot tryClose jdbc connection", e);
+            LOGGER.error("Cannot close jdbc connection", e);
+            throw new RuntimeSqlException(e);
         }
     }
-
-    private void tryCloseTxConnection() throws SQLException {
-        if(txConnection != null) {
-            txConnection.setAutoCommit(false);
-            txConnection.close();
-            txConnection = null;
-        }
-    }
-
 
     @FunctionalInterface
     public interface ResultSetFunction {

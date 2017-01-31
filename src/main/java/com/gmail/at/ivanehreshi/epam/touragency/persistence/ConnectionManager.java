@@ -1,5 +1,6 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.transaction.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 import com.mysql.jdbc.jdbc2.optional.*;
 import org.apache.logging.log4j.*;
@@ -44,6 +45,13 @@ public class ConnectionManager {
         return null;
     }
 
+    public void clean() {
+        if (dataSource instanceof DataSourceTxProxy) {
+            DataSourceTxProxy txDs = (DataSourceTxProxy) dataSource;
+            txDs.clean();
+        }
+    }
+
     public int getPoolSize() {
         return poolSize;
     }
@@ -83,8 +91,9 @@ public class ConnectionManager {
             Context initContext = new InitialContext();
             Context envContext  = (Context)initContext.lookup("java:/comp/env");
             DataSource ds = (DataSource)envContext.lookup(name);
+            DataSource txDs = new DataSourceTxProxy(ds);
 
-            ConnectionManager connManager = new ConnectionManager(ds);
+            ConnectionManager connManager = new ConnectionManager(txDs);
             return connManager;
         } catch (NamingException e) {
             LOGGER.error("Cannot create InitialContext", e);
@@ -104,5 +113,9 @@ public class ConnectionManager {
         }
 
         return properties;
+    }
+
+    public static ConnectionManager fromDs(DataSource ds) {
+        return new ConnectionManager(new DataSourceTxProxy(ds));
     }
 }

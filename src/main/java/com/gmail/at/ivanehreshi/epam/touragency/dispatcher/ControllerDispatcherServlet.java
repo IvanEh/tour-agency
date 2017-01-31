@@ -1,5 +1,7 @@
 package com.gmail.at.ivanehreshi.epam.touragency.dispatcher;
 
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
+import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 import org.apache.logging.log4j.*;
 
 import javax.servlet.*;
@@ -81,6 +83,11 @@ public class ControllerDispatcherServlet extends HttpServlet {
             requestService.clearFlash();
         } else {
             requestService.clearRedirectFlag();
+        }
+
+        ConnectionManager cm = ServiceLocator.INSTANCE.get(ConnectionManager.class);
+        if (cm != null) {
+            cm.clean();
         }
     }
 
