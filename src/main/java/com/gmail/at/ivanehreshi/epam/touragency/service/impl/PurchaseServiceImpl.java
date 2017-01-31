@@ -125,6 +125,14 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
     }
 
     @Override
+    public List<Purchase> findNotProcessed() {
+        List<Purchase> purchases =
+                purchaseDao.findByStatusOrderByDate(PurchaseStatus.ACTIVE);
+        purchases.forEach(purchaseDao::deepen);
+        return purchases;
+    }
+
+    @Override
     public PurchaseDao getDao() {
         return purchaseDao;
     }

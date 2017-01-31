@@ -11,4 +11,6 @@ public interface PurchaseDao extends Dao<Purchase,Long> {
     List<Purchase> findByUser(Long userId);
 
     List<Purchase> findByUserTour(Long userId, Long tourId);
+
+    List<Purchase> findByStatusOrderByDate(PurchaseStatus active);
 }

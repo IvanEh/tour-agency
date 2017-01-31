@@ -21,4 +21,6 @@ public interface PurchaseService extends CrudService<Purchase, Long> {
     void use(Long purchaseId);
 
     void purchase(Long userId, Long tourId, int number);
+
+    List<Purchase> findNotProcessed();
 }

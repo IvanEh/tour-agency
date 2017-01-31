@@ -5,6 +5,8 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
+import java.util.*;
+
 public class AgentOrderController extends Controller {
     private PurchaseService purchaseService =
             ServiceLocator.INSTANCE.get(PurchaseService.class);
@@ -17,6 +19,9 @@ public class AgentOrderController extends Controller {
             Purchase purchase = purchaseService.read(id);
             reqService.putParameter("purchase", purchase);
         }
+
+        List<Purchase> purchases = purchaseService.findNotProcessed();
+        reqService.putParameter("purchases", purchases);
     }
 
     @Override

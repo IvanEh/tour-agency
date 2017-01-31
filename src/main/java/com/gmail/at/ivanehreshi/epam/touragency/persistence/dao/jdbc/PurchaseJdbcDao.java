@@ -86,4 +86,9 @@ public class PurchaseJdbcDao implements PurchaseDao {
                 " ORDER BY id DESC", PurchaseMapper::map);
     }
 
+    @Override
+    public List<Purchase> findByStatusOrderByDate(PurchaseStatus status) {
+        return jdbcTemplate.queryObjects("SELECT * FROM `purchase` WHERE status=? " +
+                "ORDER BY date DESC", PurchaseMapper::map, status);
+    }
 }
