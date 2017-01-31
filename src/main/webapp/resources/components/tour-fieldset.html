@@ -1,0 +1,127 @@
+<!-- Input params: ${rb}, ${tour}, ${hot} -->
+
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<fieldset>
+    <legend>
+        <fmt:message key="new_tour.title" bundle="${rb}"/>
+    </legend>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="">
+            <fmt:message key="tour.title" bundle="${rb}"/>
+        </label>
+
+        <div class="col-md-4">
+            <input  name="title" placeholder="Тур" class="form-control input-md" required=""
+                    type="text" value="${tour.title}" size="5" maxlength="25">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="destination">
+            <fmt:message key="tour.destination" bundle="${rb}"/>
+        </label>
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <input id="destination" name="destination" class="form-control" placeholder="Ukraine, Kyiv"
+                       required="" type="text" value="${tour.destination}" size="3" maxlength="30">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="price">
+            <fmt:message key="tour.price" bundle="${rb}"/>
+        </label>
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <input id="price" name="price" class="form-control" placeholder="100"
+                       required="" type="text" value="${tour.price}">
+                <span class="input-group-addon">$</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="discount">
+            <fmt:message key="discount" bundle="${rb}"/>
+        </label>
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <input id="discount" name="discount" class="form-control" placeholder="100"
+                       required="" type="number" min="0" max="100" value="${tour.discount}">
+                <span class="input-group-addon">%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="type">
+            <fmt:message key="tour.type" bundle="${rb}"/>
+        </label>
+
+        <div class="col-md-4">
+            <select id="type" name="type" class="form-control" value="${tour.type}">
+                <option value="0">
+                    <fmt:message key="tour.recreation" bundle="${rb}"/>
+                </option>
+                <option value="1">
+                    <fmt:message key="tour.excursion" bundle="${rb}"/>
+                </option>
+                <option value="2">
+                    <fmt:message key="tour.shopping" bundle="${rb}"/>
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="opts">
+            <fmt:message key="tour.set_hot" bundle="${rb}"/>
+        </label>
+
+        <div class="col-md-4">
+            <div class="checkbox">
+                <label for="opts-0">
+                    <input type="checkbox" name="hot" id="opts-0" value="1" ${hot eq 'true' ? 'checked="checked"' : ''}/>
+                    Hot!
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="opts">
+            <fmt:message key="tour.enabled" bundle="${rb}"/>
+        </label>
+
+        <div class="col-md-4">
+            <div class="checkbox">
+                <label for="opts-1">
+                    <input name="enabled" id="opts-1" value="1" checked=checked type="checkbox">
+                    <fmt:message key="yes" bundle="${rb}"/>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-1 control-label" for="description">
+            <fmt:message key="tour.info" bundle="${rb}"/>
+        </label>
+
+        <div class="col-md-12">
+            <div class="well" >
+                            <textarea class="form-control" id="description"
+                                      name="description" data-provide="markdown">${tour.description}</textarea>
+            </div>
+        </div>
+    </div>
+
+</fieldset>

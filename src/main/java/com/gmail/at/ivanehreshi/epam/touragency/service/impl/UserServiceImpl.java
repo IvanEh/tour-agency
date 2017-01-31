@@ -12,8 +12,11 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
 
     private UserDao userDao;
 
-    public UserServiceImpl(UserDao userDao) {
+    private TourDao tourDao;
+
+    public UserServiceImpl(UserDao userDao, TourDao tourDao) {
         this.userDao = userDao;
+        this.tourDao = tourDao;
     }
 
     @Override
@@ -59,5 +62,12 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
         }
         userDao.updateRoles(userId, roles);
         userDao.addRole(userId, Role.TOUR_AGENT);
+    }
+
+    @Override
+    public int computeDiscount(Long userId, Long tourId) {
+        User user = userDao.read(userId);
+        Tour tour = tourDao.read(tourId);
+        return Math.max(user.getDiscount(), tour.getDiscount());
     }
 }

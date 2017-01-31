@@ -62,7 +62,8 @@ public enum WebApplication {
     }
 
     private void prepareServices() {
-        UserService userService = new UserServiceImpl(daoFactory.getUserDao());
+        UserService userService = new UserServiceImpl(daoFactory.getUserDao(),
+                daoFactory.getTourDao());
 
         TourService tourService = new TourServiceImpl(daoFactory.getTourDao());
 

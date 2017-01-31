@@ -30,6 +30,9 @@ public class TourServiceImpl extends AbstractDaoService<Tour, Long>
 
     @Override
     public void update(Tour tour) {
+        Tour dbTour = read(tour.getId());
+        tour.setAvgRating(dbTour.getAvgRating());
+        tour.setVotesCount(dbTour.getVotesCount());
         checkConstraintsOrThrow(tour);
         super.update(tour);
     }

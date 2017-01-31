@@ -11,8 +11,6 @@ import java.util.*;
 import java.util.stream.*;
 
 public final class ToursController extends Controller {
-    private TourDao tourDao = ServiceLocator.INSTANCE.get(TourDao.class);
-
     private TourService tourService = ServiceLocator.INSTANCE.get(TourService.class);
 
     private static final int MAX_DESC_LENGTH = 128;
@@ -71,7 +69,7 @@ public final class ToursController extends Controller {
         Long id = tourWithStatus.getPayload().getId();
 
         if (tourWithStatus.isOk()) {
-            tourDao.update(tourWithStatus.getPayload());
+            tourService.update(tourWithStatus.getPayload());
             reqService.redirect("/agent/tours.html");
         } else {
             reqService.redirect("/agent/edit-tour.html?failed=true&id=" + id);
