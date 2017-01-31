@@ -189,6 +189,21 @@
                 </div>
 
             </c:forEach>
+
+            <div>
+                <c:if test="${not empty prev}">
+                    <div class="btn pull-left" data-url-append="offset"
+                         data-url-append-value="${prev}">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                    </div>
+                </c:if>
+                <c:if test="${not empty next}">
+                    <div class="btn pull-left" data-url-append="offset"
+                         data-url-append-value="${next}">
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </div>
+                </c:if>
+            </div>
         </div>
 
     </div>
@@ -200,6 +215,10 @@
 
 <script>
 $(function () {
+  $('*[data-url-append]').click(function() {
+     goQueryParameters(overrideQueryParameter($(this).data('url-append'),
+        $(this).data('url-append-value')));
+  });
 
   $('.stars').each(function() {
     var $this = $(this);
@@ -222,12 +241,13 @@ $(function () {
   var $priceHigh = $('#price-high');
 
   noUiSlider.create(html5Slider, {
-      start: [ 0, 9999 ],
+      start: [ ${data.priceLow eq null ? 0 : data.priceLow},
+               ${data.priceHigh eq null ? 1999 : data.priceHigh}],
       connect: true,
       tooltips: true,
       range: {
-          'min': ${data.priceLow eq null ? 0 : data.priceLow},
-          'max': ${data.priceHigh eq null ? 9999 : data.priceHigh}
+          'min': 0,
+          'max': 1999
       },
       format: {
           to: function ( value ) {

@@ -1,6 +1,5 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence;
 
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import org.apache.logging.log4j.*;
 
 import java.io.*;

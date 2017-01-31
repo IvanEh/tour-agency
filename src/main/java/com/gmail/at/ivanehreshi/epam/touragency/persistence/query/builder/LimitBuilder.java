@@ -17,4 +17,8 @@ public class LimitBuilder extends QueryBuilder {
     public QueryBuilder limit(Integer limit) {
         return new QueryBuilder(query.setLimit(limit));
     }
+
+    public QueryBuilder limit(Integer limit, Integer offset) {
+        return new QueryBuilder(query.setLimit(limit, offset));
+    }
 }

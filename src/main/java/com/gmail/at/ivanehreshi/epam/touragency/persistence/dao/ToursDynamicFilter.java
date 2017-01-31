@@ -28,6 +28,10 @@ public class ToursDynamicFilter {
 
     private SortDir priceSort;
 
+    private Integer limit = null;
+
+    private Integer offset = null;
+
     public ToursDynamicFilter() {
     }
 
@@ -80,6 +84,16 @@ public class ToursDynamicFilter {
         return this;
     }
 
+    public ToursDynamicFilter setLimit(Integer limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public ToursDynamicFilter setOffset(Integer offset) {
+        this.offset = offset;
+        return this;
+    }
+
     public String getQuery() {
         WhereBuilder where = QueryBuilder.select("tour", "*");
 
@@ -90,8 +104,13 @@ public class ToursDynamicFilter {
         where = buildSearch(where);
         OrderByBuilder orderBy = buildSortDir(where);
         orderBy = buildPostSort(orderBy);
+        QueryBuilder limitBuilder = buildOffset(orderBy);
 
-        return orderBy.build();
+        return limitBuilder.build();
+    }
+
+    private QueryBuilder buildOffset(OrderByBuilder orderBy) {
+        return orderBy.limit(limit, offset);
     }
 
     private OrderByBuilder buildPostSort(OrderByBuilder orderBy) {
@@ -196,5 +215,17 @@ public class ToursDynamicFilter {
 
     public SortDir getVotesSort() {
         return votesSort;
+    }
+
+    public boolean isHotFirst() {
+        return hotFirst;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 }

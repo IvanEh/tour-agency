@@ -15,7 +15,9 @@ public final class ToursController extends Controller {
 
     private static final int MAX_DESC_LENGTH = 128;
 
-    private static final int FILTER_MAX_PRICE = 9999;
+    private static final int FILTER_MAX_PRICE = 1999;
+
+    private static final int PAGE_SIZE = 20;
 
     @Override
     public void get(RequestService reqService) {
@@ -33,9 +35,20 @@ public final class ToursController extends Controller {
 
         reqService.putParameter("tours", tours);
         reqService.putParameter("data", filter);
+        preparePaging(reqService, tours.size());
 
         for(TourType t: tourTypesArr) {
             reqService.putParameter(t.name(), true);
+        }
+    }
+
+    private void preparePaging(RequestService reqService, int tourCount) {
+        int offset = reqService.getInt("offset").orElse(0);
+        if (tourCount == PAGE_SIZE) {
+            reqService.putParameter("next", offset + PAGE_SIZE);
+        }
+        if (offset > 0) {
+            reqService.putParameter("prev", offset - PAGE_SIZE);
         }
     }
 
@@ -92,7 +105,6 @@ public final class ToursController extends Controller {
                 .flatMap(s -> TryOptionalUtil.of(() -> SortDir.valueOf(s)))
                 .orElse(null);
 
-
         String searchStr = UrlParamDecoder.decode(reqService.getParameter("search").orElse(null))
                 .orElse(null);
 
@@ -102,9 +114,11 @@ public final class ToursController extends Controller {
                 .orElse(null);
         boolean hot = !reqService.getString("hotFirst").equals("0");
 
+        Integer offset = reqService.getInt("offset").orElse(null);
+
         filter.setRatingSort(ratingOrd).setVotesSort(votesOrd).setPriceSort(priceOrd)
               .setSearchQuery(searchStr).setPriceLow(priceLow).setPriceHigh(priceHigh)
-              .setHotFirst(hot);
+              .setHotFirst(hot).setLimit(PAGE_SIZE).setOffset(offset);
 
         return filter;
     }

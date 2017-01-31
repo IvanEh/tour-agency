@@ -21,6 +21,8 @@ public class SelectQuery implements Query {
 
     private Integer limit;
 
+    private Integer offset;
+
     private String cachedSql;
 
     public SelectQuery(String table, String... columns) {
@@ -69,8 +71,12 @@ public class SelectQuery implements Query {
               .append(String.join(", ", orderByClausesStr));
         }
 
-        if(limit != null) {
-            sb.append(" LIMIT ").append(limit);
+        if (limit != null) {
+            if (offset != null) {
+                sb.append(" LIMIT ").append(offset).append(", ").append(limit);
+            } else {
+                sb.append(" LIMIT ").append(limit);
+            }
         }
 
         cachedSql = sb.toString();
@@ -108,6 +114,13 @@ public class SelectQuery implements Query {
     public SelectQuery where(BoolCondition cond) {
         SelectQuery q = new SelectQuery(this);
         q.whereClause = cond;
+        return q;
+    }
+
+    public SelectQuery setLimit(Integer limit, Integer offset) {
+        SelectQuery q = new SelectQuery(this);
+        q.limit = limit;
+        q.offset = offset;
         return q;
     }
 
