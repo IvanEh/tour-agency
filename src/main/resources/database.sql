@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS `tour` (
   `enabled` INT(11) NOT NULL DEFAULT '1',
   `avg_rating` DECIMAL(3,2) NULL,
   `votes_count` INT NOT NULL DEFAULT 0,
+  `discount` INT NOT NULL DEFAULT 0,
+  `destination` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`));
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -17,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `lastName` VARCHAR(35) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
   `discount` INT(11) NULL DEFAULT '0',
+  `telephone` VARCHAR(15) NOT NULL,
   PRIMARY KEY (`id`));
 
 CREATE TABLE IF NOT EXISTS `purchase` (
