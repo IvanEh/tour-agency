@@ -6,7 +6,6 @@ import org.junit.*;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class TransactionTest {
     private static final String SQL_SELECT_ALL = "SELECT * FROM test";
@@ -17,7 +16,7 @@ public class TransactionTest {
 
     @Before
     public void setUp() throws Exception {
-        connectionManager = spy(H2Db.initWithTx("test.sql"));
+        connectionManager = H2Db.initWithTx("test.sql");
         jdbcTemplate = new JdbcTemplate(connectionManager);
     }
 
@@ -113,10 +112,10 @@ public class TransactionTest {
 
     @Test
     public void testNestedTransactionWhenNestedFails() {
+        connectionManager.clean();
         try {
             Transaction.tx(connectionManager, () -> {
                 JdbcTemplate txTemplate = new JdbcTemplate(connectionManager);
-                txTemplate.startTransaction();
 
                 txTemplate.insert("INSERT INTO test(col) VALUES(?)", "alpha");
 

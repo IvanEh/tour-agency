@@ -146,4 +146,21 @@ public class Tour {
         return Objects.hash(id, title, description, destination, type, hot,
                 price, enabled, avgRating, votesCount, discount);
     }
+
+    @Override
+    public String toString() {
+        return "Tour{" +
+                "avgRating=" + avgRating +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", destination='" + destination + '\'' +
+                ", type=" + type +
+                ", hot=" + hot +
+                ", price=" + price +
+                ", enabled=" + enabled +
+                ", votesCount=" + votesCount +
+                ", discount=" + discount +
+                '}';
+    }
 }

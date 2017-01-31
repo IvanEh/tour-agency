@@ -53,8 +53,10 @@ public class DynamicFilterTest {
     public void testFilterHot() {
         filter.setHotFirst(true);
         List<Tour> tours = tourDao.executeDynamicFilter(filter);
-        assertEquals(1, tours.size());
+        assertEquals(3, tours.size());
         assertEquals(tour1, tours.get(0));
+        assertEquals(tour3, tours.get(1));
+        assertEquals(tour2, tours.get(2));
     }
 
     @Test
@@ -62,8 +64,8 @@ public class DynamicFilterTest {
         filter.setPriceLow(50);
         List<Tour> tours = tourDao.executeDynamicFilter(filter);
         assertEquals(2, tours.size());
-        assertEquals(tour1, tours.get(0));
-        assertEquals(tour3, tours.get(1));
+        assertEquals(tour3, tours.get(0));
+        assertEquals(tour1, tours.get(1));
     }
 
     @Test
@@ -79,8 +81,8 @@ public class DynamicFilterTest {
         filter.setTourTypes(TourType.EXCURSION, TourType.RECREATION);
         List<Tour> tours = tourDao.executeDynamicFilter(filter);
         assertEquals(2, tours.size());
-        assertEquals(tour1, tours.get(0));
-        assertEquals(tour3, tours.get(1));
+        assertEquals(tour3, tours.get(0));
+        assertEquals(tour1, tours.get(1));
     }
 
     @Test
@@ -96,8 +98,8 @@ public class DynamicFilterTest {
         filter.setSearchQuery("abc");
         List<Tour> tours = tourDao.executeDynamicFilter(filter);
         assertEquals(2, tours.size());
-        assertEquals(tour2, tours.get(0));
-        assertEquals(tour3, tours.get(1));
+        assertEquals(tour3, tours.get(0));
+        assertEquals(tour2, tours.get(1));
     }
 
     @Test

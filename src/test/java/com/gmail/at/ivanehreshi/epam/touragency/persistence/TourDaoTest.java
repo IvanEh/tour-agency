@@ -64,7 +64,7 @@ public class TourDaoTest {
         tour1.setId(id1);
         tour2.setId(id2);
 
-        assertEquals(Arrays.asList(tour2, tour1), tourDao.findAll());
+        assertEquals(Arrays.asList(tour1, tour2), tourDao.findAll());
     }
 
     @Test

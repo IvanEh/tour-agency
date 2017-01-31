@@ -59,7 +59,7 @@ public class TourServiceTest {
         tourService.create(tour1);
         tourService.create(tour2);
 
-        assertEquals(Arrays.asList(tour2, tour1), tourService.findAll());
+        assertEquals(Arrays.asList(tour1, tour2), tourService.findAll());
     }
 
     @Test

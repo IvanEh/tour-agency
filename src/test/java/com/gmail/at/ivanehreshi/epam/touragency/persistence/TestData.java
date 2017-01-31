@@ -19,6 +19,7 @@ public class TestData {
         user.setLastName("Doe");
         user.setUsername("john");
         user.setDiscount(20);
+        user.setTelephone("380123456789");
         user.setRoles(Arrays.asList(Role.CUSTOMER));
         return user;
     }

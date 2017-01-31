@@ -15,7 +15,11 @@ public interface Transaction {
         try {
             autoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
-            conn.setTransactionIsolation(transactionIsolationLevel);
+
+            if(conn.getTransactionIsolation() != transactionIsolationLevel) {
+                conn.setTransactionIsolation(transactionIsolationLevel);
+            }
+
             transaction.span();
             conn.setAutoCommit(autoCommit);
         } catch (SQLException e) {
