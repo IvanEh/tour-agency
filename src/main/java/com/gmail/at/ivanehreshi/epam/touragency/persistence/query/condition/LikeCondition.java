@@ -12,8 +12,16 @@ public class LikeCondition implements BoolCondition {
         this.term = term;
     }
 
+    private String escapedTerm() {
+//        if (term.replace("%", "").equals("?")) {
+            return term;
+//        }
+
+//        return "'" + term + "'";
+    }
+
     @Override
     public String getSQL() {
-        return col + " LIKE " + "'" + term + "'";
+        return col + " LIKE " + escapedTerm();
     }
 }

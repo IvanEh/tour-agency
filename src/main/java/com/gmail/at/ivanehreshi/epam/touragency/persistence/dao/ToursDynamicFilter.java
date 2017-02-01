@@ -125,11 +125,11 @@ public class ToursDynamicFilter {
         if (searchQuery != null) {
             List<String> keywords = Arrays.asList(searchQuery.split(" "));
 
+            String cond = "CONCAT('%', ?, '%')";
             LikeCondition[] conds = keywords.stream()
-                    .map(s -> "%" + s + "%")
-                    .flatMap(s -> Stream.of(new LikeCondition("title", s),
-                            new LikeCondition("description", s),
-                            new LikeCondition("destination", s)))
+                    .flatMap(s -> Stream.of(new LikeCondition("title", cond),
+                            new LikeCondition("description", cond),
+                            new LikeCondition("destination", cond)))
                     .collect(Collectors.toList())
                     .toArray(new LikeCondition[]{});
 

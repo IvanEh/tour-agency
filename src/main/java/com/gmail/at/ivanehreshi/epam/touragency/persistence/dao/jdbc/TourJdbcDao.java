@@ -7,6 +7,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.*;
 
 import java.math.*;
 import java.util.*;
+import java.util.stream.*;
 
 public class TourJdbcDao implements TourDao {
 
@@ -76,6 +77,13 @@ public class TourJdbcDao implements TourDao {
 
     @Override
     public List<Tour> executeDynamicFilter(ToursDynamicFilter filter) {
-        return jdbcTemplate.queryObjects(filter.getQuery(), TourMapper::map);
+        String[] params = new String[]{};
+        if (filter.getSearchQuery() != null) {
+            List<String> keywords = Arrays.asList(filter.getSearchQuery().split(" "));
+            params = keywords.stream().flatMap(s -> Stream.of(s, s, s))
+                    .collect(Collectors.toList()).toArray(params);
+        }
+        return jdbcTemplate.queryObjects(filter.getQuery(), TourMapper::map,
+                (Object[]) params);
     }
 }
