@@ -104,7 +104,8 @@ public class TestData {
         return new UserTestData(tour1, tour2, user);
     }
 
-    public static ReviewTestData getReviewTestData(UserDao userDao, TourDao tourDao) {
+    public static ReviewTestData getReviewTestData(UserDao userDao, TourDao tourDao,
+                                                   PurchaseDao purchaseDao) {
         User user1 = new User();
         user1.setFirstName("u1");
         user1.setUsername("u1");
@@ -121,6 +122,11 @@ public class TestData {
         Tour tour = getExcursionTour();
         id = tourDao.create(tour);
         tour.setId(id);
+
+        if (purchaseDao != null) {
+            purchaseDao.create(new Purchase(user1, tour, BigDecimal.ZERO));
+            purchaseDao.create(new Purchase(user2, tour, BigDecimal.ZERO));
+        }
 
         return new ReviewTestData(tour, user1, user2);
     }

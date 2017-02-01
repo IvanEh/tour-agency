@@ -2,154 +2,182 @@ package com.gmail.at.ivanehreshi.epam.touragency.service;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.impl.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 import org.junit.*;
 
-import java.math.*;
 import java.util.*;
 
 import static org.junit.Assert.*;
 
 public class TourServiceTest {
-    private ConnectionManager cm;
-    private ReviewService reviewService;
-    private TourServiceImpl tourService;
-    private UserServiceImpl userService;
-    private PurchaseJdbcDao purchaseDao;
+    private ConnectionManager connectionManager;
 
-    private Tour tour1;
-    private Tour tour2;
-    private User user1;
-    private User user2;
+    private ReviewService reviewService;
+
+    private TourDao tourDao;
+
+    private UserDao userDao;
+
+    private PurchaseDao purchaseDao;
+
+    private TestData.ReviewTestData data;
 
     @Before
     public void setUp() throws Exception {
-        cm = H2Db.init("database.sql");
-        reviewService = new ReviewServiceImpl(new ReviewJdbcDao(cm), new UserJdbcDao(cm));
-        tourService = new TourServiceImpl(new TourJdbcDao(cm));
-        userService = new UserServiceImpl(new UserJdbcDao(cm), new TourJdbcDao(cm));
-        purchaseDao = new PurchaseJdbcDao(cm);
-        prepareData();
+        connectionManager = H2Db.init("database.sql");
+        ReviewDao reviewDao = new ReviewJdbcDao(connectionManager);
+        tourDao = new TourJdbcDao(connectionManager);
+        userDao = new UserJdbcDao(connectionManager);
+        purchaseDao = new PurchaseJdbcDao(connectionManager);
+        reviewService = new ReviewServiceImpl(reviewDao, userDao, tourDao,
+                connectionManager);
+        data = TestData.getReviewTestData(userDao, tourDao,
+                new PurchaseJdbcDao(connectionManager));
     }
 
     @After
     public void tearDown() throws Exception {
-        new JdbcTemplate(cm).executeSqlFile(
+        new JdbcTemplate(connectionManager).executeSqlFile(
                 ResourcesUtil.getResourceFile("clear-database.sql"));
     }
 
-    private void prepareData() {
-        tour1 = TestData.getRecreationTour();
-        tour2 = TestData.getShoppingTour();
-        user1 = TestData.getUser();
-        user1.setRoles(Arrays.asList(Role.TOUR_AGENT));
-        user2 = TestData.getUser();
-        user2.setUsername("u");
-        user2.setRoles(Arrays.asList(Role.TOUR_AGENT));
-        Purchase purchase1 = new Purchase(user1, tour1, new BigDecimal("0"));
-        Purchase purchase2 = new Purchase(user2, tour1, new BigDecimal("0"));
+    @Test
+    public void testCreateRead() {
+        Review review = TestData.getReview(data.user1, data.tour);
+        reviewService.create(review);
 
-        tourService.create(tour1);
-        tourService.create(tour2);
-        userService.create(user1);
-        userService.create(user2);
-        purchaseDao.create(purchase1);
-        purchaseDao.create(purchase2);
-    }
+        Review dbReview = reviewService.read(review.getId());
+        assertWeakEquals(review, dbReview);
 
-    private Review getReview(Tour tour) {
-        Review review = new Review();
-        review.setAuthor(user1);
-        review.setTour(tour);
-        review.setRating(2);
-        review.setText("");
-        return review;
+        Tour tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(4.0), tour.getAvgRating());
+        assertEquals(1, tour.getVotesCount());
     }
 
     @Test
-    public void testCreateReadById() {
-        Review review = getReview(tour1);
+    public void testConsistency() {
+        Review review1 = TestData.getReview(data.user1, data.tour);
+        review1.setRating(4);
+        Review review2 = TestData.getReview(data.user2, data.tour);
+        review2.setRating(3);
 
-        reviewService.create(review);
-        Review dbReview = reviewService.read(review.getId());
-        Tour dbTour = tourService.read(tour1.getId());
+        reviewService.create(review1);
+        reviewService.create(review2);
 
-        fuzzyEquals(review, dbReview);
-        assertEquals(2.0, dbTour.getAvgRating(), 0);
-        assertEquals(1, dbTour.getVotesCount());
-    }
-
-    @Test
-    public void testCreateTwoReadById() {
-        Review review = getReview(tour1);
-
-        reviewService.create(review);
-        Review dbReview = reviewService.read(review.getId());
-        Tour dbTour = tourService.read(tour1.getId());
-
-        fuzzyEquals(review, dbReview);
-        assertEquals(2.0, dbTour.getAvgRating(), 0);
-        assertEquals(1, dbTour.getVotesCount());
-
-        review = getReview(tour1);
-        review.setAuthor(user2);
-        review.setRating(3);
-
-        reviewService.create(review);
-        dbTour = tourService.read(tour1.getId());
-
-        assertEquals(2.5, dbTour.getAvgRating(), 0);
-        assertEquals(2, dbTour.getVotesCount());
+        Tour tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(3.5), tour.getAvgRating());
+        assertEquals(2, tour.getVotesCount());
     }
 
     @Test
     public void testUpdate() {
-        Review review = getReview(tour1);
-
+        Review review = TestData.getReview(data.user1, data.tour);
         reviewService.create(review);
 
-        review.setRating(4);
+        review.setRating(2);
+
+        Tour tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(4.0), tour.getAvgRating());
+        assertEquals(1, tour.getVotesCount());
+
         reviewService.update(review);
 
         Review dbReview = reviewService.read(review.getId());
-        Tour dbTour = tourService.read(tour1.getId());
+        assertWeakEquals(review, dbReview);
 
-        assertEquals(4.0, dbTour.getAvgRating(), 0);
-        assertEquals(1, dbTour.getVotesCount());
+        tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(2.0), tour.getAvgRating());
+        assertEquals(1, tour.getVotesCount());
+    }
+
+    @Test
+    public void testUpdateGivenTwoRecords() {
+        Review review1 = TestData.getReview(data.user1, data.tour);
+        Review review2 = TestData.getReview(data.user2, data.tour);
+        review2.setRating(5);
+
+        reviewService.create(review1);
+        reviewService.create(review2);
+        review1.setRating(2);
+
+        Tour tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(4.5), tour.getAvgRating());
+        assertEquals(2, tour.getVotesCount());
+
+        review1.setRating(1);
+        reviewService.update(review1);
+
+        tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(3.0), tour.getAvgRating());
+        assertEquals(2, tour.getVotesCount());
+    }
+
+    @Test
+    public void testDeleteGivenOneRecord() {
+        Review review = TestData.getReview(data.user1, data.tour);
+
+        reviewService.create(review);
+
+        Tour tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(4.0), tour.getAvgRating());
+        assertEquals(1, tour.getVotesCount());
+
+        reviewService.delete(review.getId());
+
+        tour = tourDao.read(data.tour.getId());
+        assertNull(tour.getAvgRating());
+        assertEquals(0, tour.getVotesCount());
+    }
+
+    @Test
+    public void testDeleteGivenTwoRecords() {
+        Review review1 = TestData.getReview(data.user1, data.tour);
+
+        reviewService.create(review1);
+
+        Review review2 = TestData.getReview(data.user2, data.tour);
+        review2.setRating(1);
+        reviewService.create(review2);
+
+        Tour tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(2.5), tour.getAvgRating());
+        assertEquals(2, tour.getVotesCount());
+
+        reviewService.delete(review1.getId());
+
+        tour = tourDao.read(data.tour.getId());
+        assertEquals(new Double(1), tour.getAvgRating());
+        assertEquals(1, tour.getVotesCount());
+
+        reviewService.delete(review2.getId());
+        tour = tourDao.read(data.tour.getId());
+        assertNull(tour.getAvgRating());
+        assertEquals(0, tour.getVotesCount());
     }
 
     @Test
     public void testFindAll() {
-        Review review1 = getReview(tour1);
-        Review review2 = getReview(tour1);
-        review2.setAuthor(user2);
+        Review review1 = TestData.getReview(data.user1, data.tour);
+        Review review2 = TestData.getReview(data.user2, data.tour);
 
         reviewService.create(review1);
         reviewService.create(review2);
 
         List<Review> reviews = reviewService.findAll();
-        fuzzyEquals(review1, reviews.get(1));
-        fuzzyEquals(review2, reviews.get(0));
+        assertWeakEquals(review1, reviews.get(1));
+        assertWeakEquals(review2, reviews.get(0));
     }
 
-    @Test
-    public void testDelete() {
-        Review review = getReview(tour1);
-
-        reviewService.create(review);
-        reviewService.delete(review.getId());
-
-        Review dbReview = reviewService.read(review.getId());
-        assertNull(dbReview);
-    }
-
-    private void fuzzyEquals(Review expected, Review actual) {
+    private static void assertWeakEquals(Review expected, Review actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getText(), actual.getText());
         assertEquals(expected.getRating(), actual.getRating());
         assertEquals(expected.getAuthor().getId(), actual.getAuthor().getId());
         assertEquals(expected.getTour().getId(), actual.getTour().getId());
     }
+
+
 }

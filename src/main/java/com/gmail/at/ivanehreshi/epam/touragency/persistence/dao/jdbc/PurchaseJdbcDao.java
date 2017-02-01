@@ -3,7 +3,6 @@ package com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.jdbc;
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
-import com.gmail.at.ivanehreshi.epam.touragency.persistence.transaction.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.util.*;
 
 import java.util.*;
@@ -35,19 +34,6 @@ public class PurchaseJdbcDao implements PurchaseDao {
     public Purchase read(Long id) {
         Purchase purchase = jdbcTemplate.queryObject("SELECT * FROM `purchase` " +
                 "WHERE id=?", PurchaseMapper::map, id);
-        return purchase;
-    }
-
-    @Override
-    public Purchase deepen(Purchase purchase) {
-        Transaction.tx(connectionManager, () -> {
-            purchase.setUser(jdbcTemplate.queryObject("SELECT * FROM `user`" +
-                    " WHERE id=?", UserMapper::map, purchase.getUser().getId()));
-
-            purchase.setTour(jdbcTemplate.queryObject("SELECT * FROM tour " +
-                    "WHERE id=?", TourMapper::map, purchase.getTour().getId()));
-        });
-
         return purchase;
     }
 

@@ -31,7 +31,7 @@ public class ReviewDaoTest {
         tourDao = new TourJdbcDao(connectionManager);
         userDao = new UserJdbcDao(connectionManager);
         purchaseDao = new PurchaseJdbcDao(connectionManager);
-        data = TestData.getReviewTestData(userDao, tourDao);
+        data = TestData.getReviewTestData(userDao, tourDao, purchaseDao);
     }
 
     @After
@@ -51,29 +51,6 @@ public class ReviewDaoTest {
 
         Review dbReview = reviewDao.read(id);
         assertWeakEquals(review, dbReview);
-
-        Tour tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(4.0), tour.getAvgRating());
-        assertEquals(1, tour.getVotesCount());
-    }
-
-    @Test
-    public void testConsistency() {
-        Review review1 = TestData.getReview(data.user1, data.tour);
-        Review review2 = TestData.getReview(data.user1, data.tour);
-        review2.setRating(3);
-
-        Long id = reviewDao.create(review1);
-        assertNotNull(id);
-        review1.setId(id);
-
-        id = reviewDao.create(review2);
-        assertNotNull(id);
-        review2.setId(id);
-
-        Tour tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(3.5), tour.getAvgRating());
-        assertEquals(2, tour.getVotesCount());
     }
 
     @Test
@@ -85,92 +62,10 @@ public class ReviewDaoTest {
         review.setId(id);
         review.setRating(2);
 
-        Tour tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(4.0), tour.getAvgRating());
-        assertEquals(1, tour.getVotesCount());
-
         reviewDao.update(review);
 
         Review dbReview = reviewDao.read(id);
         assertWeakEquals(review, dbReview);
-
-        tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(2.0), tour.getAvgRating());
-        assertEquals(1, tour.getVotesCount());
-    }
-
-    @Test
-    public void testUpdateGivenTwoRecords() {
-        Review review1 = TestData.getReview(data.user1, data.tour);
-        Review review2 = TestData.getReview(data.user2, data.tour);
-        review2.setRating(5);
-
-        Long id1 = reviewDao.create(review1);
-        Long id2 = reviewDao.create(review2);
-        assertNotNull(id1);
-        assertNotNull(id2);
-
-        review1.setId(id1);
-        review1.setRating(2);
-
-        Tour tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(4.5), tour.getAvgRating());
-        assertEquals(2, tour.getVotesCount());
-
-        review1.setRating(1);
-        reviewDao.update(review1);
-
-        tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(3.0), tour.getAvgRating());
-        assertEquals(2, tour.getVotesCount());
-    }
-
-    @Test
-    public void testDeleteGivenOneRecord() {
-        Review review = TestData.getReview(data.user1, data.tour);
-
-        Long id = reviewDao.create(review);
-        assertNotNull(id);
-        review.setId(id);
-
-        Tour tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(4.0), tour.getAvgRating());
-        assertEquals(1, tour.getVotesCount());
-
-        reviewDao.delete(id);
-
-        tour = tourDao.read(data.tour.getId());
-        assertNull(tour.getAvgRating());
-        assertEquals(0, tour.getVotesCount());
-    }
-
-    @Test
-    public void testDeleteGivenTwoRecords() {
-        Review review = TestData.getReview(data.user1, data.tour);
-
-        Long id1 = reviewDao.create(review);
-        review.setId(id1);
-        assertNotNull(id1);
-
-        review = TestData.getReview(data.user2, data.tour);
-        review.setRating(1);
-        Long id2 = reviewDao.create(review);
-        assertNotNull(id2);
-
-        Tour tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(2.5), tour.getAvgRating());
-        assertEquals(2, tour.getVotesCount());
-
-        reviewDao.delete(id1);
-
-        tour = tourDao.read(data.tour.getId());
-        assertEquals(new Double(1), tour.getAvgRating());
-        assertEquals(1, tour.getVotesCount());
-
-        reviewDao.delete(id2);
-        tour = tourDao.read(data.tour.getId());
-        assertNull(tour.getAvgRating());
-        assertEquals(0, tour.getVotesCount());
     }
 
     @Test
@@ -235,16 +130,9 @@ public class ReviewDaoTest {
 
     @Test
     public void testCanVoteGivenReview() {
-        Purchase purchase = new Purchase(data.user1, data.tour, new BigDecimal(0));
-        purchaseDao.create(purchase);
         Review review = TestData.getReview(data.user1, data.tour);
         reviewDao.create(review);
 
-        assertFalse(reviewDao.canVote(data.user1.getId(), data.tour.getId()));
-    }
-
-    @Test
-    public void testCanVoteGivenNoPurchase() {
         assertFalse(reviewDao.canVote(data.user1.getId(), data.tour.getId()));
     }
 

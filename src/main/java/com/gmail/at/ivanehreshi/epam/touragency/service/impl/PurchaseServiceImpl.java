@@ -1,7 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.service.impl;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.transaction.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
@@ -13,15 +15,20 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
         implements PurchaseService {
 
     private PurchaseDao purchaseDao;
+
     private TourDao tourDao;
+
     private UserDao userDao;
+
+    private ConnectionManager cm;
 
     private static final double HUNDR_PERCENT = 100.0;
 
-    public PurchaseServiceImpl(PurchaseDao purchaseDao, TourDao tourDao, UserDao userDao) {
+    public PurchaseServiceImpl(PurchaseDao purchaseDao, TourDao tourDao, UserDao userDao, ConnectionManager cm) {
         this.purchaseDao = purchaseDao;
         this.tourDao = tourDao;
         this.userDao = userDao;
+        this.cm = cm;
     }
 
     @Override
@@ -33,14 +40,24 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
     @Override
     public Purchase read(Long id) {
         Purchase purchase = super.read(id);
-        return purchaseDao.deepen(purchase);
+        return deepen(purchase);
     }
 
     @Override
     public List<Purchase> findByUser(Long id) {
         List<Purchase> purchases = purchaseDao.findByUser(id);
-        purchases.forEach(purchaseDao::deepen);
+        purchases.forEach(this::deepen);
         return purchases;
+    }
+
+    @Override
+    public Purchase deepen(Purchase purchase) {
+        Transaction.tx(cm, () -> {
+            purchase.setUser(userDao.read(purchase.getUser().getId()));
+            purchase.setTour(tourDao.read(purchase.getTour().getId()));
+        });
+
+        return purchase;
     }
 
     @Override
@@ -68,7 +85,7 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
     @Override
     public List<Purchase> findByUserTour(Long userId, Long tourId) {
         List<Purchase> purchases = purchaseDao.findByUserTour(userId, tourId);
-        purchases.forEach(purchaseDao::deepen);
+        purchases.forEach(this::deepen);
         return purchases;
     }
 
@@ -128,7 +145,7 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
     public List<Purchase> findNotProcessed() {
         List<Purchase> purchases =
                 purchaseDao.findByStatusOrderByDate(PurchaseStatus.ACTIVE);
-        purchases.forEach(purchaseDao::deepen);
+        purchases.forEach(this::deepen);
         return purchases;
     }
 

@@ -29,10 +29,6 @@ public class ReviewJdbcDao implements ReviewDao {
                     review.getRating(), review.getDate(), review.getAuthor().getId(),
                     review.getTour().getId());
 
-            jdbcTemplate.update("UPDATE `tour` SET avg_rating=" +
-                            "(IFNULL(avg_rating, 0)*votes_count + ?)/(votes_count+1), " +
-                            "votes_count=votes_count+1 WHERE id=?",
-                    review.getRating(), review.getTour().getId());
         });
 
         return id[0];
@@ -46,41 +42,15 @@ public class ReviewJdbcDao implements ReviewDao {
 
     @Override
     public void update(Review review) {
-        Transaction.tx(connectionManager, () -> {
-            int delta = review.getRating() - jdbcTemplate.queryObject("SELECT rating " +
-                    "FROM `review` WHERE id=?", rs -> rs.getInt(1), review.getId());
-
-            jdbcTemplate.update("UPDATE `review` SET text=?, rating=?, date=?, " +
-                            "author_id=?, tour_id=? WHERE id=?", review.getText(), review.getRating(),
-                    review.getDate(), review.getAuthor().getId(), review.getTour().getId(),
-                    review.getId());
-
-            jdbcTemplate.update("UPDATE `tour` SET avg_rating=" +
-                    "(avg_rating*votes_count+?)/votes_count", delta);
-
-        });
+        jdbcTemplate.update("UPDATE `review` SET text=?, rating=?, date=?, " +
+                        "author_id=?, tour_id=? WHERE id=?", review.getText(), review.getRating(),
+                review.getDate(), review.getAuthor().getId(), review.getTour().getId(),
+                review.getId());
     }
 
     @Override
     public void delete(Long id) {
-        Transaction.tx(connectionManager, () -> {
-            Long tourIdWrapper[] = new Long[1];
-            Integer ratingWrapper[] = new Integer[1];
-
-            jdbcTemplate.query("SELECT * FROM `review` WHERE id=?", rs -> {
-                rs.next();
-                ratingWrapper[0] = rs.getInt("rating");
-                tourIdWrapper[0] = rs.getLong("tour_id");
-            }, id);
-
-            jdbcTemplate.update("DELETE FROM `review` WHERE id=?", id);
-
-
-            jdbcTemplate.update("UPDATE `tour` SET avg_rating = CASE votes_count " +
-                    "WHEN 1 THEN NULL " +
-                    "ELSE (avg_rating*votes_count-?)/(votes_count-1) END, " +
-                    "votes_count=votes_count-1 WHERE id=?", ratingWrapper[0], tourIdWrapper[0]);
-        });
+        jdbcTemplate.update("DELETE FROM `review` WHERE id=?", id);
     }
 
     @Override

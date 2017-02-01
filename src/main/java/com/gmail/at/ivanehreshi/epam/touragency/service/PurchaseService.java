@@ -8,6 +8,8 @@ import java.util.*;
 public interface PurchaseService extends CrudService<Purchase, Long> {
     List<Purchase> findByUser(Long id);
 
+    Purchase deepen(Purchase purchase);
+
     Purchase purchase(Long userId, Long tourId);
 
     List<Purchase> findByUserTour(Long userId, Long tourId);

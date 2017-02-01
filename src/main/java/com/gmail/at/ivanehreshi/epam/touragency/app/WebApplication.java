@@ -64,12 +64,12 @@ public class WebApplication {
         TourService tourService = new TourServiceImpl(daoFactory.getTourDao());
 
         PurchaseService purchaseService = new PurchaseServiceImpl(daoFactory.getPurchaseDao(),
-                        daoFactory.getTourDao(), daoFactory.getUserDao());
+                        daoFactory.getTourDao(), daoFactory.getUserDao(), connectionManager);
 
         AuthService authService = new AuthServiceImpl(userService);
 
         ReviewService reviewService = new ReviewServiceImpl(daoFactory.getReviewDao(),
-                daoFactory.getUserDao());
+                daoFactory.getUserDao(), daoFactory.getTourDao(), connectionManager);
 
         TourImageService tourImageService = new TourImageServiceImpl(daoFactory.getTourImageDao());
         ImageService imageService = getImageService();

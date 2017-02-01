@@ -82,20 +82,20 @@ public class PurchaseDaoTest {
         assertNull(dbPurchase);
     }
 
-    @Test
-    public void testDeepen() {
-        Purchase purchase = new Purchase(data.user, data.tour1, BigDecimal.ZERO);
-        Long id = purchaseDao.create(purchase);
-        purchase.setId(id);
-
-        Purchase dbPurchase = purchaseDao.read(id);
-        purchaseDao.deepen(dbPurchase);
-
-        dbPurchase.setDate(null);
-        purchase.getUser().setRoles(Collections.EMPTY_LIST);
-
-        assertEquals(purchase, dbPurchase);
-    }
+//    @Test
+//    public void testDeepen() {
+//        Purchase purchase = new Purchase(data.user, data.tour1, BigDecimal.ZERO);
+//        Long id = purchaseDao.create(purchase);
+//        purchase.setId(id);
+//
+//        Purchase dbPurchase = purchaseDao.read(id);
+//        purchaseDao.deepen(dbPurchase);
+//
+//        dbPurchase.setDate(null);
+//        purchase.getUser().setRoles(Collections.EMPTY_LIST);
+//
+//        assertEquals(purchase, dbPurchase);
+//    }
 
     @Test
     public void testFindByUser() {

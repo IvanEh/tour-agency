@@ -1,7 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.service.impl;
 
 import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.*;
 import com.gmail.at.ivanehreshi.epam.touragency.persistence.dao.*;
+import com.gmail.at.ivanehreshi.epam.touragency.persistence.transaction.*;
 import com.gmail.at.ivanehreshi.epam.touragency.service.*;
 
 import java.util.*;
@@ -12,26 +14,74 @@ public class ReviewServiceImpl extends AbstractDaoService<Review, Long>
 
     private UserDao userDao;
 
-    public ReviewServiceImpl(ReviewDao reviewDao, UserDao userDao) {
+    private TourDao tourDao;
+
+    private ConnectionManager cm;
+
+    public ReviewServiceImpl(ReviewDao reviewDao, UserDao userDao, TourDao tourDao,
+                             ConnectionManager cm) {
         this.reviewDao = reviewDao;
         this.userDao = userDao;
+        this.tourDao = tourDao;
+        this.cm = cm;
     }
 
     @Override
     public void create(Review review) {
-        checkConstraintsOrThrow(review);
-        if(reviewDao.canVote(review.getAuthor().getId(), review.getTour().getId())) {
-            review.setDate(new Date());
-            Long id = reviewDao.create(review);
-            review.setId(id);
-        }
+        Transaction.tx(cm, () -> {
+            checkConstraintsOrThrow(review);
+            if(reviewDao.canVote(review.getAuthor().getId(), review.getTour().getId())) {
+                review.setDate(new Date());
+                Long id = reviewDao.create(review);
+                review.setId(id);
+
+                Tour tour = tourDao.read(review.getTour().getId());
+                double rating = tour.getAvgRating() == null ? 0 : tour.getAvgRating();
+
+                rating = rating*tour.getVotesCount() + review.getRating();
+                rating = rating / (tour.getVotesCount() + 1);
+                tour.setAvgRating(rating);
+                tour.setVotesCount(tour.getVotesCount() + 1);
+
+                tourDao.update(tour);
+            }
+        });
     }
 
     @Override
     public void update(Review review) {
-        checkConstraintsOrThrow(review);
-        review.setDate(new Date());
-        super.update(review);
+        Transaction.tx(cm, () -> {
+            checkConstraintsOrThrow(review);
+            int delta = review.getRating() - reviewDao.read(review.getId()).getRating();
+            review.setDate(new Date());
+            super.update(review);
+
+            Tour tour = tourDao.read(review.getTour().getId());
+            double rating = (tour.getAvgRating()*tour.getVotesCount() + delta);
+            rating = rating / tour.getVotesCount();
+            tour.setAvgRating(rating);
+            tourDao.update(tour);
+        });
+    }
+
+    @Override
+    public void delete(Long id) {
+        Transaction.tx(cm, () -> {
+            Review review = reviewDao.read(id);
+
+            super.delete(id);
+
+            Tour tour = tourDao.read(review.getTour().getId());
+            Double rating = null;
+            if (tour.getVotesCount() > 1) {
+                rating = tour.getAvgRating()*tour.getVotesCount() - review.getRating();
+                rating = rating / (tour.getVotesCount() - 1);
+            }
+            tour.setAvgRating(rating);
+            tour.setVotesCount(tour.getVotesCount() - 1);
+            tourDao.update(tour);
+        });
+        super.delete(id);
     }
 
     @Override
