@@ -171,13 +171,11 @@ public class TourServiceTest {
         assertWeakEquals(review2, reviews.get(0));
     }
 
-    private static void assertWeakEquals(Review expected, Review actual) {
+    private void assertWeakEquals(Review expected, Review actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getText(), actual.getText());
         assertEquals(expected.getRating(), actual.getRating());
         assertEquals(expected.getAuthor().getId(), actual.getAuthor().getId());
         assertEquals(expected.getTour().getId(), actual.getTour().getId());
     }
-
-
 }
