@@ -66,6 +66,7 @@ public class ImageProviderServlet extends HttpServlet{
 
             if (filename != null) {
                 names[i] = getUrl(req, filename);
+                i++;
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;

@@ -42,7 +42,12 @@ public class AuthServiceImpl implements AuthService {
     public boolean register(User user) {
         user.setPassword(PasswordEncoder.encodePassword(user.getPassword()));
         user.setRoles(Collections.singletonList(Role.CUSTOMER));
-        userService.create(user);
+        try {
+            userService.create(user);
+        } catch (Exception e) {
+            user.setId(null);
+        }
+
         return user.getId() != null;
     }
 }

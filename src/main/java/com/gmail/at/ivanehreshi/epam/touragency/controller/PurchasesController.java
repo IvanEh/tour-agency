@@ -8,6 +8,7 @@ import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 import java.util.*;
 
 public final class PurchasesController extends Controller {
+    private static final int MAX_DESC_LENGTH = 300;
 
     private PurchaseService purchaseService =
             ServiceLocator.INSTANCE.get(PurchaseService.class);
@@ -19,6 +20,9 @@ public final class PurchasesController extends Controller {
 
         List<Group<Tour, Purchase>> purchases =
                 purchaseService.findByUserGroupByTourOrdered(user.getId());
+        purchases.stream().map(Group::getKey)
+                 .forEach(t -> t.setDescription(TextShrinker.shrink(t.getDescription(),
+                         MAX_DESC_LENGTH)));
 
         reqService.setPageAttribute("purchaseGroups", purchases);
     }

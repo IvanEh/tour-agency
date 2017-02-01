@@ -13,7 +13,7 @@ import java.util.stream.*;
 public final class ToursController extends Controller {
     private TourService tourService = ServiceLocator.INSTANCE.get(TourService.class);
 
-    private static final int MAX_DESC_LENGTH = 225;
+    private static final int MAX_DESC_LENGTH = 300;
 
     private static final int FILTER_MAX_PRICE = 1999;
 
@@ -38,7 +38,7 @@ public final class ToursController extends Controller {
         preparePaging(reqService, tours.size());
 
         tours.forEach(t -> {
-            t.setDescription(shrinkText(t.getDescription()));
+            t.setDescription(TextShrinker.shrink(t.getDescription(), MAX_DESC_LENGTH));
         });
 
         for(TourType t: tourTypesArr) {
@@ -56,13 +56,6 @@ public final class ToursController extends Controller {
         }
     }
 
-    private String shrinkText(String text) {
-        if (text.length() > MAX_DESC_LENGTH) {
-            return text.substring(0, MAX_DESC_LENGTH) + "...";
-        }
-
-        return text;
-    }
 
     @Override
     public void post(RequestService reqService) {
