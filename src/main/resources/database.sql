@@ -88,6 +88,3 @@ CREATE TABLE IF NOT EXISTS `tour_image` (
   CONSTRAINT `fk_tour_image_tour`
     FOREIGN KEY (`tour_id`)
     REFERENCES `tour` (`id`));
-
-INSERT INTO `role` VALUES(1, 'CUSTOMER');
-INSERT INTO `role` VALUES(2, 'AGENT');

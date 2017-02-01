@@ -11,7 +11,7 @@ public final class LoginController extends Controller {
     @Override
     public void get(RequestService reqService) {
         String username = (String) reqService.getFlashParameter("username");
-        reqService.putParameter("username", username);
+        reqService.setPageAttribute("username", username);
     }
 
     @Override

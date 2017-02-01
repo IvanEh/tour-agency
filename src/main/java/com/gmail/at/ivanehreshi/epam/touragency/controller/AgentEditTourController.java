@@ -11,6 +11,6 @@ public class AgentEditTourController extends Controller {
     @Override
     public void get(RequestService reqService) {
         Long id = reqService.getLong("id").orElse(null);
-        reqService.putParameter("tour", tourService.read(id));
+        reqService.setPageAttribute("tour", tourService.read(id));
     }
 }

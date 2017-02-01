@@ -30,6 +30,8 @@ public class ImageServiceImpl implements ImageService {
 
     private static final String THUMBNAIL_SUFFIX = "-thumb.png";
 
+    private static final int THUMBNAIL_SIZE = 64;
+
     public ImageServiceImpl(String location, long maxSize) {
         this.location = location.replace(LINUX_HOME_DIR,
                 System.getProperty(SYS_PROP_USER_HOME)) + File.separator;
@@ -72,9 +74,9 @@ public class ImageServiceImpl implements ImageService {
             BufferedImage bufferedImage = ImageIO.read(file);
 
             BufferedImage thumbnail = Scalr.resize(bufferedImage, Scalr.Method.BALANCED,
-                    Scalr.Mode.AUTOMATIC, 64, 64);
+                    Scalr.Mode.AUTOMATIC, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
 
-            ImageIO.write(thumbnail, "png", new File(location + uuid + "-thumb.png"));
+            ImageIO.write(thumbnail, "png", new File(location + uuid + THUMBNAIL_SUFFIX));
         } catch (IOException e) {
             LOGGER.info("Cannot create thumbnail", e);
         }

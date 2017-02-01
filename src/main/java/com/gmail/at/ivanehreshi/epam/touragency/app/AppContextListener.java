@@ -13,11 +13,13 @@ public class AppContextListener implements ServletContextListener {
     private static final Logger LOGGER
             = LogManager.getLogger(AppContextListener.class);
 
+    private WebApplication webApplication = new WebApplication();
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        sce.getServletContext().setAttribute("webApplication", WebApplication.INSTANCE);
-        WebApplication.INSTANCE.setServletContext(sce.getServletContext());
-        WebApplication.INSTANCE.init();
+        sce.getServletContext().setAttribute("webApplication", webApplication);
+        webApplication.setServletContext(sce.getServletContext());
+        webApplication.init();
 
         LOGGER.info("WebApplication initialized");
     }

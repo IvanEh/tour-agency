@@ -16,6 +16,6 @@ public final class RandomHotTourController extends Controller {
     @Override
     public void get(RequestService reqService) {
         Set<Tour> randomTours = tourService.findRandomHotTours(COUNT);
-        reqService.putParameter("tours", randomTours);
+        reqService.setPageAttribute("tours", randomTours);
     }
 }

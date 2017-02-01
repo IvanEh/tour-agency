@@ -37,6 +37,7 @@ public class TestData {
         tour.setPrice(new BigDecimal(100));
         tour.setDescription("NO DESC");
         tour.setTitle("Tour 1");
+        tour.setDestination("Dest");
         tour.setType(TourType.EXCURSION);
         return tour;
     }
@@ -48,6 +49,7 @@ public class TestData {
         tour.setPrice(new BigDecimal(10));
         tour.setDescription("NO DESC");
         tour.setTitle("Tour 2");
+        tour.setDestination("Dest");
         tour.setType(TourType.SHOPPING);
         return tour;
     }
@@ -59,6 +61,7 @@ public class TestData {
         tour.setPrice(new BigDecimal(50));
         tour.setDescription("NO DESC");
         tour.setTitle("Tour 3");
+        tour.setDestination("Dest");
         tour.setType(TourType.RECREATION);
         return tour;
     }

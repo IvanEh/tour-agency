@@ -2,7 +2,14 @@ package com.gmail.at.ivanehreshi.epam.touragency.util;
 
 import java.util.*;
 
+/**
+ * Holds static helper methods for immutable operations
+ */
 public class Immutable {
+
+    /**
+     * Merges to iterable into one List
+     */
     public static <E> List<E> cons(Iterable<E>... iters) {
         List<E> list = new ArrayList<E>();
         for(Iterable<E> iter: iters) {

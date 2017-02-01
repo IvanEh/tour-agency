@@ -1,12 +1,24 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.transaction;
 
-import com.gmail.at.ivanehreshi.epam.touragency.util.*;
-
 import javax.sql.*;
 import java.io.*;
 import java.sql.*;
 import java.util.logging.*;
 
+/**
+ * The data source enabled multiple method transaction span by intercepting connection
+ * creation and release points
+ *
+ * <p>In a single thread a method that start a transaction and does not closes connection and
+ * call other such methods will have a mutual transaction because all the methods will deal
+ * with the same pooled connection instance </p>
+ *
+ * Use Transaction.tx for safe transaction creation
+ *
+ * Wraps a pooled DataSource.
+ * {@see ConnectionTxProxy}
+ * {@ses Transaction}
+ */
 public class DataSourceTxProxy implements DataSource {
     private DataSource ds;
 
@@ -38,7 +50,7 @@ public class DataSourceTxProxy implements DataSource {
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override

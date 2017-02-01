@@ -33,7 +33,7 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
     }
 
     @Override
-    public UserDao getDao() {
+    public UserDao getBackingDao() {
         return userDao;
     }
 
@@ -61,7 +61,6 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
             roles.add(Role.TOUR_AGENT);
         }
         userDao.updateRoles(userId, roles);
-        userDao.addRole(userId, Role.TOUR_AGENT);
     }
 
     @Override

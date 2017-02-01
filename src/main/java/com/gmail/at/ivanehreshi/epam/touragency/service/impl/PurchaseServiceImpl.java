@@ -133,7 +133,7 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
     }
 
     @Override
-    public PurchaseDao getDao() {
+    public PurchaseDao getBackingDao() {
         return purchaseDao;
     }
 

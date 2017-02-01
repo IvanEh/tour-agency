@@ -29,22 +29,22 @@ public class TourController extends Controller {
         List<Review> reviews = reviewService.findByTour(id);
         List<TourImage> tourImages = tourImageService.findByTour(tour.getId());
 
-        reqService.putParameter("tour", tour);
+        reqService.setPageAttribute("tour", tour);
 
-        reqService.putParameter("agent",
+        reqService.setPageAttribute("agent",
                 reqService.getRequest().isUserInRole(Role.TOUR_AGENT.name()));
 
-        reqService.putParameter("discount", Math.max(reqService.loadUser()
+        reqService.setPageAttribute("discount", Math.max(reqService.loadUser()
                 .map(User::getDiscount)
                 .orElse(0), tour.getDiscount()));
 
-        reqService.putParameter("canVote", reviewService.canVote(reqService.getUser()
+        reqService.setPageAttribute("canVote", reviewService.canVote(reqService.getUser()
                 .map(User::getId).orElse(null), id));
 
-        reqService.putParameter("reviews", reviews);
-        reqService.putParameter("tourImages", tourImages);
+        reqService.setPageAttribute("reviews", reviews);
+        reqService.setPageAttribute("tourImages", tourImages);
         Review oldReview = reviewService.findByPurchase(
                 reqService.getUser().map(User::getId).orElse(null), tour.getId());
-        reqService.putParameter("oldReview", oldReview);
+        reqService.setPageAttribute("oldReview", oldReview);
     }
 }

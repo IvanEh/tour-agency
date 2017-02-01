@@ -8,7 +8,7 @@ import javax.servlet.*;
 import java.util.*;
 
 /**
- * A more user friendly way of creating a registering a {@link ControllerDispatcherServlet}
+ * A more user friendly way of creating and registering a {@link ControllerDispatcherServlet}
  */
 public class ControllerDispatcherServletBuilder {
     private final ServletContext servletContext;

@@ -10,8 +10,6 @@ import java.util.*;
 import java.util.concurrent.locks.*;
 import java.util.regex.*;
 
-// TODO: UserDao should reside here?
-// TODO: auth constraint short-hand method
 /**
  * A singleton object for encapsulating user authorization and authentication
  * Allows adding security constrains to the web application
@@ -20,6 +18,8 @@ public enum SecurityContext {
     INSTANCE;
 
     private static Logger LOGGER = LogManager.getLogger(SecurityContext.class);
+
+    private static final String SESSION_USER = "user";
 
     private UserDao userDao;
 
@@ -100,12 +100,12 @@ public enum SecurityContext {
         if(maybeUser.isPresent()) {
             Long id = maybeUser.get().getId();
             User user = userDao.read(id);
-            req.getSession().setAttribute("user", user);
+            req.getSession().setAttribute(SESSION_USER, user);
         }
     }
 
     public Optional<User> getCurrentUser(HttpServletRequest req) {
-        return Optional.ofNullable((User) req.getSession(true).getAttribute("user"));
+        return Optional.ofNullable((User) req.getSession(true).getAttribute(SESSION_USER));
     }
 
     public void reset() {

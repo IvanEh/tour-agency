@@ -2,6 +2,9 @@ package com.gmail.at.ivanehreshi.epam.touragency.util;
 
 import java.util.*;
 
+/**
+ * Converts cyrillic URL parameters to UTF-8
+ */
 public class UrlParamDecoder {
     public static Optional<String> decode(String param) {
         return Optional.ofNullable(param)

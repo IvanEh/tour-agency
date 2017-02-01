@@ -4,6 +4,9 @@ import com.gmail.at.ivanehreshi.epam.touragency.domain.*;
 
 import java.util.*;
 
+/**
+ * This class holds static methods intended for user input validation
+ */
 public class Validation {
     public static Optional<String> check(User user) {
 

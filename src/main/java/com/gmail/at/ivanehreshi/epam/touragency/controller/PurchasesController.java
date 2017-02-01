@@ -20,7 +20,7 @@ public final class PurchasesController extends Controller {
         List<Group<Tour, Purchase>> purchases =
                 purchaseService.findByUserGroupByTourOrdered(user.getId());
 
-        reqService.putParameter("purchaseGroups", purchases);
+        reqService.setPageAttribute("purchaseGroups", purchases);
     }
 
     @Override

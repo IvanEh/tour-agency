@@ -9,15 +9,16 @@ import javax.servlet.annotation.*;
 import javax.servlet.http.*;
 import java.io.*;
 
+/**
+ * Servlet for handling multipart upload.
+ * Multipart handling cannot be handled in {@link com.gmail.at.ivanehreshi.epam.touragency.dispatcher.Controller}
+ * because of Tomcat's multipart support. Tomcat cannot handle multipart data after a
+ * forward was made
+ */
 @WebServlet(urlPatterns = "/image-provider/*")
 @MultipartConfig
 public class ImageProviderServlet extends HttpServlet{
     private static final Logger LOGGER = LogManager.getLogger(ImageProviderServlet.class);
-
-    private static final String PARAM_LOCATION = "location";
-
-    private static final String PARAM_MAX_SIZE = "maxSize";
-
 
     private static final String FORM_IMAGES = "images[]";
 
@@ -103,7 +104,6 @@ public class ImageProviderServlet extends HttpServlet{
     private String quote(String name) {
         return "\"" + name + "\"";
     }
-
 
     private String getExtension(String contentType) {
         switch (contentType) {

@@ -24,11 +24,12 @@ import static com.gmail.at.ivanehreshi.epam.touragency.util.ResourcesUtil.*;
  * 1. configure the application(connection manager, service locator, security, controllers)
  * 2. bootstrap the application
  */
-public enum WebApplication {
-    INSTANCE;
-
+public class WebApplication {
     private static final Logger LOGGER = LogManager.getLogger(WebApplication.class);
 
+    /**
+     * This field necessary for registering front controller servlet
+     */
     private ServletContext servletContext;
 
     private ConnectionManager connectionManager;
@@ -39,26 +40,21 @@ public enum WebApplication {
 
     private Properties appProperties;
 
-    WebApplication() {
-        connectionManager = ConnectionManager.fromJndi("jdbc/tour_agency");
-    }
-
     protected void init() {
         serviceLocator = ServiceLocator.INSTANCE;
-        daoFactory = new JdbcDaoFactory(connectionManager);
 
         readProperties();
+        setUpPersistence();
         createDb();
         prepareServices();
 
         SecurityContext.INSTANCE.setUserDao(daoFactory.getUserDao());
 
-        configureSecurity(SecurityContext.INSTANCE);
-
-        ControllerDispatcherServletBuilder servletBuilder = new ControllerDispatcherServletBuilder(servletContext);
-
+        ControllerDispatcherServletBuilder servletBuilder =
+                new ControllerDispatcherServletBuilder(servletContext);
         buildDispatcherServlet(servletBuilder)
                 .buildAndRegister("Command Dispatcher Servlet", "/app/*");
+        configureSecurity(SecurityContext.INSTANCE);
     }
 
     private void prepareServices() {
@@ -139,6 +135,12 @@ public enum WebApplication {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionManager);
         jdbcTemplate.executeSqlFile(file);
         serviceLocator.publish(connectionManager, ConnectionManager.class);
+    }
+
+    private void setUpPersistence() {
+        connectionManager = ConnectionManager.fromJndi(
+                appProperties.getProperty(AppProperties.CP_JNDI));
+        daoFactory = new JdbcDaoFactory(connectionManager);
     }
 
     public ConnectionManager getConnectionManager() {

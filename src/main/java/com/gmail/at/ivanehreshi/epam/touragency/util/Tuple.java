@@ -1,5 +1,8 @@
 package com.gmail.at.ivanehreshi.epam.touragency.util;
 
+/**
+ * A 2-tuple class for representing two values of different type
+ */
 public class Tuple<K, V> {
     private K first;
     private V second;

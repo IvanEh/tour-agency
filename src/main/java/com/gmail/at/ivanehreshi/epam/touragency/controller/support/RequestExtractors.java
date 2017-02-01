@@ -6,6 +6,9 @@ import com.gmail.at.ivanehreshi.epam.touragency.util.*;
 
 import java.math.*;
 
+/**
+ * This class contains static methods for deserializing entities from HTML forms
+ */
 public class RequestExtractors {
     public static Review extractReview(RequestService reqService) {
         Review review = new Review();

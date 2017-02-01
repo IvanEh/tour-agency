@@ -81,7 +81,7 @@ public class TourServiceImpl extends AbstractDaoService<Tour, Long>
     }
 
     @Override
-    public TourDao getDao() {
+    public TourDao getBackingDao() {
         return tourDao;
     }
 

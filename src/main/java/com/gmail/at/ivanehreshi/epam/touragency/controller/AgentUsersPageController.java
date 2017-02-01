@@ -19,7 +19,7 @@ public final class AgentUsersPageController extends Controller {
                                 userService.computePurchasesTotalPrice(u.getId()).intValue(),
                                 u.getRoles().contains(Role.TOUR_AGENT)))
                      .collect(Collectors.toList());
-        reqService.putParameter("summaries", summaries);
+        reqService.setPageAttribute("summaries", summaries);
     }
 
     public static class UserPurchaseSummaryDto {
