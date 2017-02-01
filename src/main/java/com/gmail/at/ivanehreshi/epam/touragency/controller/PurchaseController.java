@@ -19,8 +19,8 @@ public class PurchaseController extends Controller {
         Long tourId = reqService.getLong("tourId").get();
         Long userId = reqService.getUser().get().getId();
         List<Purchase> purchases = purchaseService.findByUserTour(userId, tourId);
-        reqService.putParameter("purchases", purchases);
-        reqService.putParameter("tourId", tourId);
-        reqService.putParameter("tour", purchases.get(0).getTour());
+        reqService.setPageAttribute("purchases", purchases);
+        reqService.setPageAttribute("tourId", tourId);
+        reqService.setPageAttribute("tour", purchases.get(0).getTour());
     }
 }

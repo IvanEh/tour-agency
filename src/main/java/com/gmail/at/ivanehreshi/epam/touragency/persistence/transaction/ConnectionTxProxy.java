@@ -1,7 +1,5 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.transaction;
 
-import com.gmail.at.ivanehreshi.epam.touragency.util.*;
-
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -49,7 +47,7 @@ public class ConnectionTxProxy implements Connection {
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
-        new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     void borrow() {

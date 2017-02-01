@@ -22,7 +22,7 @@ public class TourImageServiceImpl extends AbstractDaoService<TourImage, Long>
 
     // backing dao
     @Override
-    public TourImageDao getDao() {
+    public TourImageDao getBackingDao() {
         return tourImageDao;
     }
 

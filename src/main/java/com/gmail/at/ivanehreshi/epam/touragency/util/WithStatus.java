@@ -1,5 +1,9 @@
 package com.gmail.at.ivanehreshi.epam.touragency.util;
 
+/**
+ * Helper class for abstracting of the underlying object fail status
+ * @param <T>
+ */
 public class WithStatus<T> {
     private T payload;
     private boolean ok;

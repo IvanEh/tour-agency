@@ -16,8 +16,8 @@ public final class BuyController extends Controller {
         Tour tour = tourService.read(tourId);
         Long userId = reqService.getUser().get().getId();
 
-        reqService.putParameter("tour", tour);
-        reqService.putParameter("discount", userService.computeDiscount(userId, tourId));
-        reqService.putParameter("price", tourService.computePrice(tourId, userId));
+        reqService.setPageAttribute("tour", tour);
+        reqService.setPageAttribute("discount", userService.computeDiscount(userId, tourId));
+        reqService.setPageAttribute("price", tourService.computePrice(tourId, userId));
     }
 }

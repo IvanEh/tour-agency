@@ -33,7 +33,7 @@ public class UserServiceImpl extends AbstractDaoService<User, Long>
     }
 
     @Override
-    public UserDao getDao() {
+    public UserDao getBackingDao() {
         return userDao;
     }
 

@@ -5,10 +5,15 @@ import java.util.*;
 
 public class Purchase {
     private Long id;
+
     private User user;
+
     private Tour tour;
+
     private Date date;
+
     private BigDecimal price;
+
     private PurchaseStatus status;
 
     public Purchase() {

@@ -33,22 +33,22 @@ public final class ToursController extends Controller {
 
         List<Tour> tours = tourService.executeDynamicFilter(filter);
 
-        reqService.putParameter("tours", tours);
-        reqService.putParameter("data", filter);
+        reqService.setPageAttribute("tours", tours);
+        reqService.setPageAttribute("data", filter);
         preparePaging(reqService, tours.size());
 
         for(TourType t: tourTypesArr) {
-            reqService.putParameter(t.name(), true);
+            reqService.setPageAttribute(t.name(), true);
         }
     }
 
     private void preparePaging(RequestService reqService, int tourCount) {
         int offset = reqService.getInt("offset").orElse(0);
         if (tourCount == PAGE_SIZE) {
-            reqService.putParameter("next", offset + PAGE_SIZE);
+            reqService.setPageAttribute("next", offset + PAGE_SIZE);
         }
         if (offset > 0) {
-            reqService.putParameter("prev", offset - PAGE_SIZE);
+            reqService.setPageAttribute("prev", offset - PAGE_SIZE);
         }
     }
 

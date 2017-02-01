@@ -25,29 +25,6 @@ public class ControllerDispatcherServlet extends HttpServlet {
     private final List<MatcherEntry> httpServiceMatchers;
 
 
-    public ControllerDispatcherServlet() {
-        httpMatchers = new ArrayList<>();
-        httpServiceMatchers = new ArrayList<>();
-    }
-
-    /**
-     * Define a URL-Controller mapping
-     *
-     * @param url      - regular expression that is used for matching
-     * @param controller
-     */
-    public void addMapping(String url, Controller controller) {
-        MatcherEntry matcherEntry = new MatcherEntry(url, controller);
-        addMapping(matcherEntry);
-    }
-
-    void addMapping(MatcherEntry entry) {
-        if (entry.controller.isService()) {
-            httpServiceMatchers.add(entry);
-        } else {
-            httpMatchers.add(entry);
-        }
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -64,6 +41,12 @@ public class ControllerDispatcherServlet extends HttpServlet {
         dispatch(req, resp);
     }
 
+    /**
+     * Determines which Controller should process the request and how to handle the
+     * result of the controller's processing
+     * @param req
+     * @param resp
+     */
     private void dispatch(HttpServletRequest req, HttpServletResponse resp) {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null)
@@ -88,6 +71,30 @@ public class ControllerDispatcherServlet extends HttpServlet {
         ConnectionManager cm = ServiceLocator.INSTANCE.get(ConnectionManager.class);
         if (cm != null) {
             cm.clean();
+        }
+    }
+
+    public ControllerDispatcherServlet() {
+        httpMatchers = new ArrayList<>();
+        httpServiceMatchers = new ArrayList<>();
+    }
+
+    /**
+     * Define a URL-Controller mapping
+     *
+     * @param url      - regular expression that is used for matching
+     * @param controller
+     */
+    public void addMapping(String url, Controller controller) {
+        MatcherEntry matcherEntry = new MatcherEntry(url, controller);
+        addMapping(matcherEntry);
+    }
+
+    void addMapping(MatcherEntry entry) {
+        if (entry.controller.isService()) {
+            httpServiceMatchers.add(entry);
+        } else {
+            httpMatchers.add(entry);
         }
     }
 

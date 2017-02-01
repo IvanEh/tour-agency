@@ -17,11 +17,11 @@ public class AgentOrderController extends Controller {
 
         if(id != null) {
             Purchase purchase = purchaseService.read(id);
-            reqService.putParameter("purchase", purchase);
+            reqService.setPageAttribute("purchase", purchase);
         }
 
         List<Purchase> purchases = purchaseService.findNotProcessed();
-        reqService.putParameter("purchases", purchases);
+        reqService.setPageAttribute("purchases", purchases);
     }
 
     @Override

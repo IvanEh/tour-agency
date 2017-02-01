@@ -15,8 +15,8 @@ public final class RegisterController extends Controller {
     @Override
     public void get(RequestService reqService) {
         User user = (User) reqService.getFlashParameter("user");
-        reqService.putParameter("user", user);
-        reqService.putParameter("error", reqService.getFlashParameter("error"));
+        reqService.setPageAttribute("user", user);
+        reqService.setPageAttribute("error", reqService.getFlashParameter("error"));
     }
 
     @Override

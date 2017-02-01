@@ -2,6 +2,9 @@ package com.gmail.at.ivanehreshi.epam.touragency.util;
 
 import java.util.*;
 
+/**
+ * A helper tuple class for representing grouped data
+ */
 public class Group<K, E> {
     private K key;
     private Collection<E> elems;

@@ -29,6 +29,9 @@ public enum WebApplication {
 
     private static final Logger LOGGER = LogManager.getLogger(WebApplication.class);
 
+    /**
+     * This field necessary for registering front controller servlet
+     */
     private ServletContext servletContext;
 
     private ConnectionManager connectionManager;
@@ -39,26 +42,22 @@ public enum WebApplication {
 
     private Properties appProperties;
 
-    WebApplication() {
-        connectionManager = ConnectionManager.fromJndi("jdbc/tour_agency");
-    }
-
     protected void init() {
         serviceLocator = ServiceLocator.INSTANCE;
         daoFactory = new JdbcDaoFactory(connectionManager);
 
         readProperties();
+        setUpDb();
         createDb();
         prepareServices();
 
         SecurityContext.INSTANCE.setUserDao(daoFactory.getUserDao());
 
-        configureSecurity(SecurityContext.INSTANCE);
-
-        ControllerDispatcherServletBuilder servletBuilder = new ControllerDispatcherServletBuilder(servletContext);
-
+        ControllerDispatcherServletBuilder servletBuilder =
+                new ControllerDispatcherServletBuilder(servletContext);
         buildDispatcherServlet(servletBuilder)
                 .buildAndRegister("Command Dispatcher Servlet", "/app/*");
+        configureSecurity(SecurityContext.INSTANCE);
     }
 
     private void prepareServices() {
@@ -139,6 +138,11 @@ public enum WebApplication {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionManager);
         jdbcTemplate.executeSqlFile(file);
         serviceLocator.publish(connectionManager, ConnectionManager.class);
+    }
+
+    private void setUpDb() {
+        connectionManager = ConnectionManager.fromJndi(
+                appProperties.getProperty(AppProperties.CP_JNDI));
     }
 
     public ConnectionManager getConnectionManager() {

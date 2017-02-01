@@ -23,8 +23,6 @@ public class ConnectionManager {
     private static final java.lang.String JDBC_PASSWORD = "jdbc.password";
     private static final java.lang.String JDBC_POOL = "jdbc.pool";
 
-    private static final String DEFAULT_POOL_SIZE = "1";
-
     private DataSource dataSource;
     private int poolSize;
 
@@ -76,7 +74,6 @@ public class ConnectionManager {
         mysqlDs.setPassword(props.getProperty(JDBC_PASSWORD, "root"));
 
         ConnectionManager connManager = new ConnectionManager(mysqlDs);
-        connManager.poolSize = Integer.parseInt(props.getProperty(JDBC_POOL, DEFAULT_POOL_SIZE));
         return connManager;
     }
 

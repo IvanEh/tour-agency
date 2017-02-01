@@ -1,7 +1,5 @@
 package com.gmail.at.ivanehreshi.epam.touragency.persistence.transaction;
 
-import com.gmail.at.ivanehreshi.epam.touragency.util.*;
-
 import javax.sql.*;
 import java.io.*;
 import java.sql.*;
@@ -38,7 +36,7 @@ public class DataSourceTxProxy implements DataSource {
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override

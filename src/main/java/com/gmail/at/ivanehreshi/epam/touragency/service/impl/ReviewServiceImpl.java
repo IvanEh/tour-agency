@@ -58,7 +58,7 @@ public class ReviewServiceImpl extends AbstractDaoService<Review, Long>
     }
 
     @Override
-    public ReviewDao getDao() {
+    public ReviewDao getBackingDao() {
         return reviewDao;
     }
 
