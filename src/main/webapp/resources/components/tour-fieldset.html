@@ -38,7 +38,7 @@
         <div class="col-md-9">
             <div class="input-group">
                 <input id="price" name="price" class="form-control" placeholder="100"
-                       required="" type="text" value="${tour.price}">
+                       required="" type="text" value="${tour.price.doubleValue()}">
                 <span class="input-group-addon">$</span>
             </div>
         </div>
@@ -114,7 +114,7 @@
         </label>
 
         <div class="col-md-12">
-            <div class="well" >
+            <div class="well" style="overflow: scroll">
                             <textarea class="form-control" id="description"
                                       name="description" data-provide="markdown">${tour.description}</textarea>
             </div>

@@ -47,7 +47,9 @@
                                 <form action="/agent/setadmin" method="POST"
                                       class="inline">
                                     <input type="hidden" name="id" value="${user.id}"/>
-                                    <div class="btn btn-sm" data-tour-agent-action="true">Make Tour Agent</div>
+                                    <div class="btn btn-sm" data-tour-agent-action="true">
+                                        <fmt:message key="admin_tours.make_admin" bundle="${rb}"/>
+                                    </div>
                                 </form>
                             </c:if>
 

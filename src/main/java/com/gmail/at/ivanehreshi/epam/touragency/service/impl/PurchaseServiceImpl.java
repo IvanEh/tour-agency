@@ -40,7 +40,12 @@ public class PurchaseServiceImpl extends AbstractDaoService<Purchase, Long>
     @Override
     public Purchase read(Long id) {
         Purchase purchase = super.read(id);
-        return deepen(purchase);
+
+        if (purchase != null) {
+            return deepen(purchase);
+        }
+
+        return null;
     }
 
     @Override

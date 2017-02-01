@@ -233,7 +233,7 @@ public class JdbcTemplate {
             LOGGER.warn("SQL script file not found");
             return false;
         }catch (SQLException e) {
-            LOGGER.error("Errors while executing SQL script at #" + line +
+            LOGGER.trace("Errors while executing SQL script at #" + line +
                     " in file " + file.getAbsolutePath(), e);
             return false;
         }

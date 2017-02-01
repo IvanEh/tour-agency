@@ -25,7 +25,8 @@
     "bootstrap-markdown": "^2.10.0",
     "to-markdown": "^3.0.3",
     "marked": "^0.3.6",
-    "nouislider": "^9.2.0"
+    "nouislider": "^9.2.0",
+    "markdown": "^0.5.0"
   },
   "resolutions": {
     "jquery": "~3.1.1"

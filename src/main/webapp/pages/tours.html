@@ -85,18 +85,18 @@
                         <div class="form-group col-md-12">
                             <div class="col-md-4">
                                 <label>
-                                    Sort
+                                   <fmt:message key="filter.sort" bundle="${rb}"/>
                                 </label>
                             </div>
                             <div class="col-md-8">
                                 <div class="btn btn-default" data-sort-btn="${data.ratingSort}">
-                                    Rating
+                                    <fmt:message key="filter.rating" bundle="${rb}"/>
                                     <i></i>
                                     <input type="hidden" name="rating" value=""/>
                                 </div>
 
                                 <div class="btn btn-default" data-sort-btn="${data.votesSort}">
-                                    Votes
+                                    <fmt:message key="filter.votes" bundle="${rb}"/>
                                     <i></i>
                                     <input type="hidden" name="votes" value=""/>
                                 </div>
@@ -109,7 +109,7 @@
                         <div class="form-group col-md-12">
                             <div class="col-md-4">
                                 <label>
-                                    <fmt:message key="tour.first_hot" bundle="${rb}"/> first!
+                                    <fmt:message key="tour.first_hot" bundle="${rb}"/>
                                 </label>
                             </div>
                             <div class="col-md-5">
@@ -147,11 +147,14 @@
 
             </div>
 
-            <c:if test="${empty tours}">
-                <fmt:message key="tours.empty" bundle="${rb}"/>
-            </c:if>
 
             <div class="tours">
+                <c:if test="${empty tours}">
+                    <h3>
+                        <fmt:message key="tours.empty" bundle="${rb}"/>
+                    </h3>
+                </c:if>
+
                 <c:forEach var="tour" items="${tours}">
 
                     <div class="tour-wrapper col-md-12">

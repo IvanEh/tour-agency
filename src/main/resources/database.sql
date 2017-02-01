@@ -39,8 +39,6 @@ CREATE TABLE IF NOT EXISTS `purchase` (
     FOREIGN KEY (`user_id`)
     REFERENCES `user` (`id`));
 
-DROP TABLE IF EXISTS `role`;
-
 CREATE TABLE IF NOT EXISTS `role` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
@@ -88,3 +86,6 @@ CREATE TABLE IF NOT EXISTS `tour_image` (
   CONSTRAINT `fk_tour_image_tour`
     FOREIGN KEY (`tour_id`)
     REFERENCES `tour` (`id`));
+
+INSERT INTO role(id, name) VALUES(1, 'CUSTOMER');
+INSERT INTO role(id, name) VALUES(2, 'TOUR_AGENT');

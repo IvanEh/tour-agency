@@ -30,6 +30,12 @@
                 </h1>
                 <hr/>
 
+                <c:if test="${empty purchaseGroups}">
+                    <h3>
+                        <fmt:message key="tours.empty" bundle="${rb}"/>
+                    </h3>
+                </c:if>
+
                 <c:forEach var="group" items="${purchaseGroups}">
                     <c:set var="tour" value="${group.key}" />
 
