@@ -29,104 +29,101 @@
 <input type="hidden" id="rating-val" value="${tour.avgRating}"/>
 
 <div class="container-fluid">
-    <div class="col-md-3 sidebar">
-        <c:import url="/resources/components/sidebar.html"/>
+    <div class="sidebar-wrapper">
+        <div class="sidebar floating-plane">
+            <c:import url="/resources/components/sidebar.html"/>
+        </div>
     </div>
 
-    <div class="col-md-offset-3 col-md-8 content">
-        <div class="row">
+    <div class="content">
+
+        <div class="col-md-11">
+
                 <a href="/agent/edit-tour.html?id=${tour.id}" class="btn btn-sm">
                     <i class="glyphicon glyphicon-edit"></i>
                     <fmt:message key="tour.edit" bundle="${rb}"/>
                 </a>
 
-            <div class="col-offset-md-1 col-md-12">
-                <div class="pull-left">
-                    <h3>
-                        <c:out value="${tour.title}"/>
-                    </h3>
-                    <div class="price">
-                        $${tour.price.doubleValue()}
-                    </div>
-                </div>
-                <div class="pull-right">
-                    <div class="vcentered-container">
-                        <div id="rating-static" class="vcentered" style="display: inline-block"></div>
-                            (<a class="vcentered" href="">${tour.votesCount}</a>)
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <br/>
-
-        <div class="row">
-            <div class="col-offset-md-1 col-md-12">
-                <c:if test="${discount > 0}">
-                    <div class="pull-right discount">
-                        -${discount}%
-                    </div>
-                </c:if>
-                <div class="tour-desc col-md-10" data-provide="markdown"><c:out value="${tour.description}"/></div>
-            </div>
-        </div>
-
-        <br/>
-
-        <fmt:message key="buy.buy" var="buy" bundle="${rb}"/>
-
-        <div class="row">
-            <div class="col-offset-md-1 col-md-12">
-                <a class="btn pull-right"
-                   href="/user/buy.html?tourId=${tour.id}">${buy}</a>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12 galery">
-                <c:forEach var="tourImage" items="${tourImages}">
-                    <%@include file="/resources/components/tour-image.html" %>
-                </c:forEach>
-
-                <%@include file="/resources/components/fake-tour-image.html" %>
-
-                <u:if-user role="TOUR_AGENT">
-                    <%@include file="/resources/components/tour-image-new-btn.html" %>
-                </u:if-user>
-            </div>
-        </div>
-
-        <hr/>
-
-        <div class="row">
-            <div class="col-offset-md-1 col-md-12">
-                <h3>
-                    <fmt:message key="review.title" bundle="${rb}"/>
-                </h3>
-
-                <c:if test="${canVote || oldReview != null }">
-                    <center>
-                        <div id="new-review-btn">
-                            <c:if test="${oldReview != null}">
-                                <i class="glyphicon glyphicon-record"></i>
-                            </c:if>
-                            <c:if test="${oldReview == null}">
-                                <i class="glyphicon glyphicon-plus-sign"></i>
-                            </c:if>
+                <div class="col-offset-md-1 col-md-12">
+                    <div class="pull-left">
+                        <h3>
+                            <c:out value="${tour.title}"/>
+                        </h3>
+                        <div class="price">
+                            $${tour.price.doubleValue()}
                         </div>
-                    </center>
-                </c:if>
-
-                <br/>
-
-                <%@include file="/resources/components/review-input.html" %>
-
-                <div class="reviews">
-                    <c:forEach var="review" items="${reviews}">
-                        <%@include file="/resources/components/review.html" %>
-                    </c:forEach>
+                    </div>
+                    <div class="pull-right">
+                        <div class="vcentered-container">
+                            <div id="rating-static" class="vcentered" style="display: inline-block"></div>
+                            (<a class="vcentered" href="">${tour.votesCount}</a>)
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+            <br/>
+
+                <div class="col-offset-md-1 col-md-12">
+                    <c:if test="${discount > 0}">
+                        <div class="pull-right discount">
+                            -${discount}%
+                        </div>
+                    </c:if>
+                    <div class="tour-desc col-md-10" data-provide="markdown"><c:out value="${tour.description}"/></div>
+                </div>
+
+            <br/>
+
+            <fmt:message key="buy.buy" var="buy" bundle="${rb}"/>
+
+                <div class="col-offset-md-1 col-md-12">
+                    <a class="btn pull-right"
+                       href="/user/buy.html?tourId=${tour.id}">${buy}</a>
+                </div>
+
+                <div class="col-md-12 galery">
+                    <c:forEach var="tourImage" items="${tourImages}">
+                        <%@include file="/resources/components/tour-image.html" %>
+                    </c:forEach>
+
+                    <%@include file="/resources/components/fake-tour-image.html" %>
+
+                    <u:if-user role="TOUR_AGENT">
+                        <%@include file="/resources/components/tour-image-new-btn.html" %>
+                    </u:if-user>
+                </div>
+
+            <hr/>
+
+                <div class="col-offset-md-1 col-md-12">
+                    <h3>
+                        <fmt:message key="review.title" bundle="${rb}"/>
+                    </h3>
+
+                    <c:if test="${canVote || oldReview != null }">
+                        <center>
+                            <div id="new-review-btn">
+                                <c:if test="${oldReview != null}">
+                                    <i class="glyphicon glyphicon-record"></i>
+                                </c:if>
+                                <c:if test="${oldReview == null}">
+                                    <i class="glyphicon glyphicon-plus-sign"></i>
+                                </c:if>
+                            </div>
+                        </center>
+                    </c:if>
+
+                    <br/>
+
+                    <%@include file="/resources/components/review-input.html" %>
+
+                    <div class="reviews">
+                        <c:forEach var="review" items="${reviews}">
+                            <%@include file="/resources/components/review.html" %>
+                        </c:forEach>
+                    </div>
+                </div>
+
         </div>
     </div>
 

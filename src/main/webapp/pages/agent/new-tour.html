@@ -15,26 +15,29 @@
 
 <c:import url="/resources/components/navbar.html"/>
 
-<div class="container-fluid ovf-hidden">
-    <div class="col-md-3 sidebar">
-        <c:import url="/resources/components/sidebar.html"/>
+<div class="container-fluid">
+    <div class="sidebar-wrapper">
+        <div class="sidebar floating-plane">
+            <c:import url="/resources/components/sidebar.html"/>
+        </div>
     </div>
 
-    <div class="col-md-offset-3 col-md-8 stretch content">
-        <c:if test="${not empty param.failed}">
-            <p class="bg-danger">
-                <fmt:message key="form.error" bundle="${rb}"/>
-            </p>
-        </c:if>
+    <div class="content">
+        <div class="col-md-8 col-md-offset-1 floating-plane">
+            <c:if test="${not empty param.failed}">
+                <p class="bg-danger">
+                    <fmt:message key="form.error" bundle="${rb}"/>
+                </p>
+            </c:if>
 
-        <form method="post" action="/tours" class="col-md-12 form-horizontal">
+            <form method="post" action="/tours" class="col-md-12">
+                <c:set var="hot" value="true"/>
+                <%@include file="/resources/components/tour-fieldset.html" %>
 
-            <c:set var="hot" value="true"/>
-            <%@include file="/resources/components/tour-fieldset.html" %>
-
-            <fmt:message key="create" var="create" bundle="${rb}"/>
-            <input type="submit" class="btn pull-right" value="${create}"/>
-        </form>
+                <fmt:message key="create" var="create" bundle="${rb}"/>
+                <input type="submit" class="btn pull-right" value="${create}"/>
+            </form>
+        </div>
     </div>
 </div>
 

@@ -14,50 +14,54 @@
 
 <c:import url="/resources/components/navbar.html"/>
 
-    <div class="container-fluid ovf-hidden">
-        <div class="col-md-3 sidebar">
-            <c:import url="/resources/components/sidebar.html"/>
+    <div class="container-fluid">
+        <div class="sidebar-wrapper">
+            <div class="sidebar floating-plane">
+                <c:import url="/resources/components/sidebar.html"/>
+            </div>
         </div>
-                
-            <div class="col-md-offset-3 col-md-8 stretch content">
+
+        <div class="content">
+            <div class="col-md-11">
                 <h1>
                     <fmt:message key="all_users.title" bundle="${rb}"/>
                 </h1>
                 <hr/>
-                
+
                 <div class="btn btn-contrast pull-right" id="save">
                     <fmt:message key="save" bundle="${rb}"/>
                 </div>
-                
-                <c:forEach var="summary" items="${summaries}">
-                <c:set var="user" value="${summary.user}"/>
 
-                <div class="col-md-12">
-                    <div class="entry-box bordered clearfix">
-                        <c:out value="${user.firstName} ${user.lastName}"/>
+                <c:forEach var="summary" items="${summaries}">
+                    <c:set var="user" value="${summary.user}"/>
+
+                    <div class="col-md-12">
+                        <div class="entry-box bordered clearfix">
+                            <c:out value="${user.firstName} ${user.lastName}"/>
                         <span class="badge">
                            ${summary.purchaseCount} |
                            $ ${summary.totalPrice}
                         </span>
 
-                        <c:if test="${!summary.tourAgent}">
-                            <form action="/agent/setadmin" method="POST"
-                                  class="inline">
+                            <c:if test="${!summary.tourAgent}">
+                                <form action="/agent/setadmin" method="POST"
+                                      class="inline">
+                                    <input type="hidden" name="id" value="${user.id}"/>
+                                    <div class="btn btn-sm" data-tour-agent-action="true">Make Tour Agent</div>
+                                </form>
+                            </c:if>
+
+                            <form method="post" action="/user/discount" class="pull-right" data-dirty="false">
                                 <input type="hidden" name="id" value="${user.id}"/>
-                                <div class="btn btn-sm" data-tour-agent-action="true">Make Tour Agent</div>
+                                <fmt:message key="discount" bundle="${rb}"/>
+                                (%): <input type="number" name="discount" min="0" value="${user.discount}" />
                             </form>
-                        </c:if>
 
-                        <form method="post" action="/user/discount" class="pull-right" data-dirty="false">
-                            <input type="hidden" name="id" value="${user.id}"/>
-                            <fmt:message key="discount" bundle="${rb}"/>
-                            (%): <input type="number" name="discount" min="0" value="${user.discount}" />
-                        </form>
-
+                        </div>
                     </div>
-                </div>
                 </c:forEach>
             </div>
+        </div>
 
     </div>
     

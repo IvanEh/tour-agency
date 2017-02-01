@@ -20,190 +20,195 @@
 <c:import url="/resources/components/navbar.html"/>
 
 <div class="container-fluid ovf-hidden">
-    <div class="col-md-2 sidebar">
-        <c:import url="/resources/components/sidebar.html"/>
+    <div class="sidebar-wrapper">
+        <div class="sidebar floating-plane">
+            <c:import url="/resources/components/sidebar.html"/>
+        </div>
     </div>
 
-    <div class="col-md-offset-3 col-md-8 content stretch">
-        <div style="background: #f8f9f6;">
-            <ul class="nav nav-pills toolbar">
-                <c:set var="ordCss" value="${data.priceSort eq null ? '' : 'active'}"/>
-                <c:set var="ordAsc" value="${data.priceSort.toString() eq 'DESC' ? '-alt' : ''}"/>
+    <div class="content">
+        <div class="col-md-11">
+            <div style="background: #f8f9f6;">
+                <ul class="nav nav-pills toolbar">
+                    <c:set var="ordCss" value="${data.priceSort eq null ? '' : 'active'}"/>
+                    <c:set var="ordAsc" value="${data.priceSort.toString() eq 'DESC' ? '-alt' : ''}"/>
 
-                <li><a class="btn btn-default ${ordCss}" onclick="sort()">
-                    <fmt:message key="tour.price" bundle="${rb}"/>
-                    <span class="glyphicon glyphicon-sort-by-order${ordAsc}"></span></a>
-                </li>
+                    <li><a class="btn btn-default ${ordCss}" onclick="sort()">
+                        <fmt:message key="tour.price" bundle="${rb}"/>
+                        <span class="glyphicon glyphicon-sort-by-order${ordAsc}"></span></a>
+                    </li>
 
 
-                <c:set var="recreationCss" value="${RECREATION ? 'active' : ''}"/>
-                <li><a class="btn btn-default ${recreationCss}" onclick="setTourType('RECREATION')">
-                    <fmt:message key="tour.recreation" bundle="${rb}"/>
-                </a>
-                </li>
-
-                <c:set var="excursionCss" value="${EXCURSION ? 'active' : ''}"/>
-                <li><a class="btn btn-default ${excursionCss}" onclick="setTourType('EXCURSION')">
-                    <fmt:message key="tour.excursion" bundle="${rb}"/>
-                </a>
-                </li>
-
-                <c:set var="shoppingCss" value="${SHOPPING ? 'active' : ''}"/>
-                <li><a class="btn btn-default ${shoppingCss}" onclick="setTourType('SHOPPING')">
-                    <fmt:message key="tour.shopping" bundle="${rb}"/>
-                </a>
-                </li>
-
-                <li>
-                    <a class="btn btn-contrast" id="show-search-form">
-                        <i class="glyphicon glyphicon-filter" style="line-height: 20px"></i>
+                    <c:set var="recreationCss" value="${RECREATION ? 'active' : ''}"/>
+                    <li><a class="btn btn-default ${recreationCss}" onclick="setTourType('RECREATION')">
+                        <fmt:message key="tour.recreation" bundle="${rb}"/>
                     </a>
-                </li>
-            </ul>
+                    </li>
 
-            <form class="hidden" id="search-form">
-                <input type="hidden" name="price" value="${priceOrd}"/>
-                <input type="hidden" name="type" value="${type}"/>
+                    <c:set var="excursionCss" value="${EXCURSION ? 'active' : ''}"/>
+                    <li><a class="btn btn-default ${excursionCss}" onclick="setTourType('EXCURSION')">
+                        <fmt:message key="tour.excursion" bundle="${rb}"/>
+                    </a>
+                    </li>
 
-                <div class="row top-buffer-sm">
-                    <div class="form-group col-md-12">
-                        <div class="col-md-4">
-                            <label>
-                                <fmt:message key="search" bundle="${rb}"/>:
-                            </label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" name="search" value="${data.searchQuery}"/>
-                        </div>
-                    </div>
-                </div>
+                    <c:set var="shoppingCss" value="${SHOPPING ? 'active' : ''}"/>
+                    <li><a class="btn btn-default ${shoppingCss}" onclick="setTourType('SHOPPING')">
+                        <fmt:message key="tour.shopping" bundle="${rb}"/>
+                    </a>
+                    </li>
 
-                <div class="row top-buffer-sm">
-                    <div class="form-group col-md-12">
-                        <div class="col-md-4">
-                            <label>
-                                Sort
-                            </label>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="btn btn-default" data-sort-btn="${data.ratingSort}">
-                                Rating
-                                <i></i>
-                                <input type="hidden" name="rating" value=""/>
-                            </div>
-
-                            <div class="btn btn-default" data-sort-btn="${data.votesSort}">
-                                Votes
-                                <i></i>
-                                <input type="hidden" name="votes" value=""/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row top-buffer-sm">
-                    <div class="form-group col-md-12">
-                        <div class="col-md-4">
-                            <label>
-                                <fmt:message key="tour.first_hot" bundle="${rb}"/> first!
-                            </label>
-                        </div>
-                        <div class="col-md-5">
-                            <input type="checkbox" value='1' name="hotFirst" ${data.hotFirst ? "checked" : ""}/>
-                            <input type='hidden' value='0' name='hotFirst'>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row top-buffer">
-                    <div class="col-md-12">
-                        <div class="col-md-4">
-                            <label>
-                                <fmt:message key="tour.price" bundle="${rb}"/>:
-                            </label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="hidden" id="price-low" name="priceLow"/>
-                            <input type="hidden" id="price-high" name="priceHigh"/>
-                            <div id="price-slider"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <input type="submit" class="btn btn-contrast pull-right" value="<fmt:message key="search" bundle="${rb}"/>"/>
-                        <a href="/tours.html" class="btn btn-default pull-right">
-                            <fmt:message key="reset" bundle="${rb}"/>
+                    <li>
+                        <a class="btn btn-contrast" id="show-search-form">
+                            <i class="glyphicon glyphicon-filter" style="line-height: 20px"></i>
                         </a>
-                    </div>
-                </div>
+                    </li>
+                </ul>
 
-            </form>
+                <form class="hidden" id="search-form">
+                    <input type="hidden" name="price" value="${priceOrd}"/>
+                    <input type="hidden" name="type" value="${type}"/>
 
-        </div>
-
-        <c:if test="${empty tours}">
-            <fmt:message key="tours.empty" bundle="${rb}"/>
-        </c:if>
-
-        <div class="tours">
-            <c:forEach var="tour" items="${tours}">
-
-                <div class="tour-wrapper col-md-12">
-                    <a href="/tour.html?id=${tour.id}">
-                        <div class="tour clearfix">
-                            <c:if test="${tour.isHot()}">
-                                <div class="hot">
-                                    <fmt:message key="tour.hothint" var="hothint" bundle="${rb}"/>
-                                    <img src="/resources/images/hot.png"
-                                         title="${hothint}">
-                                </div>
-                            </c:if>
-
-                            <div class="heading">
-                                <c:out value="${tour.title}"/>
+                    <div class="row top-buffer-sm">
+                        <div class="form-group col-md-12">
+                            <div class="col-md-4">
+                                <label>
+                                    <fmt:message key="search" bundle="${rb}"/>:
+                                </label>
                             </div>
-                            <div class="body" data-provide="markdown"><c:out value="${tour.description}"/></div>
-                            <div class="footer">
-                                <div class="pull-left badge" style="line-height: 20px">
-                                    $<c:out value="${tour.price.doubleValue()}"/>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" name="search" value="${data.searchQuery}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row top-buffer-sm">
+                        <div class="form-group col-md-12">
+                            <div class="col-md-4">
+                                <label>
+                                    Sort
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="btn btn-default" data-sort-btn="${data.ratingSort}">
+                                    Rating
+                                    <i></i>
+                                    <input type="hidden" name="rating" value=""/>
                                 </div>
-                                <div class="pull-left dest-label">
-                                    <c:out value="${tour.destination}"/>
+
+                                <div class="btn btn-default" data-sort-btn="${data.votesSort}">
+                                    Votes
+                                    <i></i>
+                                    <input type="hidden" name="votes" value=""/>
                                 </div>
-                                <div class="pull-right">
-                                    <div class="vcentered-container">
-                                        <div class="stars vcentered" style="display: inline-block"
-                                             data-rating="${tour.avgRating}">
-                                        </div>
-                                        <div class="counter inline vcentered">
-                                            ${tour.votesCount}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row top-buffer-sm">
+                        <div class="form-group col-md-12">
+                            <div class="col-md-4">
+                                <label>
+                                    <fmt:message key="tour.first_hot" bundle="${rb}"/> first!
+                                </label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="checkbox" value='1' name="hotFirst" ${data.hotFirst ? "checked" : ""}/>
+                                <input type='hidden' value='0' name='hotFirst'>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row top-buffer">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <label>
+                                    <fmt:message key="tour.price" bundle="${rb}"/>:
+                                </label>
+                            </div>
+                            <div class="col-md-offset-1 col-md-6">
+                                <input type="hidden" id="price-low" name="priceLow"/>
+                                <input type="hidden" id="price-high" name="priceHigh"/>
+                                <div id="price-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row top-buffer">
+                        <div class="col-md-12">
+                            <input type="submit" class="btn btn-contrast pull-right" value="<fmt:message key="search" bundle="${rb}"/>"/>
+                            <a href="/tours.html" class="btn btn-default pull-right">
+                                <fmt:message key="reset" bundle="${rb}"/>
+                            </a>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <c:if test="${empty tours}">
+                <fmt:message key="tours.empty" bundle="${rb}"/>
+            </c:if>
+
+            <div class="tours">
+                <c:forEach var="tour" items="${tours}">
+
+                    <div class="tour-wrapper col-md-12">
+                        <a href="/tour.html?id=${tour.id}">
+                            <div class="tour clearfix">
+                                <c:if test="${tour.isHot()}">
+                                    <div class="hot">
+                                        <fmt:message key="tour.hothint" var="hothint" bundle="${rb}"/>
+                                        <img src="/resources/images/hot.png"
+                                             title="${hothint}">
+                                    </div>
+                                </c:if>
+
+                                <div class="heading">
+                                    <c:out value="${tour.title}"/>
+                                </div>
+                                <div class="body" data-provide="markdown"><c:out value="${tour.description}"/></div>
+                                <div class="footer">
+                                    <div class="pull-left badge" style="line-height: 20px">
+                                        $<c:out value="${tour.price.doubleValue()}"/>
+                                    </div>
+                                    <div class="pull-left dest-label">
+                                        <c:out value="${tour.destination}"/>
+                                    </div>
+                                    <div class="pull-right">
+                                        <div class="vcentered-container">
+                                            <div class="stars vcentered" style="display: inline-block"
+                                                 data-rating="${tour.avgRating}">
+                                            </div>
+                                            <div class="counter inline vcentered">
+                                                ${tour.votesCount}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </a>
+                    </div>
+
+                </c:forEach>
+
+                <div>
+                    <c:if test="${not empty prev}">
+                        <div class="btn pull-left" data-url-append="offset"
+                             data-url-append-value="${prev}">
+                            <i class="glyphicon glyphicon-chevron-left"></i>
                         </div>
-                    </a>
+                    </c:if>
+                    <c:if test="${not empty next}">
+                        <div class="btn pull-left" data-url-append="offset"
+                             data-url-append-value="${next}">
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </div>
+                    </c:if>
                 </div>
-
-            </c:forEach>
-
-            <div>
-                <c:if test="${not empty prev}">
-                    <div class="btn pull-left" data-url-append="offset"
-                         data-url-append-value="${prev}">
-                        <i class="glyphicon glyphicon-chevron-left"></i>
-                    </div>
-                </c:if>
-                <c:if test="${not empty next}">
-                    <div class="btn pull-left" data-url-append="offset"
-                         data-url-append-value="${next}">
-                        <i class="glyphicon glyphicon-chevron-right"></i>
-                    </div>
-                </c:if>
             </div>
+
         </div>
 
     </div>

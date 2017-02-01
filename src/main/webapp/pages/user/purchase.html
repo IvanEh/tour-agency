@@ -28,48 +28,44 @@
 <input type="hidden" id="rating-val" value="${tour.avgRating}"/>
 
 <div class="container-fluid">
-    <div class="col-md-3 sidebar">
-        <c:import url="/resources/components/sidebar.html"/>
+    <div clas="sidebar-wrapper">
+        <div class="sidebar floating-plane">
+            <c:import url="/resources/components/sidebar.html"/>
+        </div>
     </div>
 
-    <div class="col-md-offset-3 col-md-8 content">
-        <div class="row">
-            <div class="col-offset-md-1 col-md-12">
-                    <p>
-                        <a href="/tour.html?id=${tourId}" class="btn">
-                            <i class="glyphicon glyphicon-arrow-left"></i>
-                            <fmt:message key="purchase.back_tour" bundle="${rb}"/>
-                        </a>
-                        <a href="/user/purchases.html" class="btn">
-                            <i class="glyphicon glyphicon-arrow-up"></i>
-                            <fmt:message key="purchase.back_purchases" bundle="${rb}"/>
-                        </a>
-                    </p>
+    <div class="content">
+        <div class="col-md-11">
+            <p>
+                <a href="/tour.html?id=${tourId}" class="btn">
+                    <i class="glyphicon glyphicon-arrow-left"></i>
+                    <fmt:message key="purchase.back_tour" bundle="${rb}"/>
+                </a>
+                <a href="/user/purchases.html" class="btn">
+                    <i class="glyphicon glyphicon-arrow-up"></i>
+                    <fmt:message key="purchase.back_purchases" bundle="${rb}"/>
+                </a>
+            </p>
 
-                    <h3>
-                        <c:out value="${tour.title}"/>
-                    </h3>
+            <h3>
+                <c:out value="${tour.title}"/>
+            </h3>
 
-                    <div class="price">
-                        <fmt:message key="purchase.starting_price" bundle="${rb}"/>: $${tour.price.doubleValue()}
-                    </div>
-
-                    <h4>
-                        <fmt:message key="purchase.list" bundle="${rb}"/>:
-                    </h4>
-                    <c:set var="purchases" value="${purchases}"/>
-                    <%@include file="/resources/components/purchases-table.html" %>
-                    <hr/>
-
-
+            <div class="price">
+                <fmt:message key="purchase.starting_price" bundle="${rb}"/>: $${tour.price.doubleValue()}
             </div>
+
+            <h4>
+                <fmt:message key="purchase.list" bundle="${rb}"/>:
+            </h4>
+            <c:set var="purchases" value="${purchases}"/>
+            <%@include file="/resources/components/purchases-table.html" %>
+            <hr/>
+
         </div>
 
-        <br/>
 
-        <br/>
     </div>
-
 </div>
 
 </body>

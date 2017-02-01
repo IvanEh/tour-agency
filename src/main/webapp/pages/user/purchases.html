@@ -16,46 +16,50 @@
 
 <c:import url="/resources/components/navbar.html"/>
 
-    <div class="container-fluid ovf-hidden">
-        <div class="col-md-3 sidebar">
-            <c:import url="/resources/components/sidebar.html"/>
+    <div class="container-fluid">
+        <div class="sidebar floating-plane">
+            <div class="col-md-3 sidebar">
+                <c:import url="/resources/components/sidebar.html"/>
+            </div>
         </div>
 
-        <div class="col-md-offset-3 col-md-8 stretch content">
-            <h1>
-                <fmt:message key="purchases.title" bundle="${rb}"/>
-            </h1>
-            <hr/>
-            
-            <c:forEach var="group" items="${purchaseGroups}">
-                <c:set var="tour" value="${group.key}" />
-                     
-	            <div class="col-md-12">
-                    <a href="/user/purchase.html?tourId=${tour.id}">
-                        <div class="tour clearfix">
-                            <div class="heading">
-                                <c:out value="${tour.title}"/>
-                            </div>
+        <div class="content">
+            <div class="col-md-11">
+                <h1>
+                    <fmt:message key="purchases.title" bundle="${rb}"/>
+                </h1>
+                <hr/>
 
-                            <div class="body" data-provide="markdown"><c:out value="${tour.description}"/></div>
+                <c:forEach var="group" items="${purchaseGroups}">
+                    <c:set var="tour" value="${group.key}" />
 
-                            <div class="footer">
-                                <div class="pull-left badge badge-success" style="line-height: 20px">
-                                    <c:out value="${tour.price.doubleValue()}"/>
-                                </div>
-                                <div class="pull-right badge badge-success" style="line-height: 20px">
-                                    <c:out value="${group.elems.size()}"/>
-                                    <fmt:message key="purchase.units" bundle="${rb}"/>
+                    <div class="col-md-12">
+                        <a href="/user/purchase.html?tourId=${tour.id}">
+                            <div class="tour clearfix">
+                                <div class="heading">
+                                    <c:out value="${tour.title}"/>
                                 </div>
 
-                            </div>
+                                <div class="body" data-provide="markdown"><c:out value="${tour.description}"/></div>
 
-                        </div>
-                    </a>
-	            </div>
-		    </c:forEach>   
-		           
+                                <div class="footer">
+                                    <div class="pull-left badge badge-success" style="line-height: 20px">
+                                        <c:out value="${tour.price.doubleValue()}"/>
+                                    </div>
+                                    <div class="pull-right badge badge-success" style="line-height: 20px">
+                                        <c:out value="${group.elems.size()}"/>
+                                        <fmt:message key="purchase.units" bundle="${rb}"/>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </a>
+                    </div>
+                </c:forEach>
+            </div>
         </div>
+
     </div>
 
 <script>

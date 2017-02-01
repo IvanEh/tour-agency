@@ -13,47 +13,51 @@
 
 <c:import url="/resources/components/navbar.html"/>
 
-    <div class="container-fluid ovf-hidden">
-        <div class="col-md-3 sidebar">
-            <c:import url="/resources/components/sidebar.html"/>
+    <div class="container-fluid">
+        <div class="sidebar-wrapper">
+            <div class="col-md-3 sidebar floating-plane">
+                <c:import url="/resources/components/sidebar.html"/>
+            </div>
         </div>
 
-        <div class="col-md-offset-3 col-md-8 stretch content">
-            <h1>
-                <fmt:message key="admin_tours.title" bundle="${rb}"/>
-            </h1>
-            <hr/>
-            
-            <c:forEach var="tour" items="${tours}">
-                <div class="entry-box bordered clearfix">
-                    <div class="inline title">
-                        <c:choose>
-                            <c:when test="${tour.enabled}">
-                                <c:out value="${tour.title}"/>
-                            </c:when>
-                            <c:otherwise>
-                                <strike>
+        <div class="content">
+            <div class="col-md-11">
+                <h1>
+                    <fmt:message key="admin_tours.title" bundle="${rb}"/>
+                </h1>
+                <hr/>
+
+                <c:forEach var="tour" items="${tours}">
+                    <div class="entry-box bordered clearfix">
+                        <div class="inline title">
+                            <c:choose>
+                                <c:when test="${tour.enabled}">
                                     <c:out value="${tour.title}"/>
-                                </strike>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <strike>
+                                        <c:out value="${tour.title}"/>
+                                    </strike>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
 
                     <span class="badge">$
                         <c:out value="${tour.price.doubleValue()}"/>
                     </span>
 
-                    <c:set var="editLink" value="/agent/edit-tour.html?id=${tour.id}"/>
-                    <a class="btn btn-sm btn-default pull-right" href="${editLink}">Змінити</a>
+                        <c:set var="editLink" value="/agent/edit-tour.html?id=${tour.id}"/>
+                        <a class="btn btn-sm btn-default pull-right" href="${editLink}">Змінити</a>
 
-                    <fmt:message key="tour.enable" var="enable" bundle="${rb}"/>
-                    <fmt:message key="tour.disable" var="disable" bundle="${rb}"/>
-                    <div class="btn btn-sm btn-default pull-right" data-enabled="${tour.enabled}" onclick="toggleEnabled(this, ${tour.id})">
-                        ${tour.enabled ? disable : enable}
+                        <fmt:message key="tour.enable" var="enable" bundle="${rb}"/>
+                        <fmt:message key="tour.disable" var="disable" bundle="${rb}"/>
+                        <div class="btn btn-sm btn-default pull-right" data-enabled="${tour.enabled}" onclick="toggleEnabled(this, ${tour.id})">
+                            ${tour.enabled ? disable : enable}
+                        </div>
+
                     </div>
-
-                </div>
-            </c:forEach>
+                </c:forEach>
+            </div>
         </div>
     </div>
 

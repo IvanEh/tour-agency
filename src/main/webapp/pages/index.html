@@ -16,73 +16,79 @@
 
 <c:import url="/resources/components/navbar.html"/>
 
-<div class="container-fluid ovf-hidden">
-    <div class="col-md-2 sidebar">
-        <c:import url="/resources/components/sidebar.html"/>
+<div class="container-fluid">
+
+    <div class="sidebar-wrapper">
+        <div class="sidebar floating-plane">
+            <c:import url="/resources/components/sidebar.html"/>
+        </div>
     </div>
 
-    <div class="col-md-offset-3 col-md-8 stretch content">
-        <h1><fmt:message key="index.welcome" bundle="${rb}"/></h1>
+    <div class="content">
+        <div class="col-md-11">
+            <h1><fmt:message key="index.welcome" bundle="${rb}"/></h1>
 
-        <h3><fmt:message key="index.hot" bundle="${rb}"/></h3>
+            <h3><fmt:message key="index.hot" bundle="${rb}"/></h3>
 
-        <div>
-            <div id="hotCarousel" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <c:forEach var="tour" items="${tours}" varStatus="it">
-                        <li data-target="#hotCarousel" data-slide-to="${it.index}"
-                            class="${it.index eq 0 ? 'active' : ''}">
-                        </li>
-                    </c:forEach>
-                </ol>
+            <div>
+                <div id="hotCarousel" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <c:forEach var="tour" items="${tours}" varStatus="it">
+                            <li data-target="#hotCarousel" data-slide-to="${it.index}"
+                                class="${it.index eq 0 ? 'active' : ''}">
+                            </li>
+                        </c:forEach>
+                    </ol>
 
-                <div class="carousel-inner" role="listbox">
-                    <c:forEach var="tour" items="${tours}" varStatus="it">
-                        <div class="item ${it.index eq 0 ? 'active' : ''}">
-                            <div class="carousel-bg">
+                    <div class="carousel-inner" role="listbox">
+                        <c:forEach var="tour" items="${tours}" varStatus="it">
+                            <div class="item ${it.index eq 0 ? 'active' : ''}">
+                                <div class="carousel-bg">
+                                </div>
+
+                                <div class="carousel-caption">
+                                    <a href="/tour.html?id=${tour.id}">
+
+                                        <h3>
+                                            <c:out value="${tour.title}"/>
+                                        </h3>
+                                        <p>
+                                            <c:out value="${tour.description}"/>
+                                        </p>
+                                        <p>
+                                            $
+                                            <fmt:formatNumber value="${tour.price}"
+                                                              type="NUMBER"/>
+
+                                        </p>
+                                        <center>
+                                            <div class="vcentered-container">
+                                                <div class="stars vcentered"
+                                                     data-rating="${tour.avgRating}" style="display: inline-block"></div>
+                                            </div>
+                                        </center>
+
+                                    </a>
+                                </div>
                             </div>
+                        </c:forEach>
+                    </div>
 
-                            <div class="carousel-caption">
-                                <a href="/tour.html?id=${tour.id}">
-
-                                    <h3>
-                                        <c:out value="${tour.title}"/>
-                                    </h3>
-                                    <p>
-                                        <c:out value="${tour.description}"/>
-                                    </p>
-                                    <p>
-                                        $
-                                        <fmt:formatNumber value="${tour.price}"
-                                                          type="NUMBER"/>
-
-                                    </p>
-                                    <center>
-                                        <div class="vcentered-container">
-                                            <div class="stars vcentered"
-                                                 data-rating="${tour.avgRating}" style="display: inline-block"></div>
-                                        </div>
-                                    </center>
-
-                                </a>
-                            </div>
-                        </div>
-                    </c:forEach>
+                    <!-- Left and right controls -->
+                    <a class="left carousel-btn" href="#hotCarousel" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-btn" href="#hotCarousel" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
 
-                <!-- Left and right controls -->
-                <a class="left carousel-btn" href="#hotCarousel" role="button" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="right carousel-btn" href="#hotCarousel" role="button" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
             </div>
 
-        </div>
 
+        </div>
 
     </div>
 </div>

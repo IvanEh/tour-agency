@@ -19,6 +19,27 @@ hr {
     padding-top: 25px;
 }
 
+.floating-plane {
+    padding-top: 25px;
+    padding-bottom: 25px;
+
+    background: white;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.33);
+}
+
+.float-1 {
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.33);
+}
+
+.float-2 {
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,.66);
+}
+
+.bg-danger {
+    background-color: #ffe6e6;
+    color: #e21111;
+}
+
 .navbar {
     background: #003580;
    	box-shadow: 0px 0px 3px 2px grey;
@@ -30,32 +51,62 @@ hr {
     font-weight: 600;
 }
 
+.sidebar-wrapper {
+    width: 20%;
+    float: left;
+}
+
 .sidebar {
     top: 5px;
+    width: 20%;
+    max-width: 225px;
 
-    right: 1%;
     position: fixed;
     height: 80%;
     top: 10%;
-    left: 0%;
-    margin-right: 22px;
-    width: 18%;
+    left: 0.5%;
 
-    padding-top: 15px;
-    background: #f9f9f9;
-    box-shadow: 0px 0px 2px 2px gray;
+    padding: 15px 10px;
 
-    opacity: 0.9;
+    opacity: 0.95;
+}
+
+.sidebar ul:first-child {
+    margin-top: 0px;
+}
+
+.sidebar ul {
+    margin-top: 30px;
+}
+
+.content {
+    width: 80%;
+    float:right;
 }
 
 #lang > img {
     height: 19px;
 }
 
-.sidebar li {
+.sidebar li{
     border: solid 1px #0089ff;
-    border-radius: 3% !important;
+    border-bottom: none;
+    margin: 0px;
 }
+
+.sidebar ul {
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.33);
+}
+
+.sidebar li + li {
+    margin-top: 0px;
+    border-top: 1px solid rgb(242, 244, 246);
+}
+
+.sidebar li:last-child {
+    border-bottom: solid 1px #0089ff;
+}
+
 
 .btn {
     border: solid 1px #003580;
