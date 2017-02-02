@@ -2,6 +2,12 @@
 
 A simple Web Service for a Tour Agency
 
+# Description
+
+Система Турагентство
+Заказчик выбирает и оплачивает Тур (отдых,экскурсия, шоппинг).
+Турагент определяет тур как «горящий»,размеры скидок постоянным клиентам.
+
 # Features
 
 - Creating/editing tours
@@ -27,9 +33,7 @@ A simple Web Service for a Tour Agency
 - Maven
 - Bower
 
-Before building and running you should download bower dependencies:
-1. ```cd src/main/webapp/```
-2. ```bower i bower.json```
+Before building and running you should have bower installed
 
 ## Database
 
@@ -43,4 +47,7 @@ would forget to update README.md)
 
 The repository ship with tomcat7 maven plugin, so you could run the 
 application simply doing:
-    ```mvn tomcat7:run```
+    ```
+    mvn install
+    mvn tomcat7:run
+    ```
